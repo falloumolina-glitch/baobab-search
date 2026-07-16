@@ -10,41 +10,67 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-  <header class="w-full h-16 flex items-center justify-end px-6">
-    <a href="#" onclick="showPage('settingsPage')" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 text-sm mr-5" data-lang="settings">Paramètres</a>
-    <div class="bs-badge w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm">BS</div>
+
+  <!-- HEADER ECOSYSTEM -->
+  <header class="w-full h-16 flex items-center justify-between px-6 border-b dark:border-gray-800">
+    <div class="flex items-center gap-6">
+      <h1 class="font-sora text-2xl font-bold text-blue-600">Baobab</h1>
+      <nav class="hidden md:flex gap-5 text-sm">
+        <a href="#" class="hover:text-blue-600" data-lang="workspace">Workspace</a>
+        <a href="#" class="hover:text-blue-600" data-lang="drive">Drive</a>
+        <a href="#" class="hover:text-blue-600" data-lang="docs">Docs</a>
+      </nav>
+    </div>
+    <div class="flex items-center gap-4">
+      <a href="#" onclick="showPage('historyPage')" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 text-sm" data-lang="history">🕒 Historique</a>
+      <a href="#" onclick="showPage('settingsPage')" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 text-sm" data-lang="settings">⚙️ Paramètres</a>
+      <div class="bs-badge w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm">BS</div>
+    </div>
   </header>
 
+  <!-- PAGE ACCUEIL -->
   <section id="homePage" class="page active min-h-[80vh] flex flex-col items-center justify-center px-4">
-    <h1 class="font-sora text-6xl font-bold text-blue-600">Baobab</h1>
-    <p class="text-gray-500 dark:text-gray-400 mt-2 mb-10" data-lang="subtitle">L'IA de la connaissance</p>
-    <form onsubmit="search(event)" class="w-[580px] max-w-[95%] h-12 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-full shadow-md flex items-center px-4">
+    <h2 class="font-sora text-6xl font-bold text-blue-600 mb-2">Baobab</h2>
+    <p class="text-gray-500 dark:text-gray-400 mb-8" data-lang="subtitle">L'IA de la connaissance</p>
+
+    <!-- BARRE OMNIBOX -->
+    <form onsubmit="search(event)" class="w-[650px] max-w-[95%] h-12 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 rounded-full shadow-md hover:shadow-lg flex items-center px-4">
       <div class="bs-badge w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs mr-3">BS</div>
       <input id="searchInput" type="text" data-lang-placeholder="search_placeholder" placeholder="Demande à Baobab IA..." class="w-full outline-none bg-transparent">
-      <button type="submit" class="text-blue-600">🔍</button>
+      <button type="button" class="text-gray-500 hover:text-blue-600 ml-2">🎤</button>
+      <button type="button" class="text-gray-500 hover:text-blue-600 ml-2">📷</button>
+      <button type="submit" class="text-blue-600 ml-2">🔍</button>
     </form>
+
     <div class="mt-6 flex gap-3">
       <button onclick="search(event)" class="bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 px-5 py-2 rounded-lg text-sm" data-lang="search_btn">Baobab Search</button>
       <button onclick="luckySearch()" class="bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 px-5 py-2 rounded-lg text-sm" data-lang="lucky_btn">J'ai de la chance</button>
     </div>
-    <footer class="absolute bottom-0 w-full bg-gray-100 dark:bg-gray-800">
-      <div class="px-6 py-3 text-sm text-gray-600 dark:text-gray-400">Sénégal</div>
-      <div class="px-6 py-3 flex gap-5 text-sm text-gray-600 dark:text-gray-400">
-        <a href="#" onclick="showPage('privacyPage')" class="hover:underline" data-lang="privacy">Confidentialité</a>
-        <a href="#" onclick="showPage('termsPage')" class="hover:underline" data-lang="terms">Conditions</a>
-      </div>
-    </footer>
+    <button onclick="alert('Créer un Baobab Doc - Bientôt')" class="mt-6 bg-blue-600 text-white px-5 py-2 rounded-lg text-sm font-semibold">+ Nouveau Document</button>
   </section>
 
-  <section id="resultsPage" class="page pt-4 pb-20 flex-col">
-    <div class="w-full max-w-6xl mx-auto px-6">
-      <form onsubmit="search(event)" class="w-full max-w-[650px] h-11 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 rounded-full shadow-md flex items-center px-4">
+  <!-- PAGE RESULTATS -->
+  <section id="resultsPage" class="page pt-2 pb-20 flex-col">
+    <!-- BANDEAU FILTRES -->
+    <nav class="w-full border-b dark:border-gray-800">
+      <div class="max-w-6xl mx-auto px-6 flex gap-6 text-sm text-gray-600 dark:text-gray-400 overflow-x-auto">
+        <a class="active-tab py-3" data-lang="all">Tous</a>
+        <a class="py-3 hover:text-blue-600" data-lang="images">Images</a>
+        <a class="py-3 hover:text-blue-600" data-lang="videos">Vidéos</a>
+        <a class="py-3 hover:text-blue-600" data-lang="news">Actualités</a>
+        <a class="py-3 hover:text-blue-600" data-lang="maps">Maps</a>
+        <a class="py-3 hover:text-blue-600">Shopping</a>
+      </div>
+    </nav>
+
+    <div class="w-full max-w-6xl mx-auto px-6 mt-4">
+      <!-- BARRE RECHERCHE RESULTATS -->
+      <form onsubmit="search(event)" class="w-full max-w-[650px] h-11 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 rounded-full shadow-md flex items-center px-4 mb-6">
         <div class="bs-badge w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs mr-3">BS</div>
         <input id="searchInput2" type="text" class="w-full outline-none bg-transparent">
         <button type="submit" class="text-blue-600">🔍</button>
       </form>
-    </div>
-    <div class="w-full max-w-6xl mx-auto px-6 mt-6">
+
       <div id="aiSummary" class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 rounded-r-lg p-4 mb-4">
         <p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-1" data-lang="ai_title">✨ Résumé IA</p>
         <p id="aiText" class="text-sm"></p>
@@ -54,19 +80,19 @@
     </div>
   </section>
 
+  <!-- PAGE PARAMETRES -->
   <section id="settingsPage" class="page pt-20 max-w-xl mx-auto px-6 pb-20 flex-col">
     <h2 class="font-sora text-3xl font-bold mb-6" data-lang="settings_title">Paramètres</h2>
     <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 mb-4">
       <h3 class="font-semibold mb-3" data-lang="search_settings">Recherche</h3>
+      <label class="flex items-center mt-2"><input type="checkbox" id="safeSearch" class="mr-2"><span>SafeSearch</span></label>
       <label class="flex items-center mt-2"><input type="checkbox" id="aiSummaryToggle" checked class="mr-2"><span data-lang="ai_summary">Afficher le résumé IA</span></label>
       <label class="flex items-center mt-2"><input type="checkbox" id="openNewTab" checked class="mr-2"><span data-lang="new_tab">Ouvrir dans un nouvel onglet</span></label>
     </div>
     <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 mb-4">
       <h3 class="font-semibold mb-3" data-lang="language">Langue</h3>
       <select id="language" onchange="changeLanguage(this.value)" class="w-full bg-gray-100 dark:bg-gray-800 border-none rounded-lg p-2">
-        <option value="fr">Français</option>
-        <option value="en">English</option>
-        <option value="wo">Wolof</option>
+        <option value="fr">Français</option><option value="en">English</option><option value="wo">Wolof</option>
       </select>
     </div>
     <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 mb-6">
@@ -79,9 +105,8 @@
     <button onclick="showPage('homePage')" class="mt-4 text-blue-600 hover:underline" data-lang="back_home">← Retour</button>
   </section>
 
-  <section id="termsPage" class="page pt-20 max-w-3xl mx-auto px-6 pb-20 flex-col"><h2 class="font-sora text-3xl font-bold mb-4">Conditions</h2><p>Licence MIT. Utilisation libre.</p><button onclick="showPage('homePage')" class="mt-6 bg-blue-600 text-white px-6 py-3 rounded-full">← Retour</button></section>
-  <section id="privacyPage" class="page pt-20 max-w-3xl mx-auto px-6 pb-20 flex flex-col"><h2 class="font-sora text-3xl font-bold mb-4">Confidentialité</h2><p>Aucune donnée collectée. Stockage local uniquement.</p><button onclick="showPage('homePage')" class="mt-6 bg-blue-600 text-white px-6 py-3 rounded-full">← Retour</button></section>
+  <section id="historyPage" class="page pt-20 max-w-xl mx-auto px-6 pb-20 flex-col"><h2 class="font-sora text-3xl font-bold mb-6" data-lang="history_title">Historique</h2><div id="historyList"></div><button onclick="showPage('homePage')" class="mt-4 text-blue-600 hover:underline">← Retour</button></section>
 
   <script src="script.js"></script>
 </body>
-  </html>
+      </html>
