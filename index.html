@@ -3,110 +3,95 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Baobab IA</title>
+  <title>Baobab</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>tailwind.config = { darkMode: 'class' }</script>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-inter pb-20">
 
-  <!-- HEADER ECOSYSTEM -->
-  <header class="w-full h-16 flex items-center justify-between px-6 border-b dark:border-gray-800">
-    <div class="flex items-center gap-6">
-      <h1 class="font-sora text-2xl font-bold text-blue-600">Baobab</h1>
-      <nav class="hidden md:flex gap-5 text-sm">
-        <a href="#" class="hover:text-blue-600" data-lang="workspace">Workspace</a>
-        <a href="#" class="hover:text-blue-600" data-lang="drive">Drive</a>
-        <a href="#" class="hover:text-blue-600" data-lang="docs">Docs</a>
-      </nav>
-    </div>
-    <div class="flex items-center gap-4">
-      <a href="#" onclick="showPage('historyPage')" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 text-sm" data-lang="history">🕒 Historique</a>
-      <a href="#" onclick="showPage('settingsPage')" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 text-sm" data-lang="settings">⚙️ Paramètres</a>
-      <div class="bs-badge w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm">BS</div>
-    </div>
+  <!-- HEADER HAUT -->
+  <header class="w-full h-14 flex items-center justify-between px-4 sticky top-0 bg-white/80 dark:bg-gray-950/80 backdrop-blur z-50">
+    <h1 class="font-sora text-2xl font-bold text-blue-600">Baobab</h1>
+    <button onclick="showPage('settingsPage')" class="text-gray-600">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+    </button>
   </header>
 
-  <!-- PAGE ACCUEIL -->
-  <section id="homePage" class="page active min-h-[80vh] flex flex-col items-center justify-center px-4">
-    <h2 class="font-sora text-6xl font-bold text-blue-600 mb-2">Baobab</h2>
-    <p class="text-gray-500 dark:text-gray-400 mb-8" data-lang="subtitle">L'IA de la connaissance</p>
-
-    <!-- BARRE OMNIBOX -->
-    <form onsubmit="search(event)" class="w-[650px] max-w-[95%] h-12 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 rounded-full shadow-md hover:shadow-lg flex items-center px-4">
-      <div class="bs-badge w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs mr-3">BS</div>
-      <input id="searchInput" type="text" data-lang-placeholder="search_placeholder" placeholder="Demande à Baobab IA..." class="w-full outline-none bg-transparent">
-      <button type="button" class="text-gray-500 hover:text-blue-600 ml-2">🎤</button>
-      <button type="button" class="text-gray-500 hover:text-blue-600 ml-2">📷</button>
-      <button type="submit" class="text-blue-600 ml-2">🔍</button>
-    </form>
-
-    <div class="mt-6 flex gap-3">
-      <button onclick="search(event)" class="bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 px-5 py-2 rounded-lg text-sm" data-lang="search_btn">Baobab Search</button>
-      <button onclick="luckySearch()" class="bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 px-5 py-2 rounded-lg text-sm" data-lang="lucky_btn">J'ai de la chance</button>
+  <!-- TENDANCES -->
+  <section id="homePage" class="page active px-2 pt-2">
+    <div id="trendsList" class="space-y-1">
+      <div onclick="quickSearch('angleterre - argentine')" class="flex items-center justify-between p-3 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg">
+        <div class="flex items-center gap-4">
+          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          <span>angleterre - argentine</span>
+        </div>
+        <span class="text-sm text-gray-500">20 000+</span>
+      </div>
+      <div onclick="quickSearch('météo demain')" class="flex items-center justify-between p-3 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg">
+        <div class="flex items-center gap-4">
+          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          <span>météo demain</span>
+        </div>
+        <span class="text-sm text-gray-500">20 000+</span>
+      </div>
+      <div onclick="quickSearch('messi')" class="flex items-center justify-between p-3 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg">
+        <div class="flex items-center gap-4">
+          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          <span>messi</span>
+        </div>
+        <span class="text-sm text-gray-500">500+</span>
+      </div>
     </div>
-    <button onclick="alert('Créer un Baobab Doc - Bientôt')" class="mt-6 bg-blue-600 text-white px-5 py-2 rounded-lg text-sm font-semibold">+ Nouveau Document</button>
+
+    <!-- SUGGESTIONS PUCE -->
+    <div class="flex gap-2 mt-4 px-2 overflow-x-auto">
+      <div class="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-full text-sm whitespace-nowrap">
+        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        planete eleve 2.0
+      </div>
+      <div class="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-full text-sm whitespace-nowrap">l'interface de google très...</div>
+    </div>
   </section>
 
   <!-- PAGE RESULTATS -->
-  <section id="resultsPage" class="page pt-2 pb-20 flex-col">
-    <!-- BANDEAU FILTRES -->
-    <nav class="w-full border-b dark:border-gray-800">
-      <div class="max-w-6xl mx-auto px-6 flex gap-6 text-sm text-gray-600 dark:text-gray-400 overflow-x-auto">
-        <a class="active-tab py-3" data-lang="all">Tous</a>
-        <a class="py-3 hover:text-blue-600" data-lang="images">Images</a>
-        <a class="py-3 hover:text-blue-600" data-lang="videos">Vidéos</a>
-        <a class="py-3 hover:text-blue-600" data-lang="news">Actualités</a>
-        <a class="py-3 hover:text-blue-600" data-lang="maps">Maps</a>
-        <a class="py-3 hover:text-blue-600">Shopping</a>
-      </div>
-    </nav>
-
-    <div class="w-full max-w-6xl mx-auto px-6 mt-4">
-      <!-- BARRE RECHERCHE RESULTATS -->
-      <form onsubmit="search(event)" class="w-full max-w-[650px] h-11 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 rounded-full shadow-md flex items-center px-4 mb-6">
-        <div class="bs-badge w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs mr-3">BS</div>
-        <input id="searchInput2" type="text" class="w-full outline-none bg-transparent">
-        <button type="submit" class="text-blue-600">🔍</button>
-      </form>
-
-      <div id="aiSummary" class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 rounded-r-lg p-4 mb-4">
-        <p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-1" data-lang="ai_title">✨ Résumé IA</p>
-        <p id="aiText" class="text-sm"></p>
-      </div>
-      <p id="resultCount" class="text-sm text-gray-500 mb-4"></p>
-      <div id="resultsList" class="space-y-5"></div>
+  <section id="resultsPage" class="page px-4 pt-4">
+    <div id="aiSummary" class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 rounded-lg p-3 mb-4">
+      <p id="aiText" class="text-sm"></p>
     </div>
+    <div id="resultsList" class="space-y-4"></div>
   </section>
 
   <!-- PAGE PARAMETRES -->
-  <section id="settingsPage" class="page pt-20 max-w-xl mx-auto px-6 pb-20 flex-col">
-    <h2 class="font-sora text-3xl font-bold mb-6" data-lang="settings_title">Paramètres</h2>
-    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 mb-4">
-      <h3 class="font-semibold mb-3" data-lang="search_settings">Recherche</h3>
-      <label class="flex items-center mt-2"><input type="checkbox" id="safeSearch" class="mr-2"><span>SafeSearch</span></label>
-      <label class="flex items-center mt-2"><input type="checkbox" id="aiSummaryToggle" checked class="mr-2"><span data-lang="ai_summary">Afficher le résumé IA</span></label>
-      <label class="flex items-center mt-2"><input type="checkbox" id="openNewTab" checked class="mr-2"><span data-lang="new_tab">Ouvrir dans un nouvel onglet</span></label>
-    </div>
-    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 mb-4">
-      <h3 class="font-semibold mb-3" data-lang="language">Langue</h3>
-      <select id="language" onchange="changeLanguage(this.value)" class="w-full bg-gray-100 dark:bg-gray-800 border-none rounded-lg p-2">
-        <option value="fr">Français</option><option value="en">English</option><option value="wo">Wolof</option>
-      </select>
-    </div>
-    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 mb-6">
-      <h3 class="font-semibold mb-3" data-lang="appearance">Apparence</h3>
-      <label class="flex items-center mt-2"><input type="radio" name="theme" value="light" checked class="mr-2"><span data-lang="light_theme">Thème Clair</span></label>
-      <label class="flex items-center mt-2"><input type="radio" name="theme" value="dark" class="mr-2"><span data-lang="dark_theme">Thème Sombre</span></label>
-    </div>
-    <button onclick="saveSettings()" class="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-700" data-lang="save">Enregistrer</button>
-    <p id="saveMsg" class="text-green-600 text-center mt-3 hidden" data-lang="saved">✓ Paramètres enregistrés!</p>
-    <button onclick="showPage('homePage')" class="mt-4 text-blue-600 hover:underline" data-lang="back_home">← Retour</button>
+  <section id="settingsPage" class="page px-4 pt-4">
+    <h2 class="text-2xl font-bold mb-4">Paramètres</h2>
+    <button onclick="showPage('homePage')" class="mt-3 text-blue-600">← Retour</button>
   </section>
 
-  <section id="historyPage" class="page pt-20 max-w-xl mx-auto px-6 pb-20 flex-col"><h2 class="font-sora text-3xl font-bold mb-6" data-lang="history_title">Historique</h2><div id="historyList"></div><button onclick="showPage('homePage')" class="mt-4 text-blue-600 hover:underline">← Retour</button></section>
+  <!-- BARRE DU BAS FIXE STYLE GOOGLE -->
+  <div class="fixed bottom-0 left-0 right-0 h-16 bg-white dark:bg-gray-900 border-t dark:border-gray-800 flex items-center px-3">
+    <form onsubmit="search(event)" class="flex-1 h-12 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center px-1">
+      <!-- Logo G -->
+      <div class="w-10 h-10 flex items-center justify-center">
+        <svg class="w-6 h-6" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      </div>
+      <input id="searchInput" type="text" placeholder="Rechercher..." class="bg-transparent outline-none w-full font-medium">
+      <!-- Micro SVG -->
+      <button type="button" class="p-2">
+        <svg class="w-5 h-5 text-gray-600 dark:text-gray-300" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Zm5 8c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2Z"/></svg>
+      </button>
+      <!-- Lens SVG -->
+      <button type="button" class="p-2">
+        <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.19 0 2.34-.21 3.41-.59l-1.32-1.32C13.35 20.31 12.7 20.5 12 20.5 7.25 20.5 3.5 16.75 3.5 12S7.25 3.5 12 3.5 20.5 7.25 20.5 12c0 .7-.19 1.35-.5 1.91l1.32 1.32C21.79 14.34 22 13.19 22 12 22 6.48 17.52 2 12 2Z"/><path fill="#34A853" d="M12 6.5c-3.03 0-5.5 2.47-5.5 5.5S8.97 17.5 12 17.5s5.5-2.47 5.5-5.5S15.03 6.5 12 6.5Zm0 9c-1.93 0-3.5-1.57-3.5-3.5S10.07 8.5 12 8.5s3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5Z"/><path fill="#FBBC05" d="M16.5 15.5l3 3 1.5-1.5-3-3z"/><path fill="#EA4335" d="M18 12a6 6 0 1 1-12 0 6 6 0 0 1 12 0Z"/></svg>
+      </button>
+      <!-- Incognito -->
+      <button type="button" class="p-2">
+        <svg class="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+      </button>
+    </form>
+  </div>
 
   <script src="script.js"></script>
 </body>
-      </html>
+    </html>
