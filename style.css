@@ -1,34 +1,41 @@
-/* ========== BAOBAB IA-TECH STYLE.CSS v1.0 ========== */
+/* ========== BAOBAB IA-TECH STYLE.CSS v2.0 ========== */
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500&display=swap');
 
 :root {
   --blue: #2563EB;
-  --black: #000;
-  --bg-light: #FFFFFF;
-  --bg-dark: #111827;
-  --text-light: #111827;
-  --text-dark: #F9FAFB;
+  --blue-hover: #1D4ED8;
+  --black: #000000;
+  --gray-light: #F3F4F6;
+  --gray-border: #E5E7EB;
+  --text-gray: #6B7280;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   font-family: 'Inter', sans-serif;
-  background-color: var(--bg-light);
-  color: var(--text-light);
-  transition: background-color 0.3s, color 0.3s;
+  background-color: #FFFFFF;
+  color: #111827;
+  margin: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .font-sora { 
   font-family: 'Sora', sans-serif; 
 }
 
-/* LOGO BADGE */
+/* LOGO BADGE BLEU + NOIR */
 .bs-badge { 
   background: linear-gradient(135deg, var(--black) 50%, var(--blue) 50%); 
+  flex-shrink: 0;
 }
 
 /* SYSTEME DE PAGES */
 .page { 
   display: none; 
+  width: 100%;
 }
 .page.active { 
   display: flex; 
@@ -41,28 +48,30 @@ body {
   font-weight: 600; 
 }
 
-/* INPUT RECHERCHE */
-.search-input {
-  transition: box-shadow 0.2s;
-}
-.search-input:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+/* INPUT RECHERCHE HOVER */
+form:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 /* BOUTONS */
-.btn-primary {
-  background-color: var(--blue);
-  color: white;
-  transition: background-color 0.2s;
-}
-.btn-primary:hover {
-  background-color: #1D4ED8;
+button {
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-/* ========== DARK MODE ========== */
+button.bg-blue-600:hover {
+  background-color: var(--blue-hover);
+}
+
+/* LIENS */
+a {
+  transition: color 0.2s ease;
+}
+
+/* ========== DARK MODE COMPLET ========== */
 html.dark body {
-  background-color: var(--bg-dark);
-  color: var(--text-dark);
+  background-color: #111827;
+  color: #F9FAFB;
 }
 
 html.dark .bg-white {
@@ -70,24 +79,42 @@ html.dark .bg-white {
 }
 
 html.dark .bg-gray-100, 
-html.dark .bg-gray-50 {
+html.dark .bg-gray-50,
+html.dark .bg-gray-800 {
   background-color: #1F2937 !important;
 }
 
 html.dark .text-gray-500,
 html.dark .text-gray-600,
-html.dark .text-gray-700 {
-  color: #9CA3AF !important;
+html.dark .text-gray-700,
+html.dark .text-gray-900,
+html.dark .text-black {
+  color: #D1D5DB !important;
 }
 
 html.dark .border,
 html.dark .border-gray-200,
-html.dark .border-gray-300 {
+html.dark .border-gray-300,
+html.dark .border-gray-700,
+html.dark .border-gray-800 {
   border-color: #374151 !important;
 }
 
 html.dark .bg-blue-50 {
-  background-color: rgba(37, 99, 235, 0.1) !important;
+  background-color: rgba(37, 99, 235, 0.15) !important;
+}
+
+html.dark .text-blue-800 {
+  color: #93C5FD !important;
+}
+
+html.dark .text-green-700 {
+  color: #4ADE80 !important;
+}
+
+/* CHECKBOX ET RADIO BLEU */
+.accent-blue-600 {
+  accent-color: var(--blue);
 }
 
 /* RESPONSIVE MOBILE */
@@ -95,4 +122,29 @@ html.dark .bg-blue-50 {
   .font-sora.text-7xl {
     font-size: 3.5rem;
   }
-    }
+  .font-sora.text-6xl {
+    font-size: 3rem;
+  }
+  header {
+    padding: 0 12px !important;
+  }
+  .page {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
+/* SCROLLBAR PROPRE */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--gray-light);
+}
+html.dark ::-webkit-scrollbar-track {
+  background: #1F2937;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--blue);
+  border-radius: 4px;
+                             }
