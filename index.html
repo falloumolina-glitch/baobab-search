@@ -3,131 +3,59 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Baobab Search - L'IA de la connaissance</title>
+  <title>Baobab Search</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Sora:wght@700&display=swap" rel="stylesheet">
   <style>
-   .font-sora { font-family: 'Sora', sans-serif; }
-   .font-inter { font-family: 'Inter', sans-serif; }
-  .bs-badge { background: linear-gradient(180deg, #10B981 33%, #FBBF24 33% 66%, #EF4444 66%); }
-  .active-filter { border-bottom: 2px solid #065F46; color: #065F46; font-weight: 600; }
+    body { font-family: 'Inter', sans-serif; }
+   .logo { font-family: 'Sora', sans-serif; }
+   .bs-badge { background: linear-gradient(180deg, #10B981 33%, #FBBF24 33% 66%, #EF4444 66%); }
   </style>
 </head>
-<body class="font-inter bg-white text-gray-900">
+<body class="bg-white min-h-screen flex-col justify-between">
 
-  <!-- ========== HEADER ========== -->
-  <header id="header" class="w-full h-16 flex items-center justify-between px-6 fixed top-0 bg-white z-50 border-b hidden">
-    <div class="flex items-center gap-2">
-      <a href="#" onclick="showHome()" class="font-sora text-xl font-bold">Baobab<span class="text-green-700">.</span></a>
-    </div>
-    <div class="flex items-center gap-4 text-sm">
-      <a href="#" class="hover:underline">Images</a>
-      <button>☰</button>
-      <div class="bs-badge w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs">BS</div>
-    </div>
+  <!-- HEADER -->
+  <header class="w-full flex justify-end p-4 text-sm">
+    <a href="#" class="text-gray-600 hover:underline mr-6">Images</a>
+    <a href="#" class="text-gray-600 hover:underline">Gmail</a>
   </header>
 
-  <!-- ========== PAGE ACCUEIL ========== -->
-  <section id="homePage" class="min-h-screen flex-col items-center justify-center pt-32 px-4">
-    <h1 class="font-sora text-7xl md:text-8xl font-bold">Baobab</h1>
-    <p class="text-gray-500 mt-2 mb-12">L'IA de la connaissance</p>
+  <!-- MAIN -->
+  <main class="flex-col items-center justify-center -mt-16 px-4">
 
-    <!-- Barre de recherche -->
-    <div class="w-[584px] max-w-[95%] mx-auto h-12 bg-white border border-gray-300 rounded-full shadow-sm hover:shadow-md flex items-center px-5 transition">
+    <!-- LOGO -->
+    <h1 class="logo text-6xl md:text-7xl font-bold text-gray-900">Baobab</h1>
+    <p class="text-gray-500 mt-1 mb-8 text-base">L'IA de la connaissance</p>
+
+    <!-- BARRE DE RECHERCHE CORRIGEE -->
+    <div class="w-[580px] max-w-[90%] h-14 bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md flex items-center px-5 transition-all">
+      <!-- Badge BS -->
       <div class="bs-badge w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs mr-3">BS</div>
-      <input id="searchInputHome" type="text" placeholder="Recher sur Baobab..." class="w-full outline-none bg-transparent">
-      <button onclick="showResults()">🔍</button>
+
+      <!-- Input -->
+      <input type="text" placeholder="Recher sur Baobab..." class="w-full outline-none bg-transparent text-base">
+
+      <!-- Loupe -->
+      <button class="text-gray-400 hover:text-green-700">🔍</button>
     </div>
 
-    <!-- Boutons -->
+    <!-- BOUTONS CORRIGES -->
     <div class="mt-8 flex gap-3">
-      <button onclick="showResults()" class="bg-gray-100 hover:shadow px-4 py-2 rounded">Baobab Search</button>
-      <button onclick="showResults()" class="bg-gray-100 hover:shadow px-4 py-2 rounded">J'ai de la chance</button>
+      <button class="bg-gray-100 hover:bg-gray-200 px-5 py-2 rounded text-sm font-medium transition">Baobab Search</button>
+      <button class="bg-gray-100 hover:bg-gray-200 px-5 py-2 rounded text-sm font-medium transition">J'ai de la chance</button>
     </div>
+  </main>
 
-    <!-- Footer Accueil -->
-    <footer class="absolute bottom-0 w-full bg-gray-100">
-      <div class="px-8 py-3 border-b text-sm text-gray-600">Sénégal</div>
-      <div class="px-8 py-3 flex justify-between text-sm text-gray-600">
-        <div class="flex gap-6"><a href="#">À propos</a><a href="#">Publicité</a></div>
-        <div class="flex gap-6"><a href="#">Confidentialité</a><a href="#">Conditions</a></div>
-      </div>
-    </footer>
-  </section>
-
-  <!-- ========== PAGE RESULTATS ========== -->
-  <section id="resultsPage" class="pt-20 px-4 hidden">
-    <!-- Barre de recherche en haut -->
-    <div class="max-w-7xl mx-auto px-10">
-      <div class="w-[692px] h-12 bg-white border-gray-300 rounded-full shadow-sm flex items-center px-5">
-        <div class="bs-badge w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs mr-3">BS</div>
-        <input id="searchInputResults" type="text" class="w-full outline-none bg-transparent">
-        <button>🔍</button>
-      </div>
+  <!-- FOOTER CORRIGE -->
+  <footer class="w-full bg-gray-100 mt-auto">
+    <div class="px-8 py-3 border-b border-gray-200 text-sm text-gray-600">Sénégal</div>
+    <div class="px-8 py-3 flex-wrap gap-x-6 gap-y-2 text-sm text-gray-600">
+      <a href="#" class="hover:underline">À propos</a>
+      <a href="#" class="hover:underline">Publicité</a>
+      <a href="#" class="hover:underline">Confidentialité</a>
+      <a href="#" class="hover:underline">Conditions</a>
     </div>
-
-    <!-- Filtres -->
-    <nav class="max-w-7xl mx-auto px-10 mt-4 border-b flex gap-6 text-sm text-gray-600">
-      <a class="active-filter pb-3">Tous</a>
-      <a class="pb-3 hover:text-green-700">Images</a>
-      <a class="pb-3 hover:text-green-700">Actualités</a>
-      <a class="pb-3 hover:text-green-700">Vidéos</a>
-      <a class="pb-3 hover:text-green-700">Maps</a>
-      <a class="pb-3 hover:text-green-700">Outils</a>
-    </nav>
-
-    <!-- Contenu 2 colonnes -->
-    <div class="max-w-7xl mx-auto px-10 flex gap-12 mt-6">
-      <!-- Colonne Gauche -->
-      <div class="w-[650px]">
-        <p class="text-sm text-gray-600">Environ 1 230 000 résultats (0.38 s)</p>
-
-        <!-- Résultat 1 -->
-        <div class="mt-6">
-          <div class="text-sm text-green-800">baobab.sn</div>
-          <a class="text-xl text-blue-700 hover:underline">Baobab Search - L'IA de la connaissance</a>
-          <p class="text-sm text-gray-700 mt-1">Le premier moteur de recherche intelligent d'Afrique. Trouve, grandis, comme un Baobab. Recherche rapide, privée et sans pub.</p>
-        </div>
-
-        <!-- Résultat 2 -->
-        <div class="mt-6">
-          <div class="text-sm text-green-800">wikipedia.org > Baobab</div>
-          <a class="text-xl text-blue-700 hover:underline">Baobab - Wikipédia</a>
-          <p class="text-sm text-gray-700 mt-1">Le baobab est un arbre emblématique d'Afrique, symbole de sagesse et de longévité. Il peut vivre plus de 1000 ans...</p>
-        </div>
-      </div>
-
-      <!-- Colonne Droite Knowledge Graph -->
-      <div class="w-[350px] border rounded-lg p-4 h-fit">
-        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400" class="rounded-lg mb-3">
-        <h3 class="font-sora font-bold text-2xl">Baobab</h3>
-        <p class="text-sm text-gray-600">Arbre</p>
-        <p class="text-sm mt-2">Le baobab, aussi appelé "arbre à l'envers", est un genre d'arbres de la famille des Malvacées.</p>
-      </div>
-    </div>
-
-    <!-- Footer Résultats -->
-    <footer class="bg-gray-100 mt-20">
-      <div class="px-10 py-3 text-sm text-gray-600">Richard Toll, Saint-Louis</div>
-    </footer>
-  </section>
-
-  <!-- ========== SCRIPT ========== -->
-  <script>
-    function showResults() {
-      document.getElementById('homePage').classList.add('hidden');
-      document.getElementById('resultsPage').classList.remove('hidden');
-      document.getElementById('header').classList.remove('hidden');
-      // Copie le texte de recherche
-      document.getElementById('searchInputResults').value = document.getElementById('searchInputHome').value;
-      window.scrollTo(0,0);
-    }
-    function showHome() {
-      document.getElementById('resultsPage').classList.add('hidden');
-      document.getElementById('header').classList.add('hidden');
-      document.getElementById('homePage').classList.remove('hidden');
-    }
-  </script>
+  </footer>
 
 </body>
-        </html>
+  </html>
