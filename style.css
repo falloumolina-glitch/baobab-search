@@ -1,26 +1,16 @@
-/* BAOBAB IA-TECH STYLE.CSS v3.0 */
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500&display=swap');
-:root { --blue: #2563EB; --blue-hover: #1D4ED8; --black: #000000; }
-body { font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s; }
+:root { --blue: #2563EB; --bg-glass: rgba(255, 255, 255, 0.75); }
+html.dark { --bg-glass: rgba(17, 24, 39, 0.75); }
+body { font-family: 'Inter', sans-serif; }
 .font-sora { font-family: 'Sora', sans-serif; }
-.bs-badge { background: linear-gradient(135deg, var(--black) 50%, var(--blue) 50%); flex-shrink: 0; }
-.page { display: none; width: 100%; }
+#header { backdrop-filter: blur(16px); background: var(--bg-glass); }
+.bs-badge { background: linear-gradient(135deg, #2563EB 0%, #1E3A8A 100%); box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3); transition: transform 0.3s; }
+.bs-badge:hover { transform: scale(1.1) rotate(8deg); }
+.form-focus { box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15), 0 12px 30px rgba(0,0,0,0.12); border-color: var(--blue); }
+button, a, select { transition: all 0.2s ease; }
+button:hover { transform: translateY(-2px); }
+.page { display: none; animation: fadeIn 0.5s ease; }
 .page.active { display: flex; }
-.active-filter { border-bottom: 2px solid var(--blue); color: var(--blue); font-weight: 600; }
-button, a { cursor: pointer; transition: all 0.2s ease; }
-select { cursor: pointer; }
-
-/* DARK MODE */
-html.dark body { background-color: #111827; color: #F9FAFB; }
-html.dark.bg-white, html.dark.bg-gray-100, html.dark.bg-gray-50, html.dark.bg-gray-800 { background-color: #1F2937!important; }
-html.dark.text-gray-500, html.dark.text-gray-600, html.dark.text-gray-700, html.dark.text-gray-900, html.dark.text-black { color: #D1D5DB!important; }
-html.dark.border, html.dark.border-gray-200, html.dark.border-gray-300, html.dark.border-gray-700, html.dark.border-gray-800 { border-color: #374151!important; }
-html.dark.bg-blue-50 { background-color: rgba(37, 99, 235, 0.15)!important; }
-html.dark.text-blue-800 { color: #93C5FD!important; }
-html.dark.text-green-700 { color: #4ADE80!important; }
-.accent-blue-600 { accent-color: var(--blue); }
-
-@media (max-width: 768px) {
- .font-sora.text-7xl { font-size: 3.5rem; }
- .font-sora.text-6xl { font-size: 3rem; }
-  }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+.active-filter { color: var(--blue); border-bottom: 3px solid var(--blue); font-weight: 600; }
+.border { transition: all 0.3s ease; }
+.border:hover { box-shadow: 0 12px 28px rgba(0,0,0,0.08); transform: translateY(-3px); }
