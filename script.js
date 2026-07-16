@@ -1,54 +1,149 @@
-const API_KEY = "COLLE_TA_CLE_ICI";
-const CX = "COLLE_TON_CX_ICI";
+const translations = {
+  fr: { all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", my_photos: "Mes Photos", my_docs: "Mes Documents", about: "À propos", terms: "Conditions", privacy: "Confidentialité", settings_title: "Paramètres", lang_region: "Langue & Région", appearance: "Apparence", light_theme: "Thème Clair", dark_theme: "Thème Sombre", save: "Enregistrer", saved: "✓ Paramètres enregistrés!", back: "← Retour", search_placeholder: "Recher sur Baobab...", ai_title: "✨ Résumé IA par Baobab", ai_summary: "Résumé IA", new_tab: "Nouvel onglet", about_title: "À propos de Baobab Search" },
+  en: { all: "All", images: "Images", videos: "Videos", news: "News", my_photos: "My Photos", my_docs: "My Documents", about: "About", terms: "Terms", privacy: "Privacy", settings_title: "Settings", lang_region: "Language & Region", appearance: "Appearance", light_theme: "Light Theme", dark_theme: "Dark Theme", save: "Save", saved: "✓ Settings saved!", back: "← Back", search_placeholder: "Search on Baobab...", ai_title: "✨ AI Summary by Baobab", ai_summary: "AI Summary", new_tab: "New tab", about_title: "About Baobab Search" },
+  wo: { all: "Lépp", images: "Nataal", videos: "Video", news: "Lëndëm", my_photos: "Nataal yi ma", my_docs: "Liggeey yi ma", about: "Ci Baobab", terms: "Yoon yi", privacy: "Sutura", settings_title: "Jëfandikoo", lang_region: "Làkk ak Dëkku", appearance: "Nataal", light_theme: "Leer", dark_theme: "Guddi", save: "Denc", saved: "✓ Denc na!", back: "← Dellu", search_placeholder: "Laaj Baobab...", ai_title: "✨ Résumé AI", ai_summary: "Résumé AI", new_tab: "Fenetra bes", about_title: "Ci Baobab Search" }
+};
+
+const trends = [
+  {q: "angleterre - argentine", n: "20 000+"},
+  {q: "météo demain", n: "20 000+"},
+  {q: "messi", n: "500+"}
+];
+
+let recognition;
 let currentTab = 'all';
 
-function showPage(pageId) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(pageId).classList.add('active');
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('-translate-x-full');
+  document.getElementById('sidebarOverlay').classList.toggle('hidden');
 }
 
-function searchQuick(q) {
-  document.getElementById('searchInput').value = q;
-  search();
+function uploadFile(type) {
+  const input = document.getElementById('fileInput');
+  input.accept = type === 'image'? 'image/*' : '*/*';
+  input.click();
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if(file) alert(`${type === 'image'? 'Photo' : 'Document'} sélectionné: ${file.name}`);
+  }
 }
 
-function submitSearch() {
-  search();
+function takePhoto() {
+  const input = document.getElementById('fileInput');
+  input.accept = 'image/*';
+  input.capture = 'environment';
+  input.click();
 }
 
-function search(e) {
-  if(e) e.preventDefault();
-  const q = document.getElementById('searchInput').value;
-  if(!q.trim()) return;
-  showPage('resultsPage');
-  document.getElementById('loading').classList.remove('hidden');
-  setTimeout(() => {
-    document.getElementById('loading').classList.add('hidden');
-    document.getElementById('aiText').innerText = `Baobab IA a analysé "${q}" et voici le résumé intelligent...`;
-    document.getElementById('resultCount').innerText = `Environ 1,240,000 résultats`;
-    document.getElementById('resultsList').innerHTML = `<div><a href="#" class="text-blue-600 text-lg font-medium">${q} - Résultat Baobab</a><p class="text-sm">Ceci est un résultat unique généré par Baobab IA</p></div>`;
-  }, 800);
+function startVoice() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) return alert('Voix non supportée');
+  recognition = new SpeechRecognition();
+  recognition.lang = getSettings().language === 'wo'? 'fr-FR' : getSettings().language + '-FR';
+  recognition.onstart = () => document.getElementById('micIcon').classList.add('text-red-500', 'animate-pulse');
+  recognition.onresult = (event) => {
+    document.getElementById('searchInput').value = event.results[0][0].transcript;
+    search();
+  };
+  recognition.onend = () => document.getElementById('micIcon').classList.remove('text-red-500', 'animate-pulse');
+  recognition.start();
 }
 
 function switchTab(tab) {
   currentTab = tab;
   document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.classList.remove('border-baobab-orange', 'text-baobab-orange', 'font-bold');
+    btn.classList.remove('border-blue-600', 'text-blue-600', 'font-semibold');
     btn.classList.add('border-transparent', 'text-gray-500');
   });
-  document.getElementById(`tab-${tab}`).classList.add('border-baobab-orange', 'text-baobab-orange', 'font-bold');
+  const activeBtn = document.getElementById(`tab-${tab}`);
+  activeBtn.classList.add('border-blue-600', 'text-blue-600', 'font-semibold');
+  activeBtn.classList.remove('border-transparent', 'text-gray-500');
+  search(); // Relance la recherche avec le nouvel onglet
 }
 
-function startVoice() { 
-  document.getElementById('micIcon').classList.add('text-baobab-orange');
-  setTimeout(() => document.getElementById('micIcon').classList.remove('text-baobab-orange'), 2000);
+function changeLanguage(lang) {
+  localStorage.setItem('language', lang);
+  document.querySelectorAll('[data-lang]').forEach(el => {
+    const key = el.getAttribute('data-lang');
+    if(translations[key]) el.innerText = translations[key];
+  });
+  document.querySelectorAll('[data-lang-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-lang-placeholder');
+    if(translations[key]) el.placeholder = translations[key];
+  });
 }
 
-function playVideo() { alert('Lecture vidéo Baobab'); }
-function likeVideo(btn) { btn.innerText = btn.innerText === '♡' ? '♥' : '♡'; }
-function shareVideo() { navigator.share ? navigator.share({title: 'Baobab'}) : alert('Lien copié'); }
-function moreOptions() { alert('Options Baobab'); }
-function showHistory() { alert('Historique Baobab ouvert'); }
-function clearCookies() { localStorage.clear(); alert('Données Baobab supprimées'); }
-function saveSettings() { localStorage.setItem('safe', document.getElementById('safeToggle').checked); }
-function changeLanguage(l) { document.getElementById('currentLang').innerText = l === 'fr' ? 'Français' : 'English'; }
+function loadTrends() {
+  const list = document.getElementById('trendsList');
+  list.innerHTML = trends.map(t => `
+    <div onclick="quickSearch('${t.q}')" class="flex items-center justify-between p-3 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg cursor-pointer">
+      <div class="flex items-center gap-4">
+        <svg class="w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+        <span>${t.q}</span>
+      </div>
+      <span class="text-sm text-gray-500">${t.n}</span>
+    </div>
+  `).join('');
+}
+
+function showPage(pageId) {
+  document.getElementById('sidebar').classList.add('-translate-x-full');
+  document.getElementById('sidebarOverlay').classList.add('hidden');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  if(pageId === 'settingsPage') loadSettingsUI();
+}
+
+function getSettings() {
+  return {
+    aiSummary: localStorage.getItem('aiSummary')!== 'false',
+    openNewTab: localStorage.getItem('openNewTab')!== 'false',
+    theme: localStorage.getItem('theme') || 'light',
+    language: localStorage.getItem('language') || 'fr'
+  };
+}
+
+function loadSettingsUI() {
+  const s = getSettings();
+  document.getElementById('aiSummaryToggle').checked = s.aiSummary;
+  document.getElementById('openNewTab').checked = s.openNewTab;
+  document.getElementById('language').value = s.language;
+  document.querySelector(`input[name="theme"][value="${s.theme}"]`).checked = true;
+}
+
+function quickSearch(query) {
+  document.getElementById('searchInput').value = query;
+  search();
+}
+
+function search(e) {
+  if(e) e.preventDefault();
+  const s = getSettings();
+  const q = document.getElementById('searchInput').value;
+  if(!q.trim()) return;
+  showPage('resultsPage');
+  document.getElementById('aiSummary').style.display = s.aiSummary? 'block' : 'none';
+  document.getElementById('aiText').innerText = `Résumé IA pour: ${q}`;
+  document.getElementById('resultCount').innerText = `Résultats "${currentTab}" pour: ${q}`;
+}
+
+function saveSettings() {
+  localStorage.setItem('aiSummary', document.getElementById('aiSummaryToggle').checked);
+  localStorage.setItem('openNewTab', document.getElementById('openNewTab').checked);
+  localStorage.setItem('theme', document.querySelector('input[name="theme"]:checked').value);
+  applyTheme(document.querySelector('input[name="theme"]:checked').value);
+  document.getElementById('saveMsg').classList.remove('hidden');
+  setTimeout(() => document.getElementById('saveMsg').classList.add('hidden'), 2000);
+}
+
+function applyTheme(t) {
+  if(t === 'dark') document.documentElement.classList.add('dark');
+  else document.documentElement.classList.remove('dark');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadTrends();
+  const s = getSettings();
+  changeLanguage(s.language);
+  applyTheme(s.theme);
+});
