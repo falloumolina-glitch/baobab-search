@@ -1,197 +1,117 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="light">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baobab Search - L'IA de la connaissance</title>
+  <meta name="description" content="Baobab Search 2026, le moteur de recherche intelligent et élégant">
 
-<title>Baobab Search - Moteur de recherche</title>
-
-<meta name="description" content="Baobab Search, le moteur de recherche simple et élégant">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-
-<script src="https://cdn.tailwindcss.com"></script>
-
-<style>
-body {
-    font-family: 'Inter', sans-serif;
-}
-
-.logo-font {
-    font-family: 'Playfair Display', serif;
-}
-
-.bs-badge {
-    background: linear-gradient(to bottom, #10B981 33%, #FBBF24 33% 66%, #EF4444 66%);
-}
-
-.search-bar:focus-within {
-    box-shadow: 0 0 0 3px rgba(16,185,129,0.2);
-    border-color:#10B981;
-}
-</style>
-
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sora: ['Sora', 'sans-serif'], inter: ['Inter', 'sans-serif'] },
+          colors: { baobab: '#065F46' }
+        }
+      }
+    }
+  </script>
+  <style>
+  .glass { backdrop-filter: blur(16px); background: rgba(255,255,255,0.7); }
+   .dark.glass { background: rgba(17,24,39,0.7); }
+  .bs-badge { background: linear-gradient(180deg, #10B981 33%, #FBBF24 33% 66%, #EF4444 66%); }
+  .glow:focus-within { box-shadow: 0 0 40px rgba(16, 185, 129, 0.25); }
+  </style>
 </head>
-
-
-<body class="bg-white text-gray-900 min-h-screen flex flex-col items-center justify-center px-4">
-
-
-<header class="absolute top-0 w-full flex justify-between p-6 text-sm text-gray-600">
-
-<div class="flex gap-6">
-<a href="#">À propos</a>
-<a href="#">Images</a>
-</div>
-
-<div class="flex gap-6">
-<a href="#">Connexion</a>
-</div>
-
-</header>
-
-
-
-<main class="flex flex-col items-center w-full">
-
-
-<h1 class="logo-font text-7xl md:text-8xl text-gray-900 mb-2">
-Baobab
-</h1>
-
-<p class="text-gray-500 mb-12 tracking-[0.3em] text-sm">
-SEARCH
-</p>
-
-
-
-<div class="search-bar w-[600px] max-w-[90%] h-16 border rounded-[32px] shadow-lg flex items-center px-6">
-
-<div class="bs-badge w-9 h-9 rounded-full flex items-center justify-center text-white font-bold mr-4">
-BS
-</div>
-
-
-<input id="searchInput"
-type="text"
-placeholder="Rechercher sur Baobab..."
-class="w-full outline-none text-lg"
->
-
-
-</div>
-
-
-
-<div class="mt-8 flex gap-4">
-
-
-<button onclick="search()"
-class="bg-green-700 text-white px-6 py-3 rounded-full">
-Rechercher
-</button>
-
-
-<button class="bg-gray-100 px-6 py-3 rounded-full">
-J'ai de la chance
-</button>
-
-
-</div>
-
-
-<div id="results" class="mt-8 w-[600px] max-w-[90%]"></div>
-
-
-</main>
-
-
-
-
-<footer class="absolute bottom-0 w-full bg-gray-50 border-t">
-
-<div class="px-8 py-4 flex justify-between text-sm text-gray-600">
-
-<p>© 2026 Baobab Search</p>
-
-<p>Confidentialité</p>
-
-</div>
-
-</footer>
-
-
-
-
-<script>
-
-const data = [
-{
-titre:"CV professionnel",
-description:"Créer un CV moderne et efficace",
-mots:"cv emploi travail"
-},
-
-{
-titre:"Formation informatique",
-description:"Apprendre le développement web",
-mots:"formation code programmation"
-},
-
-{
-titre:"Baobab Search",
-description:"Le moteur de recherche en développement",
-mots:"baobab search"
-}
-
-];
-
-
-function search(){
-
-let query=document.getElementById("searchInput").value.toLowerCase();
-
-let results=document.getElementById("results");
-
-
-let found=data.filter(item =>
-item.mots.includes(query)
-);
-
-
-
-if(found.length){
-
-results.innerHTML=found.map(item=>`
-
-<div class="bg-gray-100 p-4 rounded-xl mb-3">
-
-<h2 class="font-bold text-green-700">
-${item.titre}
-</h2>
-
-<p>${item.description}</p>
-
-</div>
-
-`).join("");
-
-}
-
-else{
-
-results.innerHTML="Aucun résultat trouvé";
-
-}
-
-
-}
-
-</script>
-
-
+<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-white font-inter transition-colors duration-300">
+
+  <!-- Header -->
+  <header class="fixed top-0 w-full glass border-b border-gray-200 dark:border-gray-800 z-50">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="#" class="font-sora font-bold text-xl">Baobab<span class="text-baobab">.</span></a>
+      <nav class="hidden md:flex gap-6 text-sm">
+        <a href="#" class="hover:text-baobab">Découvrir</a>
+        <a href="#" class="hover:text-baobab">AI</a>
+        <a href="#" class="hover:text-baobab">Pro</a>
+      </nav>
+      <div class="flex items-center gap-4">
+        <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800">🌙</button>
+        <button class="bg-baobab text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-green-800">Connexion</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <main class="min-h-screen flex-col items-center justify-center pt-32 px-4">
+
+    <!-- Logo + Titre -->
+    <div class="text-center mb-12 animate-fade-in">
+      <h1 class="font-sora font-bold text-6xl md:text-8xl tracking-tight">Baobab</h1>
+      <p class="text-gray-500 dark:text-gray-400 mt-2">L'IA de la connaissance</p>
+    </div>
+
+    <!-- Barre de recherche Pro -->
+    <div class="glow w-[700px] max-w-[95%] mx-auto">
+      <div class="h-16 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded- shadow-2xl flex items-center px-5 transition-all duration-300">
+        <!-- Badge BS -->
+        <div class="bs-badge w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm mr-4 flex-shrink-0">BS</div>
+
+        <!-- Input -->
+        <input id="search" type="text" placeholder="Pose ta question à Baobab..." class="w-full outline-none text-lg bg-transparent placeholder-gray-400">
+
+        <!-- Boutons droite -->
+        <div class="flex gap-2">
+          <button>🎤</button>
+          <button>🔍</button>
+        </div>
+      </div>
+
+      <!-- Suggestions IA -->
+      <div id="suggestions" class="mt-3 p-4 glass rounded-2xl shadow-lg hidden">
+        <p class="text-sm text-gray-500">Suggestions IA :</p>
+        <div class="mt-2 space-y-1 text-sm">
+          <a href="#" class="block hover:text-baobab">actualité technologie Sénégal</a>
+          <a href="#" class="block hover:text-baobab">comment créer un moteur de recherche</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Raccourcis + Tendances -->
+    <div class="mt-10 flex-wrap justify-center gap-3">
+      <button class="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-full text-sm hover:bg-baobab hover:text-white transition">⚡ Actualités</button>
+      <button class="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-full text-sm hover:bg-baobab hover:text-white transition">📊 Finance</button>
+      <button class="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-full text-sm hover:bg-baobab hover:text-white transition">🎓 Apprendre</button>
+      <button class="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-full text-sm hover:bg-baobab hover:text-white transition">🖼️ Images</button>
+    </div>
+
+    <!-- Boutons principaux -->
+    <div class="mt-8 flex gap-4">
+      <button class="bg-baobab text-white px-8 py-3 rounded-full font-semibold hover:scale-105 transition">Recher</button>
+      <button class="border border-gray-300 dark:border-gray-700 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 dark:hover:bg-gray-800 transition">Explorer avec AI</button>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-gray-200 dark:border-gray-800 mt-20">
+    <div class="max-w-7xl mx-auto px-6 py-8 text-center text-sm text-gray-500">
+      © 2026 Baobab Search. Fait avec ❤️ à Dakar.
+    </div>
+  </footer>
+
+  <script>
+    // Dark Mode Toggle
+    const toggle = document.getElementById('theme-toggle');
+    toggle.onclick = () => document.documentElement.classList.toggle('dark');
+
+    // Fake suggestions
+    const search = document.getElementById('search');
+    const suggestions = document.getElementById('suggestions');
+    search.onfocus = () => suggestions.classList.remove('hidden');
+    search.onblur = () => setTimeout(() => suggestions.classList.add('hidden'), 200);
+  </script>
 </body>
-    </html>
+        </html>
