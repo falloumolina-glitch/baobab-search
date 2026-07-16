@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Baobab</title>
+  <title>Baobab IA</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>tailwind.config = { darkMode: 'class' }</script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { colors: { 'baobab-orange': '#FF6B00' } } } }</script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-inter pb-20">
+<body class="bg-white dark:bg-[#0A0A0A] text-[#0A0A0A] dark:text-white font-inter pb-24">
 
-  <!-- HEADER HOME -->
-  <header id="homeHeader" class="w-full px-4 pt-3 flex items-center justify-between">
+  <!-- HEADER -->
+  <header class="w-full px-4 pt-3 flex items-center justify-between">
     <div class="flex items-center gap-2">
       <span>☁️</span>
       <span id="weatherTemp" class="font-semibold">34°C</span>
@@ -23,46 +23,46 @@
   </header>
 
   <!-- PAGE HOME -->
-  <section id="homePage" class="page active px-4 pt-8">
-    <!-- LOGO -->
-    <div class="text-center mb-8">
-      <h1 class="font-sora text-5xl font-bold">
-        <span class="text-blue-600">B</span><span class="text-red-500">a</span><span class="text-yellow-500">o</span><span class="text-blue-600">b</span><span class="text-green-600">a</span><span class="text-red-500">b</span>
+  <section id="homePage" class="page active px-4 pt-6">
+    <!-- LOGO BAOBAB UNIQUE -->
+    <div class="text-center mb-6">
+      <h1 class="font-sora text-5xl font-extrabold">
+        <span class="text-blue-600">B</span><span class="text-baobab-orange">a</span><span class="text-yellow-500">o</span><span class="text-blue-600">b</span><span class="text-green-600">a</span><span class="text-red-500">b</span>
       </h1>
     </div>
 
-    <!-- CARTE VIDEO -->
-    <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-md border dark:border-gray-800 p-3 mb-6">
+    <!-- CARTE VIDEO BAOBAB -->
+    <div class="bg-gray-50 dark:bg-gray-900 rounded-2xl shadow-sm border-gray-200 dark:border-gray-800 p-3 mb-6">
       <div class="relative">
         <div class="w-full h-48 bg-gray-300 dark:bg-gray-800 rounded-xl flex items-center justify-center">
-          <button class="w-16 h-16 bg-black/60 rounded-full flex items-center justify-center">
+          <button onclick="playVideo()" class="w-16 h-16 bg-black/70 hover:bg-baobab-orange transition rounded-full flex items-center justify-center">
             <svg class="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
           </button>
         </div>
-        <span class="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-0.5 rounded">2:48</span>
+        <span class="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-0.5 rounded-lg">2:48</span>
       </div>
-      <h3 class="font-semibold mt-3 text-base">MAYDAY Bande Annonce VF (2026) Ryan Reynolds</h3>
+      <h3 class="font-bold mt-3 text-base">MAYDAY Bande Annonce VF (2026) Ryan Reynolds</h3>
       <div class="flex items-center justify-between mt-2">
         <div class="flex items-center gap-2">
-          <div class="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs">A</div>
+          <div class="w-6 h-6 bg-baobab-orange rounded-full flex items-center justify-center text-white text-xs font-bold">A</div>
           <div>
-            <p class="text-sm">Allociné | Trailers</p>
-            <p class="text-xs text-gray-500">YouTube - 1d</p>
+            <p class="text-sm font-medium">Allociné | Trailers</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">YouTube - 1d</p>
           </div>
         </div>
         <div class="flex gap-4">
-          <button onclick="likeVideo()">♡</button>
+          <button onclick="likeVideo(this)">♡</button>
           <button onclick="shareVideo()">↗</button>
-          <button>⋮</button>
+          <button onclick="moreOptions()">⋮</button>
         </div>
       </div>
     </div>
 
-    <!-- RECHERCHES RECENTES -->
+    <!-- RECHERCHES RECENTES BAOBAB -->
     <div class="flex gap-2 overflow-x-auto pb-2">
-      <button onclick="searchQuick('planete eleve 2.0')" class="bg-gray-100 dark:bg-gray-800 px-4 py-2 rounded-full text-sm whitespace-nowrap">planete eleve 2.0</button>
-      <button onclick="searchQuick('github')" class="bg-gray-100 dark:bg-gray-800 px-4 py-2 rounded-full text-sm whitespace-nowrap">github</button>
-      <button onclick="searchQuick('portail bac')" class="bg-gray-100 dark:bg-gray-800 px-4 py-2 rounded-full text-sm whitespace-nowrap">portail bac</button>
+      <button onclick="searchQuick('planete eleve 2.0')" class="bg-gray-100 dark:bg-gray-900 hover:bg-baobab-orange hover:text-white transition px-4 py-2 rounded-full text-sm whitespace-nowrap font-medium">planete eleve 2.0</button>
+      <button onclick="searchQuick('github')" class="bg-gray-100 dark:bg-gray-900 hover:bg-baobab-orange hover:text-white transition px-4 py-2 rounded-full text-sm whitespace-nowrap font-medium">github</button>
+      <button onclick="searchQuick('portail bac')" class="bg-gray-100 dark:bg-gray-900 hover:bg-baobab-orange hover:text-white transition px-4 py-2 rounded-full text-sm whitespace-nowrap font-medium">portail bac</button>
     </div>
   </section>
 
@@ -70,16 +70,16 @@
   <section id="resultsPage" class="page px-0 pt-4">
     <div class="border-b dark:border-gray-800 px-4">
       <div class="flex gap-6 overflow-x-auto">
-        <button onclick="switchTab('all')" id="tab-all" class="tab-btn pb-3 border-b-2 border-blue-600 text-blue-600 font-semibold">Tous</button>
+        <button onclick="switchTab('all')" id="tab-all" class="tab-btn pb-3 border-b-2 border-baobab-orange text-baobab-orange font-bold">Tous</button>
         <button onclick="switchTab('images')" id="tab-images" class="tab-btn pb-3 border-b-2 border-transparent text-gray-500">Images</button>
         <button onclick="switchTab('videos')" id="tab-videos" class="tab-btn pb-3 border-b-2 border-transparent text-gray-500">Vidéos</button>
         <button onclick="switchTab('news')" id="tab-news" class="tab-btn pb-3 border-b-2 border-transparent text-gray-500">Actualités</button>
       </div>
     </div>
     <div class="px-4 pt-4">
-      <div id="loading" class="hidden text-center py-10"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div></div>
-      <div id="aiSummary" class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-l-4 border-blue-500 rounded-r-lg p-4 mb-4">
-        <p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-1">✨ Résumé IA par Baobab</p>
+      <div id="loading" class="hidden text-center py-10"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-baobab-orange mx-auto"></div></div>
+      <div id="aiSummary" class="bg-orange-50 dark:bg-orange-900/20 border-l-4 border-baobab-orange rounded-r-lg p-4 mb-4">
+        <p class="text-sm font-bold text-baobab-orange mb-1">✨ Résumé IA par Baobab</p>
         <p id="aiText" class="text-sm"></p>
       </div>
       <p id="resultCount" class="text-sm text-gray-500 mb-3"></p>
@@ -87,119 +87,68 @@
     </div>
   </section>
 
-  <!-- PAGE PARAMETRES COPIE GOOGLE GO -->
+  <!-- PAGE PARAMETRES BAOBAB -->
   <section id="settingsPage" class="page px-0 pt-4 pb-10">
     <div class="flex items-center px-4 mb-4">
       <button onclick="showPage('homePage')" class="p-2">←</button>
-      <h2 class="text-xl font-semibold ml-2">Paramètres</h2>
+      <h2 class="text-xl font-bold ml-2">Paramètres</h2>
     </div>
 
-    <!-- LANGUES -->
     <div class="px-4 py-3">
       <div class="flex justify-between items-center">
         <div>
-          <p class="font-medium">Langues</p>
-          <p class="text-sm text-gray-500">Français</p>
+          <p class="font-semibold">Langues</p>
+          <p class="text-sm text-gray-500" id="currentLang">Français</p>
         </div>
-        <span>›</span>
-      </div>
-      <div class="flex justify-between items-center mt-3">
-        <div>
-          <p class="font-medium">Deuxième langue</p>
-          <p class="text-sm text-gray-500">Aucune</p>
-        </div>
-        <span>›</span>
+        <select onchange="changeLanguage(this.value)" class="bg-transparent">
+          <option value="fr">FR</option><option value="en">EN</option><option value="wo">WO</option>
+        </select>
       </div>
     </div>
 
-    <!-- PARAMETRES ASSISTANT -->
     <div class="px-4 py-3">
-      <p class="text-blue-600 font-medium">Paramètres de l’Assistant</p>
+      <p class="text-baobab-orange font-bold mb-3">Compte</p>
+      <button onclick="showHistory()" class="w-full text-left py-3 hover:text-baobab-orange">Historique de recherche</button>
+      <button onclick="clearCookies()" class="w-full text-left py-3 hover:text-baobab-orange">Supprimer les données</button>
     </div>
 
-    <!-- COMPTE -->
     <div class="px-4 py-3">
-      <p class="text-blue-600 font-medium mb-3">Compte</p>
-      <button onclick="alert('Changer de compte')" class="w-full text-left py-2">Changer de compte</button>
-      <button onclick="showHistory()" class="w-full text-left py-2">Historique de recherche</button>
-      <button onclick="clearCookies()" class="w-full text-left py-2">Supprimer les cookies</button>
-    </div>
-
-    <!-- NOTIFICATIONS -->
-    <div class="px-4 py-3">
-      <p class="text-blue-600 font-medium mb-3">Notifications</p>
-      <label class="flex justify-between items-center py-2">
-        <span>Google Lens</span>
-        <input type="checkbox" checked class="toggle">
-      </label>
-      <label class="flex justify-between items-center py-2">
-        <span>Page chargée</span>
-        <input type="checkbox" checked class="toggle">
-      </label>
-      <label class="flex justify-between items-center py-2">
-        <span>Les résultats sont prêts</span>
-        <input type="checkbox" checked class="toggle">
+      <p class="text-baobab-orange font-bold mb-3">SafeSearch</p>
+      <label class="flex justify-between items-center py-3">
+        <span>Filtrer les résultats explicites</span>
+        <input type="checkbox" id="safeToggle" onchange="saveSettings()" class="w-12 h-6 accent-baobab-orange">
       </label>
     </div>
 
-    <!-- SAFESEARCH -->
     <div class="px-4 py-3">
-      <p class="text-blue-600 font-medium mb-3">SafeSearch</p>
-      <p class="text-sm text-gray-500 mb-2">Filtrer les résultats de recherche explicites</p>
-      <label class="flex justify-between items-center py-2">
-        <span>Filtrer</span>
-        <input type="checkbox" checked class="toggle">
-      </label>
-    </div>
-
-    <!-- A PROPOS -->
-    <div class="px-4 py-3">
-      <p class="text-blue-600 font-medium mb-3">À propos</p>
-      <button class="w-full text-left py-2">Aide</button>
-      <p class="py-2 text-sm">Version 1.0.0.release.baobab</p>
-      <button onclick="alert('Avis')" class="w-full text-left py-2">Envoyer un avis</button>
-      <button onclick="showPage('termsPage')" class="w-full text-left py-2">Conditions d'utilisation</button>
-      <button onclick="showPage('privacyPage')" class="w-full text-left py-2">Règles de confidentialité</button>
-    </div>
-
-    <!-- COMMENTAIRES -->
-    <div class="px-4 py-3">
-      <p class="text-blue-600 font-medium mb-3">Commentaires</p>
-      <button onclick="alert('Envoyer commentaire')" class="w-full text-left py-2">Envoyer des commentaires</button>
+      <p class="text-baobab-orange font-bold mb-3">À propos</p>
+      <button onclick="showPage('aboutPage')" class="w-full text-left py-3 hover:text-baobab-orange">À propos de Baobab</button>
+      <button onclick="showPage('termsPage')" class="w-full text-left py-3 hover:text-baobab-orange">Conditions</button>
+      <button onclick="showPage('privacyPage')" class="w-full text-left py-3 hover:text-baobab-orange">Confidentialité</button>
     </div>
   </section>
 
   <!-- PAGES LEGALES -->
-  <section id="termsPage" class="page px-4 pt-4 pb-10">
-    <button onclick="showPage('settingsPage')" class="mb-4">← Retour</button>
-    <h2 class="text-2xl font-bold mb-4">Conditions d'utilisation</h2>
-    <p>1. Baobab est un service gratuit...</p>
+  <section id="aboutPage" class="page px-4 pt-4 pb-10">
+    <button onclick="showPage('settingsPage')" class="mb-4 text-baobab-orange">← Retour</button>
+    <h2 class="text-2xl font-bold mb-4">À propos de Baobab</h2>
+    <p>Baobab est le moteur de recherche africain. Rapide, privé, intelligent.</p>
   </section>
 
-  <section id="privacyPage" class="page px-4 pt-4 pb-10">
-    <button onclick="showPage('settingsPage')" class="mb-4">← Retour</button>
-    <h2 class="text-2xl font-bold mb-4">Politique de confidentialité</h2>
-    <p>Votre vie privée est au cœur de nos priorités...</p>
-  </section>
-
-  <!-- BARRE DU BAS COPIE GOOGLE GO -->
-  <div class="fixed bottom-0 left-0 right-0 h-16 bg-white dark:bg-gray-900 border-t dark:border-gray-800 flex items-center px-3">
-    <form onsubmit="search(event)" class="flex-1 h-12 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center px-3">
+  <!-- BARRE DU BAS BAOBAB -->
+  <div class="fixed bottom-0 left-0 right-0 h-16 bg-white dark:bg-[#0A0A0A] border-t dark:border-gray-800 flex items-center px-3">
+    <form onsubmit="search(event)" class="flex-1 h-12 bg-gray-100 dark:bg-gray-900 rounded-full flex items-center px-3">
       <svg class="w-5 h-5 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
       <input id="searchInput" type="text" placeholder="Rechercher..." class="bg-transparent outline-none flex-1 font-medium">
       <button type="button" onclick="startVoice()" class="p-2">
         <svg id="micIcon" class="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/></svg>
       </button>
-      <button type="button" onclick="openCameraSearch()" class="p-2">
-        <svg class="w-5 h-5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#4285F4"/></svg>
-      </button>
-      <button type="button" onclick="toggleIncognito()" class="p-2">
-        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      <button type="button" onclick="submitSearch()" class="w-8 h-8 bg-baobab-orange rounded-full flex items-center justify-center ml-1">
+        <div class="w-3 h-3 bg-white rounded-full"></div>
       </button>
     </form>
   </div>
-  <input type="file" id="fileInput" accept="image/*" class="hidden">
 
   <script src="script.js"></script>
 </body>
-                                                                                   </html>
+  </html>
