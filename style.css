@@ -1,7 +1,7 @@
 body { font-family: 'Inter', sans-serif; }
 .font-sora { font-family: 'Sora', sans-serif; }
+.bs-badge { background: linear-gradient(135deg, #2563EB 0%, #1E3A8A 100%); }
 .page { display: none; }
 .page.active { display: block; }
-.text-baobab-orange { color: #FF6B00; }
-.bg-baobab-orange { background-color: #FF6B00; }
-.accent-baobab-orange { accent-color: #FF6B00; }
+.pointer-events-none { pointer-events: none; }
+.tab-btn.active { border-color: #2563EB!important; color: #2563EB!important; }
