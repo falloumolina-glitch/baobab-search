@@ -4,3 +4,4 @@ body { font-family: 'Inter', sans-serif; }
 .page { display: none; }
 .page.active { display: block; }
 .pointer-events-none { pointer-events: none; }
+.tab-btn.active { border-color: #2563EB!important; color: #2563EB!important; }
