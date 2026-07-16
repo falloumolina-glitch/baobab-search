@@ -1,6 +1,10 @@
-// MET TES CLES ICI
+// MET TES CLES ICI - ELLES SONT CACHEES AUX UTILISATEURS
 const API_KEY = "COLLE_TA_CLE_ICI";
 const CX = "COLLE_TON_CX_ICI";
+
+const translations = {
+  fr: { all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", my_photos: "Mes Photos", my_docs: "Mes Documents", about: "À propos", terms: "Conditions", privacy: "Confidentialité", settings_title: "Paramètres", lang_region: "Langue & Région", appearance: "Apparence", light_theme: "Thème Clair", dark_theme: "Thème Sombre", save: "Enregistrer", saved: "✓ Paramètres enregistrés!", back: "← Retour", search_placeholder: "Recher sur Baobab...", ai_title: "✨ Résumé IA par Baobab", about_title: "À propos de Baobab Search", safe_off: "Désactivé", safe_medium: "Standard", safe_high: "Renforcé" }
+};
 
 let recognition;
 let currentTab = 'all';
@@ -10,11 +14,17 @@ function toggleSidebar() {
   document.getElementById('sidebarOverlay').classList.toggle('hidden');
 }
 
+function uploadFile(type) {
+  const input = document.getElementById('fileInput');
+  input.accept = type === 'image'? 'image/*' : '*/*';
+  input.click();
+}
+
 function startVoice() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) return alert('Micro non supporté');
+  if (!SpeechRecognition) return;
   recognition = new SpeechRecognition();
-  recognition.lang = 'fr-FR';
+  recognition.lang = getSettings().language + '-FR';
   recognition.onstart = () => document.getElementById('micIcon').classList.add('text-red-500');
   recognition.onresult = (event) => {
     document.getElementById('searchInput').value = event.results[0][0].transcript;
@@ -31,11 +41,12 @@ function switchTab(tab) {
     btn.classList.add('border-transparent', 'text-gray-500');
   });
   document.getElementById(`tab-${tab}`).classList.add('border-blue-600', 'text-blue-600', 'font-semibold');
-  if(document.getElementById('searchInput').value) search();
+  search();
 }
 
 function showPage(pageId) {
-  toggleSidebar();
+  document.getElementById('sidebar').classList.add('-translate-x-full');
+  document.getElementById('sidebarOverlay').classList.add('hidden');
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(pageId).classList.add('active');
   if(pageId === 'settingsPage') loadSettingsUI();
@@ -75,6 +86,14 @@ function applyTheme(t) {
 
 function changeLanguage(lang) {
   localStorage.setItem('language', lang);
+  document.querySelectorAll('[data-lang]').forEach(el => {
+    const key = el.getAttribute('data-lang');
+    if(translations[key]) el.innerText = translations[key];
+  });
+  document.querySelectorAll('[data-lang-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-lang-placeholder');
+    if(translations[key]) el.placeholder = translations[key];
+  });
 }
 
 async function search(e) {
@@ -82,15 +101,16 @@ async function search(e) {
   const {safeSearch} = getSettings();
   const q = document.getElementById('searchInput').value;
   if(!q.trim()) return;
-  if(API_KEY === "COLLE_TA_CLE_ICI") return alert('Colle la clé API dans script.js');
+  if(API_KEY === "COLLE_TA_CLE_ICI") return alert('Le dev doit coller la clé API dans script.js');
 
   showPage('resultsPage');
   document.getElementById('loading').classList.remove('hidden');
   document.getElementById('resultsList').innerHTML = '';
 
-  let url = `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${CX}&q=${encodeURIComponent(q)}&safe=${safeSearch}`;
-  if(currentTab === 'images') url += '&searchType=image';
-  if(currentTab === 'news') url += '&sort=date';
+  let searchType = '';
+  if(currentTab === 'images') searchType = '&searchType=image';
+
+  const url = `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${CX}&q=${encodeURIComponent(q)}&safe=${safeSearch}${searchType}`;
 
   try {
     const res = await fetch(url);
@@ -129,5 +149,7 @@ function displayResults(items) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  applyTheme(getSettings().theme);
+  const s = getSettings();
+  changeLanguage(s.language);
+  applyTheme(s.theme);
 });
