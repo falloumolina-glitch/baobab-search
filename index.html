@@ -3,35 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Baobab IA - L'IA de la connaissance</title>
+  <title>Baobab IA</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>tailwind.config = { darkMode: 'class' }</script>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen">
-  <header id="header" class="w-full h-16 flex items-center justify-end px-6 fixed top-0 z-50 border-b border-gray-200/50 dark:border-gray-800/50">
-    <a href="#" onclick="showPage('historyPage')" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 text-sm mr-5 font-medium" data-lang="history">🕒 Historique</a>
-    <a href="#" onclick="showPage('settingsPage')" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 text-sm mr-5 font-medium" data-lang="settings">⚙️ Paramètres</a>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+  <header class="w-full h-16 flex items-center justify-end px-6">
+    <a href="#" onclick="showPage('settingsPage')" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 text-sm mr-5" data-lang="settings">Paramètres</a>
     <div class="bs-badge w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm">BS</div>
   </header>
 
-  <section id="homePage" class="page active min-h-screen flex-col items-center justify-center pt-16 px-4">
-    <h1 class="font-sora text-7xl md:text-8xl font-bold bg-gradient-to-r from-blue-600 to-blue-900 bg-clip-text text-transparent">Baobab</h1>
-    <p class="text-gray-500 dark:text-gray-400 mt-3 mb-12 text-lg" data-lang="subtitle">L'IA de la connaissance</p>
-    <form id="searchFormHome" onsubmit="search(event)" class="w-[600px] max-w-[95%] h-14 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-800 rounded-full shadow-lg flex items-center px-5">
+  <section id="homePage" class="page active min-h-[80vh] flex flex-col items-center justify-center px-4">
+    <h1 class="font-sora text-6xl font-bold text-blue-600">Baobab</h1>
+    <p class="text-gray-500 dark:text-gray-400 mt-2 mb-10" data-lang="subtitle">L'IA de la connaissance</p>
+    <form onsubmit="search(event)" class="w-[580px] max-w-[95%] h-12 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-full shadow-md flex items-center px-4">
       <div class="bs-badge w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs mr-3">BS</div>
-      <input id="searchInput" type="text" data-lang-placeholder="search_placeholder" placeholder="Demande à Baobab IA..." class="w-full outline-none bg-transparent text-base font-medium">
-      <button type="submit" class="text-blue-600 hover:text-blue-800 text-xl">🔍</button>
+      <input id="searchInput" type="text" data-lang-placeholder="search_placeholder" placeholder="Demande à Baobab IA..." class="w-full outline-none bg-transparent">
+      <button type="submit" class="text-blue-600">🔍</button>
     </form>
-    <div class="mt-8 flex gap-4">
-      <button onclick="search(event)" class="bg-gray-100 hover:bg-gray-200 dark:bg-gray-900 dark:hover:bg-gray-800 px-6 py-2.5 rounded-lg text-sm font-semibold" data-lang="search_btn">Baobab Search</button>
-      <button onclick="luckySearch()" class="bg-gray-100 hover:bg-gray-200 dark:bg-gray-900 dark:hover:bg-gray-800 px-6 py-2.5 rounded-lg text-sm font-semibold" data-lang="lucky_btn">J'ai de la chance</button>
+    <div class="mt-6 flex gap-3">
+      <button onclick="search(event)" class="bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 px-5 py-2 rounded-lg text-sm" data-lang="search_btn">Baobab Search</button>
+      <button onclick="luckySearch()" class="bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 px-5 py-2 rounded-lg text-sm" data-lang="lucky_btn">J'ai de la chance</button>
     </div>
-    <footer class="absolute bottom-0 w-full bg-gray-50 dark:bg-gray-900/50 backdrop-blur">
-      <div class="px-6 py-3 border-b border-gray-200 dark:border-gray-800 text-sm text-gray-600 dark:text-gray-400" id="footerLocation">Sénégal</div>
-      <div class="px-6 py-3 flex-wrap gap-x-6 gap-y-2 text-sm text-gray-600 dark:text-gray-400">
-        <a href="#" onclick="showPage('aboutPage')" class="hover:underline" data-lang="about">À propos</a>
+    <footer class="absolute bottom-0 w-full bg-gray-100 dark:bg-gray-800">
+      <div class="px-6 py-3 text-sm text-gray-600 dark:text-gray-400">Sénégal</div>
+      <div class="px-6 py-3 flex gap-5 text-sm text-gray-600 dark:text-gray-400">
         <a href="#" onclick="showPage('privacyPage')" class="hover:underline" data-lang="privacy">Confidentialité</a>
         <a href="#" onclick="showPage('termsPage')" class="hover:underline" data-lang="terms">Conditions</a>
       </div>
@@ -39,78 +37,51 @@
   </section>
 
   <section id="resultsPage" class="page pt-4 pb-20 flex-col">
-    <div class="w-full max-w-7xl mx-auto px-6">
-      <form id="searchFormResults" onsubmit="search(event)" class="w-full max-w-[700px] h-12 bg-white dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-800 rounded-full shadow-md flex items-center px-4">
+    <div class="w-full max-w-6xl mx-auto px-6">
+      <form onsubmit="search(event)" class="w-full max-w-[650px] h-11 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 rounded-full shadow-md flex items-center px-4">
         <div class="bs-badge w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs mr-3">BS</div>
-        <input id="searchInput2" type="text" class="w-full outline-none bg-transparent font-medium">
-        <button type="submit" class="text-blue-600 text-lg">🔍</button>
+        <input id="searchInput2" type="text" class="w-full outline-none bg-transparent">
+        <button type="submit" class="text-blue-600">🔍</button>
       </form>
     </div>
-    <nav class="w-full max-w-7xl mx-auto px-6 mt-5 border-b border-gray-200 dark:border-gray-800 flex gap-7 text-sm text-gray-600 dark:text-gray-400">
-      <a class="active-filter pb-3" data-lang="all">Tous</a><a class="pb-3 hover:text-blue-600" data-lang="images">Images</a><a class="pb-3 hover:text-blue-600" data-lang="news">Actualités</a>
-    </nav>
-    <div class="w-full max-w-7xl mx-auto px-6 mt-6">
-      <div id="aiSummary" class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-l-4 border-blue-500 rounded-r-xl p-5 mb-6">
-        <p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2" data-lang="ai_title">✨ Résumé IA par Baobab</p>
-        <p id="aiText" class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed"></p>
+    <div class="w-full max-w-6xl mx-auto px-6 mt-6">
+      <div id="aiSummary" class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 rounded-r-lg p-4 mb-4">
+        <p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-1" data-lang="ai_title">✨ Résumé IA</p>
+        <p id="aiText" class="text-sm"></p>
       </div>
-      <p id="resultCount" class="text-sm text-gray-500 dark:text-gray-400 mb-4"></p>
-      <div id="resultsList" class="space-y-6"></div>
+      <p id="resultCount" class="text-sm text-gray-500 mb-4"></p>
+      <div id="resultsList" class="space-y-5"></div>
     </div>
   </section>
 
-  <section id="settingsPage" class="page pt-24 max-w-2xl mx-auto px-6 pb-20 flex-col">
-    <h2 class="font-sora text-4xl font-bold mb-8" data-lang="settings_title">Paramètres</h2>
-    <div class="border border-gray-200 dark:border-gray-800 rounded-2xl p-6 mb-5 bg-white dark:bg-gray-900 shadow-sm">
-      <h3 class="font-semibold text-xl mb-4" data-lang="search_settings">Recherche</h3>
-      <label class="flex items-center mt-4 cursor-pointer"><input type="checkbox" id="aiSummaryToggle" class="mr-3 w-5 h-5 accent-blue-600 rounded"><span data-lang="ai_summary">Afficher le résumé IA</span></label>
-      <label class="flex items-center mt-4 cursor-pointer"><input type="checkbox" id="openNewTab" class="mr-3 w-5 h-5 accent-blue-600 rounded"><span data-lang="new_tab">Ouvrir dans un nouvel onglet</span></label>
-      <div class="mt-4"><label class="block text-sm font-semibold mb-2" data-lang="results_per_page">Nombre de résultats</label><select id="resultsPerPage" class="w-full bg-gray-100 dark:bg-gray-800 border-none rounded-xl p-3 font-medium"><option value="10">10</option><option value="20">20</option></select></div>
+  <section id="settingsPage" class="page pt-20 max-w-xl mx-auto px-6 pb-20 flex-col">
+    <h2 class="font-sora text-3xl font-bold mb-6" data-lang="settings_title">Paramètres</h2>
+    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 mb-4">
+      <h3 class="font-semibold mb-3" data-lang="search_settings">Recherche</h3>
+      <label class="flex items-center mt-2"><input type="checkbox" id="aiSummaryToggle" checked class="mr-2"><span data-lang="ai_summary">Afficher le résumé IA</span></label>
+      <label class="flex items-center mt-2"><input type="checkbox" id="openNewTab" checked class="mr-2"><span data-lang="new_tab">Ouvrir dans un nouvel onglet</span></label>
     </div>
-    <div class="border border-gray-200 dark:border-gray-800 rounded-2xl p-6 mb-5 bg-white dark:bg-gray-900 shadow-sm">
-      <h3 class="font-semibold text-xl mb-4" data-lang="region_lang">Région et Langue</h3>
-      <div class="mt-4"><label class="block text-sm font-semibold mb-2" data-lang="language">Langue de l'interface</label><select id="language" onchange="changeLanguage(this.value)" class="w-full bg-gray-100 dark:bg-gray-800 border-none rounded-xl p-3 font-medium"><option value="fr">Français</option><option value="en">English</option><option value="wo">Wolof</option></select></div>
+    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 mb-4">
+      <h3 class="font-semibold mb-3" data-lang="language">Langue</h3>
+      <select id="language" onchange="changeLanguage(this.value)" class="w-full bg-gray-100 dark:bg-gray-800 border-none rounded-lg p-2">
+        <option value="fr">Français</option>
+        <option value="en">English</option>
+        <option value="wo">Wolof</option>
+      </select>
     </div>
-    <div class="border border-gray-200 dark:border-gray-800 rounded-2xl p-6 mb-5 bg-white dark:bg-gray-900 shadow-sm">
-      <h3 class="font-semibold text-xl" data-lang="appearance">Apparence</h3>
-      <label class="flex items-center mt-4 cursor-pointer"><input type="radio" name="theme" value="light" class="mr-3 w-5 h-5 accent-blue-600"><span data-lang="light_theme">Thème Clair</span></label>
-      <label class="flex items-center mt-4 cursor-pointer"><input type="radio" name="theme" value="dark" class="mr-3 w-5 h-5 accent-blue-600"><span data-lang="dark_theme">Thème Sombre</span></label>
+    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 mb-6">
+      <h3 class="font-semibold mb-3" data-lang="appearance">Apparence</h3>
+      <label class="flex items-center mt-2"><input type="radio" name="theme" value="light" checked class="mr-2"><span data-lang="light_theme">Thème Clair</span></label>
+      <label class="flex items-center mt-2"><input type="radio" name="theme" value="dark" class="mr-2"><span data-lang="dark_theme">Thème Sombre</span></label>
     </div>
-    <button onclick="saveSettings()" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3.5 rounded-full font-bold hover:shadow-lg w-full text-lg" data-lang="save">Enregistrer</button>
-    <p id="saveMsg" class="text-green-600 text-center mt-4 hidden font-semibold" data-lang="saved">✓ Paramètres enregistrés!</p>
-    <button onclick="showPage('homePage')" class="mt-6 text-blue-600 hover:underline font-medium" data-lang="back_home">← Retour</button>
+    <button onclick="saveSettings()" class="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-700" data-lang="save">Enregistrer</button>
+    <p id="saveMsg" class="text-green-600 text-center mt-3 hidden" data-lang="saved">✓ Paramètres enregistrés!</p>
+    <button onclick="showPage('homePage')" class="mt-4 text-blue-600 hover:underline" data-lang="back_home">← Retour</button>
   </section>
 
-  <section id="historyPage" class="page pt-24 max-w-2xl mx-auto px-6 pb-20 flex-col">
-    <h2 class="font-sora text-4xl font-bold mb-8" data-lang="history_title">Historique de recherche</h2>
-    <div id="historyList" class="space-y-3"></div>
-    <button onclick="clearHistory()" class="text-red-600 hover:underline mt-6 font-semibold" data-lang="clear_history">Effacer l'historique</button>
-    <button onclick="showPage('homePage')" class="mt-6 text-blue-600 hover:underline font-medium" data-lang="back_home">← Retour</button>
-  </section>
-
-  <section id="aboutPage" class="page pt-24 max-w-4xl mx-auto px-6 pb-20 flex-col leading-relaxed"><h2 class="font-sora text-4xl font-bold mb-4" data-lang="about_title">À propos de Baobab</h2><p class="text-lg" data-lang="about_text">Baobab est le premier moteur de recherche intelligent d'Afrique. Notre mission : donner accès à la connaissance du monde, avec la puissance de l'IA. Fondé en 2026 à Dakar, Sénégal.</p><button onclick="showPage('homePage')" class="mt-8 bg-blue-600 text-white px-6 py-3 rounded-full font-semibold">← Retour</button></section>
-
-  <section id="termsPage" class="page pt-24 max-w-4xl mx-auto px-6 pb-20 flex-col leading-relaxed">
-    <h2 class="font-sora text-4xl font-bold mb-2">Conditions d'Utilisation</h2><p class="text-sm text-gray-500 mb-8">Dernière mise à jour : 04 Octobre 2026</p>
-    <div class="space-y-4 text-gray-700 dark:text-gray-300">
-      <p><b>1. Acceptation :</b> En utilisant Baobab, vous acceptez ces conditions.</p>
-      <p><b>2. Licence MIT :</b> Vous pouvez utiliser, copier et modifier ce code librement.</p>
-      <p><b>3. Responsabilité :</b> Les résultats IA sont donnés à titre informatif. Baobab n'est pas responsable des erreurs.</p>
-      <p><b>4. Contact :</b> contact@baobab.ai</p>
-    </div>
-    <button onclick="showPage('homePage')" class="mt-8 bg-blue-600 text-white px-6 py-3 rounded-full font-semibold">← Retour</button>
-  </section>
-
-  <section id="privacyPage" class="page pt-24 max-w-4xl mx-auto px-6 pb-20 flex-col leading-relaxed">
-    <h2 class="font-sora text-4xl font-bold mb-2">Politique de Confidentialité</h2><p class="text-sm text-gray-500 mb-8">Conforme RGPD</p>
-    <div class="space-y-4 text-gray-700 dark:text-gray-300">
-      <p><b>1. Données :</b> Nous ne collectons aucune donnée. Tout est stocké sur votre appareil.</p>
-      <p><b>2. Cookies :</b> Uniquement pour le thème et la langue.</p>
-      <p><b>3. Vos droits :</b> Vous pouvez effacer votre historique à tout moment dans Paramètres.</p>
-    </div>
-    <button onclick="showPage('homePage')" class="mt-8 bg-blue-600 text-white px-6 py-3 rounded-full font-semibold">← Retour</button>
-  </section>
+  <section id="termsPage" class="page pt-20 max-w-3xl mx-auto px-6 pb-20 flex-col"><h2 class="font-sora text-3xl font-bold mb-4">Conditions</h2><p>Licence MIT. Utilisation libre.</p><button onclick="showPage('homePage')" class="mt-6 bg-blue-600 text-white px-6 py-3 rounded-full">← Retour</button></section>
+  <section id="privacyPage" class="page pt-20 max-w-3xl mx-auto px-6 pb-20 flex flex-col"><h2 class="font-sora text-3xl font-bold mb-4">Confidentialité</h2><p>Aucune donnée collectée. Stockage local uniquement.</p><button onclick="showPage('homePage')" class="mt-6 bg-blue-600 text-white px-6 py-3 rounded-full">← Retour</button></section>
 
   <script src="script.js"></script>
 </body>
-      </html>
+  </html>
