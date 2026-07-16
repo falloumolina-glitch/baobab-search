@@ -1,4 +1,5 @@
 body { font-family: 'Inter', sans-serif; }
 .font-sora { font-family: 'Sora', sans-serif; }
+.bs-badge { background: linear-gradient(135deg, #2563EB 0%, #1E3A8A 100%); box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3); }
 .page { display: none; }
 .page.active { display: block; }
