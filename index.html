@@ -6,20 +6,7 @@
   <title>Baobab IA - L'IA de la connaissance</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-  <style>
-  .font-sora { font-family: 'Sora', sans-serif; }
-    body { font-family: 'Inter', sans-serif; }
-  .bs-badge { background: linear-gradient(135deg, #000 50%, #2563EB 50%); }
-  .page { display: none; }
-  .page.active { display: flex; } /* flex pour centrer accueil */
-  .active-filter { border-bottom: 2px solid #2563EB; color: #2563EB; font-weight: 600; }
-
-    /* DARK MODE */
-  .dark body { background-color: #111827; color: #F9FAFB; }
-  .dark.bg-white { background-color: #1F2937!important; }
-  .dark.bg-gray-100 { background-color: #1F2937!important; }
-  .dark.text-gray-500 { color: #9CA3AF!important; }
-  </style>
+  <link rel="stylesheet" href="style.css"> <!-- CSS EXTERNE -->
 </head>
 <body class="bg-white text-gray-900 min-h-screen">
 
@@ -60,7 +47,7 @@
   <!-- ========== 2. PAGE RESULTATS ========== -->
   <section id="resultsPage" class="page pt-20 pb-20 flex-col">
     <div class="w-full max-w-7xl mx-auto px-4">
-      <form onsubmit="search(event)" class="w-full max-w-[692px] h-12 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-full shadow-sm flex items-center px-4">
+      <form onsubmit="search(event)" class="w-full max-w-[692px] h-12 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 rounded-full shadow-sm flex items-center px-4">
         <div class="bs-badge w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs mr-3">BS</div>
         <input id="searchInput2" type="text" class="w-full outline-none bg-transparent">
         <button type="submit" class="text-blue-600">🔍</button>
@@ -141,77 +128,6 @@
     <button onclick="showPage('homePage')" class="mt-6 text-blue-600 hover:underline">← Retour</button>
   </section>
 
-  <script>
-    // ========== SCRIPT COMPLET ==========
-
-    function showPage(pageId) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.getElementById(pageId).classList.add('active');
-      window.scrollTo(0,0);
-    }
-
-    const fakeDB = {
-      "messi": { ai: "Lionel Messi est un footballeur argentin. 8 Ballons d'Or et vainqueur de la Coupe du Monde 2022.", knowledge: "Footballeur argentin. Né 24/06/1987.", results: [{url: "wikipedia.org", title: "Lionel Messi - Wikipédia", desc: "Lionel Andrés Messi est un footballeur international argentin..."}] },
-      "baobab": { ai: "Le baobab est un arbre emblématique d'Afrique. Il peut vivre 1000 ans et stocker 120 000L d'eau.", knowledge: "Arbre. Famille des Malvacées.", results: [{url: "baobab.sn", title: "Baobab Search", desc: "Le premier moteur de recherche intelligent d'Afrique."}] },
-      "default": { ai: "Je suis Baobab IA. Essayez 'messi' ou 'baobab'.", knowledge: "Aucune donnée.", results: [] }
-    };
-
-    function search(e) {
-      e.preventDefault();
-      const query = document.getElementById('searchInput').value || document.getElementById('searchInput2').value;
-      if(!query) return;
-
-      showPage('resultsPage');
-      document.getElementById('searchInput2').value = query;
-
-      const aiOn = localStorage.getItem('aiSummary')!== 'false';
-      const data = fakeDB[query.toLowerCase()] || fakeDB['default'];
-
-      document.getElementById('aiSummary').style.display = aiOn? 'block' : 'none';
-      document.getElementById('aiText').innerText = data.ai;
-      document.getElementById('resultCount').innerText = `Environ ${data.results.length} résultats`;
-
-      const list = document.getElementById('resultsList');
-      list.innerHTML = '';
-      data.results.forEach(r => {
-        list.innerHTML += `<div class="mb-6"><div class="text-sm text-green-700 dark:text-green-400">${r.url}</div><a href="#" class="text-xl text-blue-700 hover:underline">${r.title}</a><p class="text-sm text-gray-700 dark:text-gray-300 mt-1">${r.desc}</p></div>`;
-      });
-    }
-
-    function luckySearch() {
-      document.getElementById('searchInput').value = 'baobab';
-      search(event);
-    }
-
-    function saveSettings() {
-      localStorage.setItem('safeSearch', document.getElementById('safeSearch').checked);
-      localStorage.setItem('aiSummary', document.getElementById('aiSummaryToggle').checked);
-      const theme = document.querySelector('input[name="theme"]:checked').value;
-      localStorage.setItem('theme', theme);
-      applyTheme(theme);
-      document.getElementById('saveMsg').classList.remove('hidden');
-      setTimeout(() => document.getElementById('saveMsg').classList.add('hidden'), 2000);
-    }
-
-    function clearHistory(){
-      localStorage.clear();
-      alert('Historique et paramètres effacés');
-      location.reload();
-    }
-
-    function applyTheme(theme) {
-      if(theme === 'dark') document.documentElement.classList.add('dark');
-      else document.documentElement.classList.remove('dark');
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      if(localStorage.getItem('safeSearch') === 'true') document.getElementById('safeSearch').checked = true;
-      if(localStorage.getItem('aiSummary') === 'false') document.getElementById('aiSummaryToggle').checked = false;
-      const savedTheme = localStorage.getItem('theme') || 'light';
-      const themeRadio = document.querySelector(`input[name="theme"][value="${savedTheme}"]`);
-      if(themeRadio) themeRadio.checked = true;
-      applyTheme(savedTheme);
-    });
-  </script>
+  <script src="script.js"></script> <!-- JS EXTERNE -->
 </body>
-  </html>
+      </html>
