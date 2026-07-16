@@ -2,4 +2,6 @@ body { font-family: 'Inter', sans-serif; }
 .font-sora { font-family: 'Sora', sans-serif; }
 .page { display: none; }
 .page.active { display: block; }
-.toggle { width: 40px; height: 24px; accent-color: #2563EB; }
+.text-baobab-orange { color: #FF6B00; }
+.bg-baobab-orange { background-color: #FF6B00; }
+.accent-baobab-orange { accent-color: #FF6B00; }
