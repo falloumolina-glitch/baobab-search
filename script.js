@@ -1,15 +1,15 @@
 const translations = {
-  fr: { all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", my_photos: "Mes Photos", my_docs: "Mes Documents", about: "À propos", terms: "Conditions", privacy: "Confidentialité", settings_title: "Paramètres", lang_region: "Langue & Région", appearance: "Apparence", light_theme: "Thème Clair", dark_theme: "Thème Sombre", save: "Enregistrer", saved: "✓ Paramètres enregistrés!", back: "← Retour", search_placeholder: "Recher sur Baobab...", ai_title: "✨ Résumé IA par Baobab", ai_summary: "Résumé IA", new_tab: "Nouvel onglet", about_title: "À propos de Baobab Search" },
-  en: { all: "All", images: "Images", videos: "Videos", news: "News", my_photos: "My Photos", my_docs: "My Documents", about: "About", terms: "Terms", privacy: "Privacy", settings_title: "Settings", lang_region: "Language & Region", appearance: "Appearance", light_theme: "Light Theme", dark_theme: "Dark Theme", save: "Save", saved: "✓ Settings saved!", back: "← Back", search_placeholder: "Search on Baobab...", ai_title: "✨ AI Summary by Baobab", ai_summary: "AI Summary", new_tab: "New tab", about_title: "About Baobab Search" },
-  wo: { all: "Lépp", images: "Nataal", videos: "Video", news: "Lëndëm", my_photos: "Nataal yi ma", my_docs: "Liggeey yi ma", about: "Ci Baobab", terms: "Yoon yi", privacy: "Sutura", settings_title: "Jëfandikoo", lang_region: "Làkk ak Dëkku", appearance: "Nataal", light_theme: "Leer", dark_theme: "Guddi", save: "Denc", saved: "✓ Denc na!", back: "← Dellu", search_placeholder: "Laaj Baobab...", ai_title: "✨ Résumé AI", ai_summary: "Résumé AI", new_tab: "Fenetra bes", about_title: "Ci Baobab Search" }
+  fr: { all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", about: "À propos", terms: "Conditions", privacy: "Confidentialité", settings_title: "Paramètres", lang_region: "Langue & Région", appearance: "Apparence", light_theme: "Thème Clair", dark_theme: "Thème Sombre", save: "Enregistrer", saved: "✓ Paramètres enregistrés!", back: "← Retour", search_placeholder: "Rechercher sur Baobab...", ai_title: "✨ Résumé IA par Baobab", ai_summary: "Résumé IA", new_tab: "Nouvel onglet", about_title: "À propos de Baobab Search", terms_title: "Conditions d'utilisation", privacy_title: "Politique de confidentialité" },
+  en: { all: "All", images: "Images", videos: "Videos", news: "News", about: "About", terms: "Terms", privacy: "Privacy", settings_title: "Settings", lang_region: "Language & Region", appearance: "Appearance", light_theme: "Light Theme", dark_theme: "Dark Theme", save: "Save", saved: "✓ Settings saved!", back: "← Back", search_placeholder: "Search on Baobab...", ai_title: "✨ AI Summary by Baobab", ai_summary: "AI Summary", new_tab: "New tab", about_title: "About Baobab Search", terms_title: "Terms of Service", privacy_title: "Privacy Policy" },
+  pt: { all: "Tudo", images: "Imagens", videos: "Vídeos", news: "Notícias", about: "Sobre", terms: "Termos", privacy: "Privacidade", settings_title: "Definições", lang_region: "Idioma e Região", appearance: "Aparência", light_theme: "Tema Claro", dark_theme: "Tema Escuro", save: "Guardar", saved: "✓ Definições guardadas!", back: "← Voltar", search_placeholder: "Pesquisar no Baobab...", ai_title: "✨ Resumo IA por Baobab", ai_summary: "Resumo IA", new_tab: "Nova aba", about_title: "Sobre o Baobab Search", terms_title: "Termos de Uso", privacy_title: "Política de Privacidade" },
+  it: { all: "Tutti", images: "Immagini", videos: "Video", news: "Notizie", about: "Informazioni", terms: "Termini", privacy: "Privacy", settings_title: "Impostazioni", lang_region: "Lingua e Regione", appearance: "Aspetto", light_theme: "Tema Chiaro", dark_theme: "Tema Scuro", save: "Salva", saved: "✓ Impostazioni salvate!", back: "← Indietro", search_placeholder: "Cerca su Baobab...", ai_title: "✨ Riepilogo IA di Baobab", ai_summary: "Riepilogo IA", new_tab: "Nuova scheda", about_title: "Informazioni su Baobab Search", terms_title: "Termini di Servizio", privacy_title: "Informativa sulla Privacy" },
+  de: { all: "Alle", images: "Bilder", videos: "Videos", news: "Nachrichten", about: "Über", terms: "Bedingungen", privacy: "Datenschutz", settings_title: "Einstellungen", lang_region: "Sprache & Region", appearance: "Aussehen", light_theme: "Helles Thema", dark_theme: "Dunkles Thema", save: "Speichern", saved: "✓ Einstellungen gespeichert!", back: "← Zurück", search_placeholder: "Auf Baobab suchen...", ai_title: "✨ KI-Zusammenfassung von Baobab", ai_summary: "KI-Zusammenfassung", new_tab: "Neuer Tab", about_title: "Über Baobab Search", terms_title: "Nutzungsbedingungen", privacy_title: "Datenschutzrichtlinie" },
+  ru: { all: "Все", images: "Картинки", videos: "Видео", news: "Новости", about: "О нас", terms: "Условия", privacy: "Конфиденциальность", settings_title: "Настройки", lang_region: "Язык и регион", appearance: "Внешний вид", light_theme: "Светлая тема", dark_theme: "Темная тема", save: "Сохранить", saved: "✓ Настройки сохранены!", back: "← Назад", search_placeholder: "Поиск в Baobab...", ai_title: "✨ ИИ-резюме от Baobab", ai_summary: "ИИ-резюме", new_tab: "Новая вкладка", about_title: "О Baobab Search", terms_title: "Условия использования", privacy_title: "Политика конфиденциальности" },
+  nl: { all: "Alles", images: "Afbeeldingen", videos: "Video's", news: "Nieuws", about: "Over", terms: "Voorwaarden", privacy: "Privacy", settings_title: "Instellingen", lang_region: "Taal & Regio", appearance: "Weergave", light_theme: "Licht thema", dark_theme: "Donker thema", save: "Opslaan", saved: "✓ Instellingen opgeslagen!", back: "← Terug", search_placeholder: "Zoeken op Baobab...", ai_title: "✨ AI-samenvatting door Baobab", ai_summary: "AI-samenvatting", new_tab: "Nieuw tabblad", about_title: "Over Baobab Search", terms_title: "Gebruiksvoorwaarden", privacy_title: "Privacybeleid" },
+  wo: { all: "Lépp", images: "Nataal", videos: "Video", news: "Lëndëm", about: "Ci Baobab", terms: "Yoon yi", privacy: "Sutura", settings_title: "Jëfandikoo", lang_region: "Làkk ak Dëkku", appearance: "Nataal", light_theme: "Leer", dark_theme: "Guddi", save: "Denc", saved: "✓ Denc na!", back: "← Dellu", search_placeholder: "Laaj Baobab...", ai_title: "✨ Résumé AI", ai_summary: "Résumé AI", new_tab: "Fenetra bes", about_title: "Ci Baobab Search", terms_title: "Yoon yi", privacy_title: "Sutura" }
 };
 
-const trends = [
-  {q: "angleterre - argentine", n: "20 000+"},
-  {q: "météo demain", n: "20 000+"},
-  {q: "messi", n: "500+"}
-];
-
+const trends = [{q: "angleterre - argentine", n: "20 000+"},{q: "météo demain", n: "20 000+"},{q: "messi", n: "500+"}];
 let recognition;
 let currentTab = 'all';
 
@@ -17,24 +17,12 @@ function toggleSidebar() {
   document.getElementById('sidebar').classList.toggle('-translate-x-full');
   document.getElementById('sidebarOverlay').classList.toggle('hidden');
 }
-
-function uploadFile(type) {
-  const input = document.getElementById('fileInput');
-  input.accept = type === 'image'? 'image/*' : '*/*';
-  input.click();
-  input.onchange = (e) => {
-    const file = e.target.files[0];
-    if(file) alert(`${type === 'image'? 'Photo' : 'Document'} sélectionné: ${file.name}`);
-  }
-}
-
 function takePhoto() {
   const input = document.getElementById('fileInput');
   input.accept = 'image/*';
   input.capture = 'environment';
   input.click();
 }
-
 function startVoice() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRecognition) return alert('Voix non supportée');
@@ -48,7 +36,6 @@ function startVoice() {
   recognition.onend = () => document.getElementById('micIcon').classList.remove('text-red-500', 'animate-pulse');
   recognition.start();
 }
-
 function switchTab(tab) {
   currentTab = tab;
   document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -58,21 +45,20 @@ function switchTab(tab) {
   const activeBtn = document.getElementById(`tab-${tab}`);
   activeBtn.classList.add('border-blue-600', 'text-blue-600', 'font-semibold');
   activeBtn.classList.remove('border-transparent', 'text-gray-500');
-  search(); // Relance la recherche avec le nouvel onglet
+  search();
 }
-
 function changeLanguage(lang) {
   localStorage.setItem('language', lang);
+  const t = translations[lang];
   document.querySelectorAll('[data-lang]').forEach(el => {
     const key = el.getAttribute('data-lang');
-    if(translations[key]) el.innerText = translations[key];
+    if(t[key]) el.innerText = t[key];
   });
   document.querySelectorAll('[data-lang-placeholder]').forEach(el => {
     const key = el.getAttribute('data-lang-placeholder');
-    if(translations[key]) el.placeholder = translations[key];
+    if(t[key]) el.placeholder = t[key];
   });
 }
-
 function loadTrends() {
   const list = document.getElementById('trendsList');
   list.innerHTML = trends.map(t => `
@@ -85,7 +71,6 @@ function loadTrends() {
     </div>
   `).join('');
 }
-
 function showPage(pageId) {
   document.getElementById('sidebar').classList.add('-translate-x-full');
   document.getElementById('sidebarOverlay').classList.add('hidden');
@@ -93,7 +78,6 @@ function showPage(pageId) {
   document.getElementById(pageId).classList.add('active');
   if(pageId === 'settingsPage') loadSettingsUI();
 }
-
 function getSettings() {
   return {
     aiSummary: localStorage.getItem('aiSummary')!== 'false',
@@ -102,7 +86,6 @@ function getSettings() {
     language: localStorage.getItem('language') || 'fr'
   };
 }
-
 function loadSettingsUI() {
   const s = getSettings();
   document.getElementById('aiSummaryToggle').checked = s.aiSummary;
@@ -110,12 +93,10 @@ function loadSettingsUI() {
   document.getElementById('language').value = s.language;
   document.querySelector(`input[name="theme"][value="${s.theme}"]`).checked = true;
 }
-
 function quickSearch(query) {
   document.getElementById('searchInput').value = query;
   search();
 }
-
 function search(e) {
   if(e) e.preventDefault();
   const s = getSettings();
@@ -123,10 +104,9 @@ function search(e) {
   if(!q.trim()) return;
   showPage('resultsPage');
   document.getElementById('aiSummary').style.display = s.aiSummary? 'block' : 'none';
-  document.getElementById('aiText').innerText = `Résumé IA pour: ${q}`;
+  document.getElementById('aiText').innerText = `${t.ai_summary}: ${q}`;
   document.getElementById('resultCount').innerText = `Résultats "${currentTab}" pour: ${q}`;
 }
-
 function saveSettings() {
   localStorage.setItem('aiSummary', document.getElementById('aiSummaryToggle').checked);
   localStorage.setItem('openNewTab', document.getElementById('openNewTab').checked);
@@ -135,12 +115,10 @@ function saveSettings() {
   document.getElementById('saveMsg').classList.remove('hidden');
   setTimeout(() => document.getElementById('saveMsg').classList.add('hidden'), 2000);
 }
-
 function applyTheme(t) {
   if(t === 'dark') document.documentElement.classList.add('dark');
   else document.documentElement.classList.remove('dark');
 }
-
 document.addEventListener('DOMContentLoaded', () => {
   loadTrends();
   const s = getSettings();
