@@ -5,53 +5,101 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Baobab Search</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = { darkMode: 'class' }
-  </script>
+  <script>tailwind.config = { darkMode: 'class' }</script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-white dark:bg-gray-950 text-black dark:text-white">
+<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-inter min-h-screen flex flex-col">
 
-  <!-- HEADER -->
-  <header class="flex items-center justify-between p-4 border-b dark:border-gray-800">
-    <button onclick="toggleSidebar()">☰</button>
-    <h1 class="font-bold text-xl">Baobab</h1>
-    <button onclick="takePhoto()">📷</button>
-    <input type="file" id="fileInput" class="hidden">
+  <!-- 1. HEADER -->
+  <header class="w-full flex items-center justify-between px-6 py-3 text-sm">
+    <div class="flex gap-4">
+      <a href="#" onclick="switchTab('images')" class="hover:underline" data-lang="images">Images</a>
+      <a href="#" onclick="switchTab('news')" class="hover:underline" data-lang="news">Actualités</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <button onclick="showPage('appsPage')" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6,8c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM12,20c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM6,20c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM6,14c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM12,14c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM16,6c0,1.1 0.9,2 2,2s2,-0.9 2,-2 -0.9,-2 -2,-2 -2,0.9 -2,2zM12,8c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM16,14c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM16,20c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2z"/></svg>
+      </button>
+      <button onclick="showPage('settingsPage')" class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-blue-900 text-white font-bold">B</button>
+    </div>
   </header>
 
-  <!-- BARRE DE RECHERCHE -->
-  <form id="searchForm" class="flex gap-2 p-4">
-    <input type="text" id="searchInput" data-lang-placeholder="search_placeholder" placeholder="Rechercher sur Baobab..." class="flex-1 border dark:border-gray-700 p-2 rounded-lg bg-gray-100 dark:bg-gray-900">
-    <button id="micIcon" type="button" onclick="startVoice()">🎤</button>
-    <button type="submit" class="bg-blue-600 text-white px-4 rounded-lg">Go</button>
-  </form>
+  <!-- 2. ZONE CENTRALE - HOME -->
+  <main id="homePage" class="page active flex-1 flex flex-col items-center justify-center px-4 -mt-20">
+    <!-- LOGO -->
+    <h1 class="font-sora text-6xl font-bold mb-8 bg-gradient-to-r from-blue-600 to-blue-900 bg-clip-text text-transparent">Baobab</h1>
+    
+    <!-- BARRE DE RECHERCHE -->
+    <form onsubmit="search(event)" class="w-full max-w-2xl">
+      <div class="flex items-center w-full h-12 px-5 border border-gray-300 dark:border-gray-700 rounded-full hover:shadow-md focus-within:shadow-md bg-white dark:bg-gray-900">
+        <svg class="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <input id="searchInput" type="text" data-lang-placeholder="search_placeholder" placeholder="Recher sur Baobab..." class="bg-transparent outline-none w-full">
+        <button type="button" onclick="startVoice()" class="p-1 ml-2">
+          <svg id="micIcon" class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Zm5 8c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2Z"/></svg>
+        </button>
+        <button type="button" onclick="takePhoto()" class="p-1 ml-1">
+          <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/></svg>
+        </button>
+      </div>
+      <!-- BOUTONS D'ACTION -->
+      <div class="flex justify-center gap-3 mt-6">
+        <button type="submit" class="px-5 py-2 bg-gray-100 dark:bg-gray-800 rounded hover:border hover:border-gray-300" data-lang="search_btn">Rechercher</button>
+        <button type="button" onclick="randomSearch()" class="px-5 py-2 bg-gray-100 dark:bg-gray-800 rounded hover:border hover:border-gray-300" data-lang="lucky_btn">J'ai de la chance</button>
+      </div>
+    </form>
+  </main>
 
-  <!-- ONGLETS -->
-  <div class="flex border-b dark:border-gray-800 px-4">
-    <button id="tab-all" onclick="switchTab('all')" class="tab-btn p-2 border-b-2 border-blue-600 text-blue-600 font-semibold" data-lang="all">Tous</button>
-    <button id="tab-images" onclick="switchTab('images')" class="tab-btn p-2 border-b-2 border-transparent text-gray-500" data-lang="images">Images</button>
-    <button id="tab-videos" onclick="switchTab('videos')" class="tab-btn p-2 border-b-2 border-transparent text-gray-500" data-lang="videos">Vidéos</button>
-    <button id="tab-news" onclick="switchTab('news')" class="tab-btn p-2 border-b-2 border-transparent text-gray-500" data-lang="news">Actualités</button>
-  </div>
-
-  <!-- RÉSULTATS -->
-  <div id="results" class="p-4 min-h-[400px]"></div>
-
-  <!-- TENDANCES -->
-  <div id="trendsList" class="p-4"></div>
-
-  <!-- SIDEBAR -->
-  <div id="sidebarOverlay" onclick="toggleSidebar()" class="hidden fixed inset-0 bg-black bg-opacity-50"></div>
-  <div id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-gray-900 -translate-x-full transition p-4">
-    <button onclick="showPage('settingsPage')" data-lang="settings_title">Paramètres</button>
-  </div>
+  <!-- 2. ZONE CENTRALE - RESULTATS -->
+  <section id="resultsPage" class="page flex-1">
+    <!-- BARRE DE FILTRE -->
+    <div class="sticky top-0 bg-white dark:bg-gray-950 border-b dark:border-gray-800 px-4 lg:px-40 pt-3">
+      <form onsubmit="search(event)" class="flex items-center w-full max-w-2xl h-11 px-4 border-gray-300 dark:border-gray-700 rounded-full mb-3">
+        <input id="searchInputResults" type="text" class="bg-transparent outline-none w-full">
+        <button type="button" onclick="startVoice()" class="p-1 ml-2"><svg id="micIcon2" class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Zm5 8c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2Z"/></svg></button>
+      </form>
+      <div class="flex gap-6 overflow-x-auto text-sm text-gray-600 dark:text-gray-400">
+        <button onclick="switchTab('all')" id="tab-all" class="tab-btn pb-3 border-b-2 border-blue-600 text-blue-600 font-semibold" data-lang="all">Tous</button>
+        <button onclick="switchTab('images')" id="tab-images" class="tab-btn pb-3 border-b-2 border-transparent hover:text-black" data-lang="images">Images</button>
+        <button onclick="switchTab('videos')" id="tab-videos" class="tab-btn pb-3 border-b-2 border-transparent hover:text-black" data-lang="videos">Vidéos</button>
+        <button onclick="switchTab('news')" id="tab-news" class="tab-btn pb-3 border-b-2 border-transparent hover:text-black" data-lang="news">Actualités</button>
+      </div>
+    </div>
+    <!-- RESULTATS + SIDEBAR -->
+    <div class="flex px-4 lg:px-40 py-4 gap-8">
+      <div class="flex-1 max-w-2xl">
+        <p id="resultCount" class="text-sm text-gray-500 mb-4"></p>
+        <div id="resultsList" class="space-y-6"></div>
+      </div>
+      <aside class="hidden lg:block w-96">
+        <div id="aiSummary" class="border dark:border-gray-800 rounded-xl p-4">
+          <p class="text-sm font-semibold mb-2" data-lang="ai_title">✨ Résumé IA par Baobab</p>
+          <p id="aiText" class="text-sm"></p>
+        </div>
+      </aside>
+    </div>
+  </section>
 
   <!-- PAGES -->
-  <div id="settingsPage" class="page hidden p-4">
-    <h2 data-lang="settings_title">Paramètres</h2>
-  </div>
+  <section id="settingsPage" class="page flex-1 px-6 py-10 max-w-2xl mx-auto">...</section>
+  <section id="appsPage" class="page flex-1 px-6 py-10 max-w-2xl mx-auto">...</section>
 
+  <!-- 3. FOOTER -->
+  <footer class="bg-gray-100 dark:bg-gray-900 text-sm text-gray-600 dark:text-gray-400">
+    <div class="px-6 py-3 border-b dark:border-gray-800">Guédiawaye, SN</div>
+    <div class="flex flex-wrap justify-between px-6 py-3">
+      <div class="flex gap-4">
+        <a href="#" onclick="showPage('aboutPage')" class="hover:underline" data-lang="about">À propos</a>
+        <a href="#" onclick="showPage('privacyPage')" class="hover:underline" data-lang="privacy">Confidentialité</a>
+        <a href="#" onclick="showPage('termsPage')" class="hover:underline" data-lang="terms">Conditions</a>
+      </div>
+      <div class="flex gap-4">
+        <a href="#" onclick="showPage('settingsPage')" class="hover:underline" data-lang="settings_title">Paramètres</a>
+      </div>
+    </div>
+  </footer>
+
+  <input type="file" id="fileInput" class="hidden">
   <script src="script.js"></script>
-  <script>loadTrends()</script>
 </body>
-    </html>
+  </html>
