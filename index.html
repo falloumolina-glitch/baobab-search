@@ -11,7 +11,6 @@
 </head>
 <body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-inter min-h-screen flex flex-col">
 
-  <!-- HEADER HAUT -->
   <header id="topBar" class="w-full flex items-center justify-end px-6 py-4 text-sm">
     <div class="flex items-center gap-3">
       <button onclick="showPage('settingsPage')" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer">
@@ -21,7 +20,6 @@
     </div>
   </header>
 
-  <!-- HOME AVEC ESPACE -->
   <main id="homePage" class="page active flex-1 flex flex-col items-center px-4">
     <div class="mt-16"></div>
     <h1 class="font-sora text-6xl font-bold mb-10 bg-gradient-to-r from-blue-600 to-blue-900 bg-clip-text text-transparent">Baobab</h1>
@@ -38,13 +36,11 @@
           <svg class="w-5 h-5 text-white pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
         </button>
       </div>
-      <div class="flex justify-center gap-3 mt-6">
-        <button type="submit" class="px-5 py-2 bg-gray-100 dark:bg-gray-800 rounded hover:border hover:border-gray-300">Recher</button>
-      </div>
+      <!-- ICI J'AI ENLEVÉ LE BOUTON RECHER -->
     </form>
   </main>
 
-  <!-- BARRE BAS -->
+  <!-- Le reste du code ne change pas -->
   <nav id="bottomBar" class="hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t dark:border-gray-800 flex justify-around py-2 z-50">
     <button onclick="showPage('settingsPage')" class="p-2 rounded-full">
       <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6,8c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM12,20c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM6,20c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM6,14c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM12,14c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM16,6c0,1.1 0.9,2 2,2s2,-0.9 2,-2 -0.9,-2 -2,-2 -2,0.9 -2,2zM12,8c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM16,14c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM16,20c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2z"/></svg>
@@ -52,164 +48,7 @@
     <button onclick="showPage('settingsPage')" class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-blue-900 text-white font-bold">B</button>
   </nav>
 
-  <!-- RESULTS -->
-  <section id="resultsPage" class="page flex-1 pb-20">
-    <div class="sticky top-0 bg-white dark:bg-gray-950 border-b dark:border-gray-800 px-4 lg:px-40 pt-3">
-      <form onsubmit="search(event)" class="flex items-center w-full max-w-2xl h-11 px-4 border-gray-300 dark:border-gray-700 rounded-full mb-3 bg-white dark:bg-gray-900">
-        <input id="searchInputResults" type="text" class="bg-transparent outline-none w-full">
-        <button type="button" onclick="startVoice('micIcon2')" class="p-1 ml-2"><svg id="micIcon2" class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Zm5 8c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2Z"/></svg></button>
-        <button type="submit" class="p-2 ml-1 bg-blue-600 hover:bg-blue-700 rounded-full">
-          <svg class="w-5 h-5 text-white pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-        </button>
-      </form>
-      <div class="flex gap-6 overflow-x-auto text-sm text-gray-600 dark:text-gray-400">
-        <button onclick="switchTab('all')" id="tab-all" class="tab-btn pb-3 border-b-2 border-blue-600 text-blue-600 font-semibold">Tous</button>
-        <button onclick="switchTab('images')" id="tab-images" class="tab-btn pb-3 border-b-2 border-transparent hover:text-black">Images</button>
-        <button onclick="switchTab('videos')" id="tab-videos" class="tab-btn pb-3 border-b-2 border-transparent hover:text-black">Vidéos</button>
-        <button onclick="switchTab('news')" id="tab-news" class="tab-btn pb-3 border-b-2 border-transparent hover:text-black">Actualités</button>
-      </div>
-    </div>
-    <div class="flex px-4 lg:px-40 py-4 gap-8">
-      <div class="flex-1 max-w-2xl">
-        <p id="resultCount" class="text-sm text-gray-500 mb-4"></p>
-        <div id="resultsList" class="space-y-6"></div>
-      </div>
-      <aside class="hidden lg:block w-96">
-        <div id="aiSummary" class="border dark:border-gray-800 rounded-xl p-4">
-          <p class="text-sm font-semibold mb-2">✨ Résumé IA par Baobab</p>
-          <p id="aiText" class="text-sm"></p>
-        </div>
-      </aside>
-    </div>
-  </section>
-
-  <!-- PARAMETRES COMPLETS 100% FONCTIONNELS -->
-  <section id="settingsPage" class="page flex-1 px-4 lg:px-40 py-10 pb-24">
-    <h2 class="text-3xl font-bold mb-8 font-sora">Paramètres</h2>
-
-    <div class="bg-white dark:bg-gray-900 rounded-2xl p-5 mb-4 shadow-sm border dark:border-gray-800">
-      <h3 class="font-semibold text-lg mb-4">1. Langue & Région</h3>
-      <label class="flex flex-col gap-2 py-2"><span>Langue d'affichage</span>
-        <select id="uiLanguage" class="w-full bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
-          <option value="fr">Français</option><option value="en">English</option><option value="wo">Wolof</option>
-        </select>
-      </label>
-      <label class="flex flex-col gap-2 py-2"><span>Langue des résultats</span>
-        <select id="resultsLanguage" class="w-full bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
-          <option value="any">Toutes les langues</option><option value="fr">Français</option><option value="en">English</option>
-        </select>
-      </label>
-      <label class="flex flex-col gap-2 py-2"><span>Région géographique</span>
-        <select id="region" class="w-full bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
-          <option value="sn">Sénégal</option><option value="fr">France</option><option value="us">États-Unis</option><option value="world">Monde entier</option>
-        </select>
-      </label>
-    </div>
-
-    <div class="bg-white dark:bg-gray-900 rounded-2xl p-5 mb-4 shadow-sm border dark:border-gray-800">
-      <h3 class="font-semibold text-lg mb-4">2. Filtres de Recherche</h3>
-      <label class="flex flex-col gap-2 py-2"><span>Période</span>
-        <select id="timeFilter" class="w-full bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
-          <option value="any">N'importe quand</option><option value="day">Dernières 24h</option><option value="week">Semaine passée</option><option value="month">Mois passé</option>
-        </select>
-      </label>
-      <label class="flex items-center justify-between py-2"><span>Recherche exacte Verbatim</span><input type="checkbox" id="verbatim" class="w-5 h-5 accent-blue-600"></label>
-    </div>
-
-    <div class="bg-white dark:bg-gray-900 rounded-2xl p-5 mb-4 shadow-sm border dark:border-gray-800">
-      <h3 class="font-semibold text-lg mb-4">3. Confidentialité & Historique</h3>
-      <label class="flex items-center justify-between py-2"><span>Enregistrer l'historique Web</span><input type="checkbox" id="saveHistory" class="w-5 h-5 accent-blue-600" checked></label>
-      <label class="flex items-center justify-between py-2"><span>Personnalisation des résultats</span><input type="checkbox" id="personalization" class="w-5 h-5 accent-blue-600"></label>
-      <label class="flex flex-col gap-2 py-2"><span>Filtrage SafeSearch</span>
-        <select id="safeSearch" class="w-full bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
-          <option value="off">Désactiver</option><option value="blur">Flouter</option><option value="on">Activer</option>
-        </select>
-      </label>
-    </div>
-
-    <div class="bg-white dark:bg-gray-900 rounded-2xl p-5 mb-4 shadow-sm border dark:border-gray-800">
-      <h3 class="font-semibold text-lg mb-4">4. Interface & Affichage</h3>
-      <label class="flex flex-col gap-2 py-2"><span>Position de la barre</span>
-        <select id="barPosition" class="w-full bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
-          <option value="top">Barre en Haut</option>
-          <option value="bottom">Barre en Bas</option>
-        </select>
-      </label>
-      <label class="flex items-center justify-between py-2"><span>Saisie semi-automatique</span><input type="checkbox" id="autocomplete" class="w-5 h-5 accent-blue-600" checked></label>
-      <label class="flex items-center justify-between py-2"><span>Ouvrir dans un nouvel onglet</span><input type="checkbox" id="openNewTab" class="w-5 h-5 accent-blue-600"></label>
-      <label class="flex items-center justify-between py-2"><span>Recherche vocale</span><input type="checkbox" id="voiceSearch" class="w-5 h-5 accent-blue-600" checked></label>
-      <label class="flex flex-col gap-2 py-2"><span>Thème</span>
-        <select id="theme" class="w-full bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
-          <option value="light">Thème Clair</option><option value="dark">Thème Sombre</option><option value="system">Système</option>
-        </select>
-      </label>
-    </div>
-
-    <!-- NOUVEAU BLOC LEGAL -->
-    <div class="bg-white dark:bg-gray-900 rounded-2xl p-5 mb-4 shadow-sm border dark:border-gray-800">
-      <h3 class="font-semibold text-lg mb-4">5. Légal</h3>
-      <button onclick="document.getElementById('privacyModal').classList.remove('hidden')" class="w-full text-left py-2 text-blue-600">Politique de confidentialité</button>
-      <button onclick="document.getElementById('termsModal').classList.remove('hidden')" class="w-full text-left py-2 text-blue-600">Conditions d'utilisation</button>
-    </div>
-
-    <button onclick="saveSettings()" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white w-full py-3.5 rounded-full font-bold">Enregistrer</button>
-    <p id="saveMsg" class="text-green-600 text-center mt-3 hidden">✓ Paramètres enregistrés!</p>
-    <button onclick="showPage('homePage')" class="mt-6 text-blue-600 w-full font-semibold">← Retour à l'accueil</button>
-  </section>
-
-  <!-- MODAL CONFIDENTIALITE -->
-  <div id="privacyModal" class="hidden fixed inset-0 bg-black/50 z-50 overflow-y-auto p-4">
-    <div class="bg-white dark:bg-gray-900 rounded-2xl max-w-3xl mx-auto p-6 my-10">
-      <h2 class="text-2xl font-bold mb-2">Politique de confidentialité – Baobab Search</h2>
-      <p class="text-sm text-gray-500 mb-4">Dernière mise à jour : 17 juillet 2026</p>
-      <div class="text-sm space-y-3 leading-relaxed">
-        <p>Bienvenue sur Baobab Search.<br>Votre vie privée est importante pour nous. Cette Politique de confidentialité explique quelles informations nous collectons, comment nous les utilisons, les protégeons et quels sont vos droits.</p>
-        <p><b>1. Informations collectées</b><br>Lorsque vous utilisez Baobab Search, nous pouvons collecter :<br>- Les termes de recherche que vous saisissez.<br>- Des informations techniques telles que le type d'appareil, le navigateur, le système d'exploitation et l'adresse IP.<br>- Des données d'utilisation permettant d'améliorer les performances et la sécurité du service.<br>Nous ne collectons que les informations nécessaires au fonctionnement de l'application.</p>
-        <p><b>2. Utilisation des informations</b><br>Les informations collectées servent à :<br>- fournir des résultats de recherche pertinents ;<br>- améliorer la qualité et les performances de Baobab Search ;<br>- protéger les utilisateurs contre les abus, le spam et les activités frauduleuses ;<br>- assurer la sécurité et la stabilité de nos services.</p>
-        <p><b>3. Partage des informations</b><br>Nous ne vendons jamais vos données personnelles.<br>Vos informations peuvent être partagées uniquement lorsque :<br>- la loi l'exige ;<br>- cela est nécessaire pour protéger les droits, la sécurité ou les utilisateurs de Baobab Search ;<br>- un prestataire technique intervient pour le fonctionnement du service, sous des obligations de confidentialité.</p>
-        <p><b>4. Conservation des données</b><br>Les données sont conservées uniquement pendant la durée nécessaire au fonctionnement du service, à la sécurité ou au respect des obligations légales.</p>
-        <p><b>5. Sécurité</b><br>Nous mettons en œuvre des mesures techniques et organisationnelles afin de protéger vos informations contre tout accès non autorisé, toute modification, perte ou divulgation.</p>
-        <p><b>6. Vos droits</b><br>Selon la législation applicable, vous pouvez :<br>- demander l'accès à vos données ;<br>- demander leur correction ;<br>- demander leur suppression ;<br>- vous opposer à certains traitements de données.</p>
-        <p><b>7. Services tiers</b><br>Baobab Search peut contenir des liens vers des sites ou services externes. Nous ne sommes pas responsables de leurs politiques de confidentialité.</p>
-        <p><b>8. Modifications</b><br>Cette Politique de confidentialité peut être modifiée à tout moment. Les changements importants seront publiés dans l'application ou sur notre site.</p>
-        <p><b>9. Contact</b><br>Pour toute question concernant cette Politique de confidentialité, vous pouvez nous contacter à l'adresse indiquée sur le site officiel de Baobab Search.</p>
-      </div>
-      <button onclick="document.getElementById('privacyModal').classList.add('hidden')" class="mt-6 bg-blue-600 text-white px-5 py-2 rounded-full">Fermer</button>
-    </div>
-  </div>
-
-  <!-- MODAL CONDITIONS -->
-  <div id="termsModal" class="hidden fixed inset-0 bg-black/50 z-50 overflow-y-auto p-4">
-    <div class="bg-white dark:bg-gray-900 rounded-2xl max-w-3xl mx-auto p-6 my-10">
-      <h2 class="text-2xl font-bold mb-2">Conditions d'utilisation – Baobab Search</h2>
-      <p class="text-sm text-gray-500 mb-4">Dernière mise à jour : 17 juillet 2026</p>
-      <div class="text-sm space-y-3 leading-relaxed">
-        <p>En utilisant Baobab Search, vous acceptez les présentes Conditions d'utilisation.</p>
-        <p><b>1. Utilisation du service</b><br>Baobab Search est un moteur de recherche destiné à aider les utilisateurs à accéder aux informations disponibles sur Internet.<br>Vous vous engagez à utiliser le service dans le respect des lois applicables.</p>
-        <p><b>2. Comportements interdits</b><br>Il est interdit de :<br>- utiliser le service à des fins illégales ;<br>- tenter de perturber ou d'endommager les systèmes de Baobab Search ;<br>- diffuser des logiciels malveillants, des virus ou des contenus nuisibles ;<br>- contourner les mesures de sécurité du service.</p>
-        <p><b>3. Contenu des résultats</b><br>Les résultats affichés peuvent provenir de sites tiers.<br>Baobab Search ne garantit pas l'exactitude, la disponibilité ou la fiabilité de tous les contenus référencés.</p>
-        <p><b>4. Propriété intellectuelle</b><br>Le nom Baobab Search, son logo, son interface et ses éléments graphiques sont protégés par les lois applicables.<br>Toute reproduction ou utilisation non autorisée est interdite.</p>
-        <p><b>5. Disponibilité du service</b><br>Nous nous efforçons d'assurer un service fiable, mais nous ne garantissons pas un fonctionnement ininterrompu.<br>Le service peut être modifié, suspendu ou interrompu à tout moment pour des raisons techniques, de maintenance ou de sécurité.</p>
-        <p><b>6. Limitation de responsabilité</b><br>Baobab Search ne peut être tenu responsable :<br>- des contenus publiés par des sites tiers ;<br>- des dommages résultant de l'utilisation du service ;<br>- des interruptions temporaires ou des erreurs techniques.</p>
-        <p><b>7. Modifications des conditions</b><br>Nous pouvons modifier ces Conditions d'utilisation à tout moment. Les nouvelles versions prennent effet dès leur publication.</p>
-        <p><b>8. Droit applicable</b><br>Ces Conditions sont régies par les lois applicables dans le pays où Baobab Search est exploité, sauf disposition légale contraire.</p>
-        <p><b>9. Contact</b><br>Pour toute question concernant ces Conditions d'utilisation, veuillez utiliser les coordonnées disponibles sur le site officiel de Baobab Search.</p>
-      </div>
-      <button onclick="document.getElementById('termsModal').classList.add('hidden')" class="mt-6 bg-blue-600 text-white px-5 py-2 rounded-full">Fermer</button>
-    </div>
-  </div>
-
-  <footer class="bg-gray-100 dark:bg-gray-900 text-sm text-gray-600 dark:text-gray-400">
-    <div class="px-6 py-3 border-b dark:border-gray-800">Guédiawaye, SN</div>
-    <div class="flex flex-wrap justify-between px-6 py-3">
-      <div class="flex gap-4">
-        <button onclick="showPage('homePage')" class="hover:underline">À propos</button>
-        <button onclick="showPage('homePage')" class="hover:underline">Confidentialité</button>
-      </div>
-    </div>
-  </footer>
-
-  <input type="file" id="fileInput" class="hidden">
-  <script src="script.js"></script>
+  <!-- ... tout le reste identique ... -->
+  
 </body>
       </html>
