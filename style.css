@@ -2,7 +2,6 @@ body { font-family: 'Inter', sans-serif; }
 .font-sora { font-family: 'Sora', sans-serif; }
 .page { display: none; }
 .page.active { display: block; }
-.tab-btn.active { border-color: #2563EB!important; color: #2563EB!important; }
 html[dir="rtl"] { direction: rtl; text-align: right; }
 html[dir="rtl"] input, html[dir="rtl"] select { text-align: right; }
 html[dir="rtl"] #set_back_btn { transform: scaleX(-1); display: inline-block; }
