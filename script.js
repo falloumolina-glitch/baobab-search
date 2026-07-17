@@ -1,30 +1,150 @@
-const YOUTUBE_KEY = "COLLE_TA_CLE_ICI";
-let currentQuery = '';
+const translations = {
+  fr: { all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", my_photos: "Mes Photos", my_docs: "Mes Documents", about: "À propos", terms: "Conditions", privacy: "Confidentialité", settings_title: "Paramètres", lang_region: "Langue & Région", appearance: "Apparence", light_theme: "Thème Clair", dark_theme: "Thème Sombre", save: "Enregistrer", saved: "✓ Paramètres enregistrés!", back: "← Retour", search_placeholder: "Recher sur Baobab...", ai_title: "✨ Résumé IA par Baobab", ai_summary: "Résumé IA", new_tab: "Nouvel onglet", about_title: "À propos de Baobab Search", terms_title: "Conditions d'utilisation", privacy_title: "Politique de confidentialité" },
+  en: { all: "All", images: "Images", videos: "Videos", news: "News", my_photos: "My Photos", my_docs: "My Documents", about: "About", terms: "Terms", privacy: "Privacy", settings_title: "Settings", lang_region: "Language & Region", appearance: "Appearance", light_theme: "Light Theme", dark_theme: "Dark Theme", save: "Save", saved: "✓ Settings saved!", back: "← Back", search_placeholder: "Search on Baobab...", ai_title: "✨ AI Summary by Baobab", ai_summary: "AI Summary", new_tab: "New tab", about_title: "About Baobab Search", terms_title: "Terms of Service", privacy_title: "Privacy Policy" },
+  wo: { all: "Lépp", images: "Nataal", videos: "Video", news: "Lëndëm", my_photos: "Nataal yi ma", my_docs: "Liggeey yi ma", about: "Ci Baobab", terms: "Yoon yi", privacy: "Sutura", settings_title: "Jëfandikoo", lang_region: "Làkk ak Dëkku", appearance: "Nataal", light_theme: "Leer", dark_theme: "Guddi", save: "Denc", saved: "✓ Denc na!", back: "← Dellu", search_placeholder: "Laaj Baobab...", ai_title: "✨ Résumé AI", ai_summary: "Résumé AI", new_tab: "Fenetra bes", about_title: "Ci Baobab Search", terms_title: "Yoon yi jëfandikoo", privacy_title: "Sutura" }
+};
 
-const translations = { fr: {dir:"ltr",set_title:"Paramètres",set_account_title:"1. Compte et Synchronisation",set_account_info:"Gestion du Compte",set_sync:"Synchronisation",set_devices:"Gestion des appareils",set_lang_title:"2. Langues et Région",set_lang_display:"Langue d'affichage",set_region:"Région et Fuseau horaire",set_security_title:"3. Sécurité et Confidentialité",set_2fa:"Validation en deux étapes 2FA",set_perms:"Autorisations",set_activity:"Activité et Historique",set_pref_title:"4. Préférences d'Utilisation",set_access:"Accessibilité",set_theme:"Thème",set_bar:"Position de la barre",set_save_btn:"Enregistrer",saveMsg:"✓ Paramètres enregistrés!",set_back_btn:"← Retour à l'accueil",placeholder:"Recher sur Baobab..."}, en: {dir:"ltr",set_title:"Settings",set_account_title:"1. Account & Sync",set_account_info:"Account Management",set_sync:"Synchronization",set_devices:"Device Management",set_lang_title:"2. Languages & Region",set_lang_display:"Display Language",set_region:"Region & Timezone",set_security_title:"3. Security & Privacy",set_2fa:"Two-Factor Authentication",set_perms:"Permissions",set_activity:"Activity & History",set_pref_title:"4. Usage Preferences",set_access:"Accessibility",set_theme:"Theme",set_bar:"Bar Position",set_save_btn:"Save",saveMsg:"✓ Settings saved!",set_back_btn:"← Back to Home",placeholder:"Search on Baobab..."} };
+const trends = [
+  {q: "angleterre - argentine", n: "20 000+"},
+  {q: "météo demain", n: "20 000+"},
+  {q: "messi", n: "500+"}
+];
 
-function t(k){ const lang=getSettings().uiLanguage; return translations[lang]?.[k] || translations['fr'][k]; }
-function getSettings() { return { uiLanguage: localStorage.getItem('uiLanguage') || 'fr', region: localStorage.getItem('region') || 'sn', twoFA: localStorage.getItem('twoFA') === 'true', theme: localStorage.getItem('theme') || 'system', barPosition: localStorage.getItem('barPosition') || 'top', fontSize: localStorage.getItem('fontSize') || '16' } }
+let recognition;
+let currentTab = 'all';
 
-function openModal(title, content) { const modal = document.createElement('div'); modal.id = 'settingsModal'; modal.className = 'fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4'; modal.innerHTML = `<div class="bg-white dark:bg-gray-900 rounded-2xl p-6 w-full max-w-md"><h3 class="text-xl font-bold mb-4">${title}</h3><div class="mb-4">${content}</div><button onclick="closeModal()" class="w-full py-2 bg-blue-600 text-white rounded-lg">Fermer</button></div>`; document.body.appendChild(modal); }
-function closeModal() { document.getElementById('settingsModal')?.remove(); }
-function openAccount() { openModal(t('set_account_info'), `<label class="block mb-2">Email: <input type="email" class="w-full p-2 border rounded dark:bg-gray-800" value="user@baobab.com"></label>`); }
-function openSync() { openModal(t('set_sync'), `<p>Sauvegarde Cloud activée</p>`); }
-function openDevices() { openModal(t('set_devices'), `<p>📱 Samsung S23 - Actif</p>`); }
-function openPermissions() { openModal(t('set_perms'), `<button onclick="navigator.mediaDevices.getUserMedia({audio:true})" class="w-full py-2 bg-blue-600 text-white rounded">Autoriser Micro</button>`); }
-function openActivity() { openModal(t('set_activity'), `<button onclick="alert('Historique effacé')" class="w-full py-2 bg-red-500 text-white rounded">Effacer</button>`); }
-function openAccessibility() { openModal(t('set_access'), `<label>Taille: <input type="range" min="12" max="24" value="${getSettings().fontSize}" oninput="document.documentElement.style.fontSize=this.value+'px'; localStorage.setItem('fontSize', this.value)"></label>`); }
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('-translate-x-full');
+  document.getElementById('sidebarOverlay').classList.toggle('hidden');
+}
 
-function saveSettings() { localStorage.setItem('uiLanguage', document.getElementById('uiLanguage').value); localStorage.setItem('region', document.getElementById('region').value); localStorage.setItem('theme', document.getElementById('theme').value); localStorage.setItem('barPosition', document.getElementById('barPosition').value); localStorage.setItem('twoFA', document.getElementById('twoFA').checked); applyTranslations(); applyTheme(); applyBarPosition(); document.getElementById('saveMsg').classList.remove('hidden'); setTimeout(() => document.getElementById('saveMsg').classList.add('hidden'), 2000); }
-function applyTranslations() { const tr = translations[getSettings().uiLanguage]; document.documentElement.lang = getSettings().uiLanguage; document.documentElement.dir = tr.dir; for(let key in tr) { if(document.getElementById(key)) document.getElementById(key).innerText = tr[key]; } if(document.getElementById('searchInput')) document.getElementById('searchInput').placeholder = tr.placeholder; }
-function applyTheme() { const theme = getSettings().theme; document.documentElement.classList.toggle('dark', theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)); document.documentElement.style.fontSize = getSettings().fontSize + 'px'; }
-function applyBarPosition() { const s = getSettings(); if(s.barPosition === 'bottom') { document.getElementById('topBar').classList.add('hidden'); document.getElementById('bottomBar').classList.remove('hidden'); } else { document.getElementById('topBar').classList.remove('hidden'); document.getElementById('bottomBar').classList.add('hidden'); } }
-function showPage(pageId) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(pageId).classList.add('active'); window.scrollTo(0,0); }
+function uploadFile(type) {
+  const input = document.getElementById('fileInput');
+  input.accept = type === 'image'? 'image/*' : '*/*';
+  input.click();
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if(file) alert(`${type === 'image'? 'Photo' : 'Document'} sélectionné: ${file.name}`);
+  }
+}
 
-function search(event) { if(event) event.preventDefault(); let query = document.getElementById('searchInput')?.value || document.getElementById('searchInputResults').value; if(!query) return; currentQuery = query; document.getElementById('searchInputResults').value = query; showPage('resultsPage'); document.getElementById('resultCount').innerText = `Résultats pour "${query}"`; document.getElementById('resultsList').innerHTML = `<div><a href="#" class="text-xl text-blue-700 hover:underline">${query}</a><p>baobab.com</p></div>`; }
+function takePhoto() {
+  const input = document.getElementById('fileInput');
+  input.accept = 'image/*';
+  input.capture = 'environment';
+  input.click();
+}
 
-function takePhoto() { const input = document.getElementById('fileInput'); input.accept = "image/*"; input.click(); input.onchange = (e) => { const file = e.target.files[0]; if(file) { showPage('resultsPage'); document.getElementById('resultCount').innerText = `Recherche par image: ${file.name}`; document.getElementById('resultsList').innerHTML = `<img src="${URL.createObjectURL(file)}" class="w-32 rounded-lg mb-4"><p>Images similaires...</p>`; } } }
-function uploadDocument() { const input = document.getElementById('fileInput'); input.accept = ".pdf,.doc,.docx,.txt"; input.click(); input.onchange = (e) => { const file = e.target.files[0]; if(file) { showPage('resultsPage'); document.getElementById('resultCount').innerText = `Document: ${file.name}`; document.getElementById('resultsList').innerHTML = `<p>📄 ${file.name}</p>`; } }
-function startVoice(iconId) { const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition; if (!SpeechRecognition) return alert('Voix non supportée'); const recognition = new SpeechRecognition(); recognition.lang = getSettings().uiLanguage; document.getElementById(iconId).classList.add('text-red-500'); recognition.onresult = (event) => { document.getElementById('searchInput').value = event.results[0][0].transcript; search(); }; recognition.onend = () => document.getElementById(iconId).classList.remove('text-red-500'); recognition.start(); }
+function startVoice() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) return alert('Voix non supportée');
+  recognition = new SpeechRecognition();
+  recognition.lang = getSettings().language === 'wo'? 'fr-FR' : getSettings().language + '-FR';
+  recognition.onstart = () => document.getElementById('micIcon').classList.add('text-red-500', 'animate-pulse');
+  recognition.onresult = (event) => {
+    document.getElementById('searchInput').value = event.results[0][0].transcript;
+    search();
+  };
+  recognition.onend = () => document.getElementById('micIcon').classList.remove('text-red-500', 'animate-pulse');
+  recognition.start();
+}
 
-document.addEventListener('DOMContentLoaded', () => { const s = getSettings(); document.getElementById('uiLanguage').value = s.uiLanguage; document.getElementById('region').value = s.region; document.getElementById('theme').value = s.theme; document.getElementById('barPosition').value = s.barPosition; document.getElementById('twoFA').checked = s.twoFA; applyTranslations(); applyTheme(); applyBarPosition(); });
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.remove('border-blue-600', 'text-blue-600', 'font-semibold');
+    btn.classList.add('border-transparent', 'text-gray-500');
+  });
+  const activeBtn = document.getElementById(`tab-${tab}`);
+  activeBtn.classList.add('border-blue-600', 'text-blue-600', 'font-semibold');
+  activeBtn.classList.remove('border-transparent', 'text-gray-500');
+  search(); // Relance la recherche avec le nouvel onglet
+}
+
+function search(e) {
+  if(e) e.preventDefault();
+  const query = document.getElementById('searchInput').value;
+  if(!query) return;
+  showPage('resultsPage');
+  document.getElementById('aiText').innerText = `Voici un résumé IA pour: ${query} - Onglet: ${currentTab}`;
+  document.getElementById('resultCount').innerText = `Environ 1 230 000 résultats pour ${query}`;
+  document.getElementById('resultsList').innerHTML = `<div class="p-4">Résultats pour "${query}" dans l'onglet ${currentTab}</div>`;
+}
+
+function quickSearch(q) {
+  document.getElementById('searchInput').value = q;
+  search();
+}
+
+function showPage(pageId) {
+  document.getElementById('sidebar').classList.add('-translate-x-full');
+  document.getElementById('sidebarOverlay').classList.add('hidden');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+}
+
+function getSettings() {
+  return {
+    language: localStorage.getItem('language') || 'fr',
+    aiSummary: localStorage.getItem('aiSummary')!== 'false',
+    openNewTab: localStorage.getItem('openNewTab') === 'true',
+    theme: localStorage.getItem('theme') || 'light'
+  }
+}
+
+function changeLanguage(lang) {
+  localStorage.setItem('language', lang);
+  applyTranslations();
+}
+
+function applyTranslations() {
+  const lang = getSettings().language;
+  document.querySelectorAll('[data-lang]').forEach(el => {
+    const key = el.getAttribute('data-lang');
+    if(translations[lang] && translations[lang][key]) el.innerText = translations[lang][key];
+  });
+  document.querySelectorAll('[data-lang-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-lang-placeholder');
+    if(translations[lang] && translations[lang][key]) el.placeholder = translations[lang][key];
+  });
+  document.getElementById('language').value = lang;
+}
+
+function saveSettings() {
+  const lang = document.getElementById('language').value;
+  const ai = document.getElementById('aiSummaryToggle').checked;
+  const tab = document.getElementById('openNewTab').checked;
+  const theme = document.querySelector('input[name="theme"]:checked').value;
+  localStorage.setItem('language', lang);
+  localStorage.setItem('aiSummary', ai);
+  localStorage.setItem('openNewTab', tab);
+  localStorage.setItem('theme', theme);
+  if(theme === 'dark') document.documentElement.classList.add('dark');
+  else document.documentElement.classList.remove('dark');
+  document.getElementById('saveMsg').classList.remove('hidden');
+  setTimeout(() => document.getElementById('saveMsg').classList.add('hidden'), 2000);
+  applyTranslations();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadTrends();
+  applyTranslations();
+  const settings = getSettings();
+  document.getElementById('aiSummaryToggle').checked = settings.aiSummary;
+  document.getElementById('openNewTab').checked = settings.openNewTab;
+  document.querySelector(`input[name="theme"][value="${settings.theme}"]`).checked = true;
+  if(settings.theme === 'dark') document.documentElement.classList.add('dark');
+});
+
+function loadTrends() {
+  const list = document.getElementById('trendsList');
+  list.innerHTML = trends.map(t => `
+    <div onclick="quickSearch('${t.q}')" class="flex items-center justify-between p-3 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg cursor-pointer">
+      <div class="flex items-center gap-4">
+        <svg class="w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+        <span>${t.q}</span>
+      </div>
+      <span class="text-sm text-gray-500">${t.n}</span>
+    </div>
+  `).join('');
+       }
