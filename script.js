@@ -1,75 +1,70 @@
-const translations = { /* ... mêmes traductions qu'avant ... */ 
-  fr: { all: "Tout", images: "Images", videos: "Vidéos", news: "Actualités", my_photos: "Mes Photos", my_docs: "Mes Documents", about: "À propos", terms: "Conditions", privacy: "Confidentialité", settings_title: "Paramètres", lang_region: "Langue & Région", appearance: "Apparence", light_theme: "Thème Clair", dark_theme: "Thème Sombre", save: "Enregistrer", saved: "✓ Paramètres enregistrés!", back: "← Retour", search_placeholder: "Recher sur Baobab...", ai_title: "✨ Résumé IA par Baobab", ai_summary: "Résumé IA" }
-};
+const suggestions = ["météo louga", "messi", "actualités sénégal", "traduction", "calculatrice"];
+let currentTab = 'all';
 
-let currentTab = 'all'; let currentPage = 1; let isLoading = false;
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('translate-x-full'); document.getElementById('sidebarOverlay').classList.toggle('hidden'); }
+function goHome() { showPage('homePage'); document.getElementById('mainHeader').classList.add('hidden'); }
+function showPage(pageId) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(pageId).classList.add('active'); }
 
-function toggleSidebar() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); document.getElementById('sidebarOverlay').classList.toggle('hidden'); }
-function uploadFile(type) { const input = document.getElementById('fileInput'); input.accept = type === 'image'? 'image/*' : '*/*'; input.click(); }
-function takePhoto() { const input = document.getElementById('fileInput'); input.accept = 'image/*'; input.capture = 'environment'; input.click(); }
-function startVoice() { /* ... code vocal ... */ }
+function clearInput(id) { document.getElementById(id).value = ''; document.getElementById(id==='searchInput'?'clearBtn':'clearBtnHeader').classList.add('hidden'); }
+document.getElementById('searchInput').oninput = (e) => { document.getElementById('clearBtn').classList.toggle('hidden', !e.target.value); }
+document.getElementById('searchInputHeader').oninput = (e) => { document.getElementById('clearBtnHeader').classList.toggle('hidden', !e.target.value); }
 
-function switchTab(tab) {
-  currentTab = tab; currentPage = 1;
-  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-  document.getElementById(`tab-${tab}`).classList.add('active');
-  document.getElementById('resultsList').innerHTML = '';
-  search();
+function showAutocomplete(val, inputId='searchInputHeader') {
+  const list = inputId==='searchInput'? 'autocompleteListHome' : 'autocompleteList';
+  const el = document.getElementById(list);
+  if(val.length < 3) { el.classList.add('hidden'); return; }
+  const filtered = suggestions.filter(s => s.includes(val.toLowerCase()));
+  el.innerHTML = filtered.map(s => `<div onclick="selectSuggestion('${s}', '${inputId}')" class="p-3 hover:bg-[#F1F5F9] cursor-pointer">${s}</div>`).join('');
+  el.classList.toggle('hidden', filtered.length===0);
 }
+function selectSuggestion(s, inputId) { document.getElementById(inputId).value = s; search(); }
 
 function search(e) {
   if(e) e.preventDefault();
   const query = document.getElementById('searchInput').value || document.getElementById('searchInputHeader').value;
   if(!query) return;
   
+  showProgress(true);
+  if(!navigator.onLine) { document.getElementById('offlineMsg').classList.remove('hidden'); showProgress(false); return; }
+  
   showPage('resultsPage');
   document.getElementById('mainHeader').classList.remove('hidden');
   document.getElementById('searchInputHeader').value = query;
+  document.getElementById('offlineMsg').classList.add('hidden');
   
-  loadResults(query);
-}
+  // PANNEAU INSTANTANE
+  const panel = document.getElementById('instantPanel');
+  if(query.includes('météo')) { panel.classList.remove('hidden'); document.getElementById('instantText').innerText = "Météo à Louga: 32°C, Ensoleillé"; }
+  else { panel.classList.add('hidden'); }
 
-function loadResults(query) {
-  if(isLoading) return;
-  isLoading = true;
-  document.getElementById('loader').classList.remove('hidden');
-  
-  // Simulation API
+  // RESULTATS FAKE
   setTimeout(() => {
-    document.getElementById('aiText').innerText = `Résumé IA pour: ${query}`;
-    document.getElementById('resultCount').innerText = `Environ 1 230 000 résultats`;
-    
-    const newResults = Array(5).fill(0).map((_, i) => `
-      <div class="result-card shadow-sm border-[#E2E8F0] dark:border-gray-700">
-        <p class="text-sm text-green-700">${query}.com › page-${currentPage}-${i}</p>
-        <h3 class="font-sora text-lg text-[#2563EB] hover:underline cursor-pointer mt-1">Titre du résultat ${currentPage}-${i} pour ${query}</h3>
-        <p class="text-sm text-[#475569] mt-1">Ceci est une description du résultat. Elle est en gris moyen pour une lecture rapide et aérée.</p>
+    document.getElementById('resultsList').innerHTML = `
+      <div class="result-card">
+        <p class="result-url">https://exemple.com › page</p>
+        <h3 class="result-title cursor-pointer" onclick="window.open('https://exemple.com')">Titre du résultat pour <b>${query}</b></h3>
+        <p class="result-snippet">Ceci est un extrait avec le mot-clé <b>${query}</b> en gras pour la pertinence. <button onclick="shareLink('https://exemple.com')" class="text-[#2563EB] ml-2">Partager</button></p>
       </div>
-    `).join('');
-    
-    document.getElementById('resultsList').innerHTML += newResults;
-    currentPage++; isLoading = false;
-    document.getElementById('loader').classList.add('hidden');
-  }, 500);
+      <div class="result-card">
+        <p class="result-url">https://test.com › info</p>
+        <h3 class="result-title">Deuxième résultat concernant <b>${query}</b></h3>
+        <p class="result-snippet">Un autre snippet pertinent pour votre recherche. <button onclick="shareLink('https://test.com')" class="text-[#2563EB] ml-2">Partager</button></p>
+      </div>
+    `;
+    if(document.getElementById('saveHistory').checked) saveToHistory(query);
+    showProgress(false);
+  }, 600);
 }
 
-// INFINITE SCROLL
-window.addEventListener('scroll', () => {
-  if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
-    const query = document.getElementById('searchInputHeader').value;
-    if(query) loadResults(query);
-  }
-});
-
-function showPage(pageId) {
-  document.getElementById('mainHeader').classList.toggle('hidden', pageId !== 'resultsPage');
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(pageId).classList.add('active');
-}
-
-function clearHistory() { localStorage.clear(); alert('Historique effacé'); }
-function quickSearch(q) { document.getElementById('searchInput').value = q; search(); }
-function getSettings() { return { language: localStorage.getItem('language') || 'fr', theme: localStorage.getItem('theme') || 'system' } }
+function imFeelingLucky() { document.getElementById('searchInput').value = "messi"; search(); }
+function switchTab(tab) { currentTab = tab; document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active')); document.getElementById(`tab-${tab}`).classList.add('active'); search(); }
+function shareLink(url) { if(navigator.share) navigator.share({title: 'Baobab', url: url}); else navigator.clipboard.writeText(url); alert('Lien copié'); }
+function saveToHistory(q) { let hist = JSON.parse(localStorage.getItem('history')||'[]'); hist.unshift(q); localStorage.setItem('history', JSON.stringify(hist.slice(0,10))); }
+function clearHistory() { localStorage.removeItem('history'); alert('Historique effacé'); }
+function showProgress(show) { document.getElementById('progressBar').style.width = show ? '100%' : '0%'; }
+function startVoice() { alert('Recherche vocale'); }
+function takePhoto() { document.getElementById('fileInput').click(); }
 function changeLanguage(lang) { localStorage.setItem('language', lang); }
-function saveSettings() { /* ... sauvegarde ... */ document.getElementById('saveMsg').classList.remove('hidden'); setTimeout(() => document.getElementById('saveMsg').classList.add('hidden'), 2000); }
-document.addEventListener('DOMContentLoaded', () => { /* ... init ... */ });
+
+window.addEventListener('online', () => document.getElementById('offlineMsg').classList.add('hidden'));
+window.addEventListener('offline', () => document.getElementById('offlineMsg').classList.remove('hidden'));
