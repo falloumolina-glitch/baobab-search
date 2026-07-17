@@ -1,7 +1,6 @@
 const YOUTUBE_KEY = "COLLE_TA_CLE_ICI";
 let currentTab = 'all';
 let currentQuery = '';
-let recognition;
 
 function getSettings() {
   return {
@@ -22,32 +21,27 @@ function getSettings() {
 }
 
 function saveSettings() {
-  const getVal = (id) => document.getElementById(id);
-  const getChecked = (id) => getVal(id) ? getVal(id).checked : false;
-  const getValue = (id) => getVal(id) ? getVal(id).value : '';
-
-  localStorage.setItem('uiLanguage', getValue('uiLanguage'));
-  localStorage.setItem('resultsLanguage', getValue('resultsLanguage'));
-  localStorage.setItem('region', getValue('region'));
-  localStorage.setItem('timeFilter', getValue('timeFilter'));
-  localStorage.setItem('verbatim', getChecked('verbatim'));
-  localStorage.setItem('saveHistory', getChecked('saveHistory'));
-  localStorage.setItem('personalization', getChecked('personalization'));
-  localStorage.setItem('safeSearch', getValue('safeSearch'));
-  localStorage.setItem('barPosition', getValue('barPosition'));
-  localStorage.setItem('autocomplete', getChecked('autocomplete'));
-  localStorage.setItem('openNewTab', getChecked('openNewTab'));
-  localStorage.setItem('voiceSearch', getChecked('voiceSearch'));
-  localStorage.setItem('theme', getValue('theme'));
+  // On sauvegarde tout
+  localStorage.setItem('uiLanguage', document.getElementById('uiLanguage').value);
+  localStorage.setItem('resultsLanguage', document.getElementById('resultsLanguage').value);
+  localStorage.setItem('region', document.getElementById('region').value);
+  localStorage.setItem('timeFilter', document.getElementById('timeFilter').value);
+  localStorage.setItem('verbatim', document.getElementById('verbatim').checked);
+  localStorage.setItem('saveHistory', document.getElementById('saveHistory').checked);
+  localStorage.setItem('personalization', document.getElementById('personalization').checked);
+  localStorage.setItem('safeSearch', document.getElementById('safeSearch').value);
+  localStorage.setItem('barPosition', document.getElementById('barPosition').value);
+  localStorage.setItem('autocomplete', document.getElementById('autocomplete').checked);
+  localStorage.setItem('openNewTab', document.getElementById('openNewTab').checked);
+  localStorage.setItem('voiceSearch', document.getElementById('voiceSearch').checked);
+  localStorage.setItem('theme', document.getElementById('theme').value);
   
   applyTheme();
   applyBarPosition();
   
-  const msg = document.getElementById('saveMsg');
-  if(msg){
-    msg.classList.remove('hidden');
-    setTimeout(() => msg.classList.add('hidden'), 2000);
-  }
+  // Message de confirmation
+  document.getElementById('saveMsg').classList.remove('hidden');
+  setTimeout(() => document.getElementById('saveMsg').classList.add('hidden'), 2000);
 }
 
 function applyTheme() {
@@ -61,15 +55,12 @@ function applyTheme() {
 
 function applyBarPosition() {
   const pos = getSettings().barPosition;
-  const topBar = document.getElementById('topBar');
-  const bottomBar = document.getElementById('bottomBar');
-  if(!topBar || !bottomBar) return;
   if(pos === 'bottom') {
-    topBar.classList.add('hidden');
-    bottomBar.classList.remove('hidden');
+    document.getElementById('topBar').classList.add('hidden');
+    document.getElementById('bottomBar').classList.remove('hidden');
   } else {
-    topBar.classList.remove('hidden');
-    bottomBar.classList.add('hidden');
+    document.getElementById('topBar').classList.remove('hidden');
+    document.getElementById('bottomBar').classList.add('hidden');
   }
 }
 
@@ -94,7 +85,7 @@ function startVoice(iconId) {
   if(!getSettings().voiceSearch) return alert("Recherche vocale désactivée dans Paramètres");
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRecognition) return alert('Voix non supportée');
-  recognition = new SpeechRecognition();
+  let recognition = new SpeechRecognition();
   recognition.lang = getSettings().uiLanguage + '-FR';
   document.getElementById(iconId).classList.add('text-red-500', 'animate-pulse');
   recognition.onresult = (event) => {
@@ -105,25 +96,12 @@ function startVoice(iconId) {
   recognition.start();
 }
 
-function buildSearchUrl(query) {
-  const s = getSettings();
-  let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=6&q=${encodeURIComponent(query)}`;
-  if(s.resultsLanguage!== 'any') url += `&relevanceLanguage=${s.resultsLanguage}`;
-  if(s.region) url += `&regionCode=${s.region}`;
-  if(s.timeFilter === 'day') url += `&publishedAfter=${new Date(Date.now()-86400000).toISOString()}`;
-  if(s.safeSearch === 'on') url += `&safeSearch=strict`;
-  if(s.safeSearch === 'blur') url += `&safeSearch=moderate`;
-  return url + `&key=${YOUTUBE_KEY}`;
-}
-
-async function search(event) {
+function search(event) {
   if(event) event.preventDefault();
   let query = document.getElementById('searchInput')?.value || document.getElementById('searchInputResults').value;
   if(!query) return;
 
   const s = getSettings();
-  if(s.verbatim) query = `"${query}"`;
-
   if(s.saveHistory) {
     let history = JSON.parse(localStorage.getItem('searchHistory') || '[]');
     history.unshift(query);
@@ -135,59 +113,32 @@ async function search(event) {
   showPage('resultsPage');
   document.getElementById('resultCount').innerText = `Résultats pour "${query}"`;
   document.getElementById('aiText').innerText = `Résumé IA pour: ${query}`;
-
-  if(currentTab === 'videos') await searchYouTube(query);
-  else {
-    let html = '';
-    for(let i=1; i<=5; i++) {
-      const target = s.openNewTab? '_blank' : '_self';
-      html += `<div><a href="https://google.com/search?q=${query}" target="${target}" class="text-xl text-blue-700 hover:underline">${query} - Résultat ${i}</a><p class="text-sm text-green-700">baobab.com/resultat-${i}</p><p>Description pour "${query}".</p></div>`;
-    }
-    document.getElementById('resultsList').innerHTML = html;
+  
+  let html = '';
+  for(let i=1; i<=5; i++) {
+    const target = s.openNewTab? '_blank' : '_self';
+    html += `<div><a href="https://google.com/search?q=${query}" target="${target}" class="text-xl text-blue-700 hover:underline">${query} - Résultat ${i}</a><p class="text-sm text-green-700">baobab.com/resultat-${i}</p></div>`;
   }
+  document.getElementById('resultsList').innerHTML = html;
 }
 
-async function searchYouTube(query) {
-  if(YOUTUBE_KEY === "COLLE_TA_CLE_ICI") {
-    document.getElementById('resultsList').innerHTML = "⚠️ Colle ta clé YouTube dans script.js ligne 1";
-    return;
-  }
-  try {
-    const url = buildSearchUrl(query);
-    const res = await fetch(url);
-    const data = await res.json();
-    let html = '<div class="grid grid-cols-2 gap-4">';
-    data.items.forEach(item => {
-      if(item.id.videoId){
-        const target = getSettings().openNewTab? '_blank' : '_self';
-        html += `<div class="cursor-pointer" onclick="window.open('https://youtube.com/watch?v=${item.id.videoId}', '${target}')"><img src="${item.snippet.thumbnails.medium.url}" class="rounded-lg w-full"><p class="text-sm mt-2">${item.snippet.title}</p></div>`;
-      }
-    });
-    html += '</div>';
-    document.getElementById('resultsList').innerHTML = html;
-  } catch(e) { document.getElementById('resultsList').innerHTML = "Erreur YouTube"; }
-}
-
-// CHARGEMENT
+// CHARGEMENT AU DEMARRAGE
 document.addEventListener('DOMContentLoaded', () => {
   const s = getSettings();
-  const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; }
-  const setChecked = (id, val) => { const el = document.getElementById(id); if(el) el.checked = val; }
-
-  setVal('uiLanguage', s.uiLanguage);
-  setVal('resultsLanguage', s.resultsLanguage);
-  setVal('region', s.region);
-  setVal('timeFilter', s.timeFilter);
-  setChecked('verbatim', s.verbatim);
-  setChecked('saveHistory', s.saveHistory);
-  setChecked('personalization', s.personalization);
-  setVal('safeSearch', s.safeSearch);
-  setVal('barPosition', s.barPosition);
-  setChecked('autocomplete', s.autocomplete);
-  setChecked('openNewTab', s.openNewTab);
-  setChecked('voiceSearch', s.voiceSearch);
-  setVal('theme', s.theme);
-
+  document.getElementById('uiLanguage').value = s.uiLanguage;
+  document.getElementById('resultsLanguage').value = s.resultsLanguage;
+  document.getElementById('region').value = s.region;
+  document.getElementById('timeFilter').value = s.timeFilter;
+  document.getElementById('verbatim').checked = s.verbatim;
+  document.getElementById('saveHistory').checked = s.saveHistory;
+  document.getElementById('personalization').checked = s.personalization;
+  document.getElementById('safeSearch').value = s.safeSearch;
+  document.getElementById('barPosition').value = s.barPosition;
+  document.getElementById('autocomplete').checked = s.autocomplete;
+  document.getElementById('openNewTab').checked = s.openNewTab;
+  document.getElementById('voiceSearch').checked = s.voiceSearch;
+  document.getElementById('theme').value = s.theme;
+  
   applyTheme();
   applyBarPosition();
 });
