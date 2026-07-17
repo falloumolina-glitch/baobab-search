@@ -9,37 +9,31 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-inter min-h-screen flex-col">
+<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-inter min-h-screen flex flex-col">
 
   <!-- HEADER HAUT -->
   <header id="topBar" class="w-full flex items-center justify-end px-6 py-4 text-sm">
     <div class="flex items-center gap-3">
-      <button onclick="showPage('settingsPage')" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer">
+      <button onclick="showPage('settingsPage')" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6,8c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM12,20c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM6,20c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM6,14c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM12,14c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM16,6c0,1.1 0.9,2 2,2s2,-0.9 2,-2 -0.9,-2 -2,-2 -2,0.9 -2,2zM12,8c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM16,14c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM16,20c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2z"/></svg>
       </button>
       <button onclick="showPage('settingsPage')" class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-blue-900 text-white font-bold">B</button>
     </div>
   </header>
 
-  <!-- HOME AVEC ESPACE -->
-  <main id="homePage" class="page active flex-1 flex flex-col items-center px-4">
+  <!-- HOME -->
+  <main id="homePage" class="page active flex-1 flex-col items-center px-4">
     <div class="mt-16"></div>
     <h1 class="font-sora text-6xl font-bold mb-10 bg-gradient-to-r from-blue-600 to-blue-900 bg-clip-text text-transparent">Baobab</h1>
     <form onsubmit="search(event)" class="w-full max-w-2xl">
-      <div class="flex items-center w-full h-12 px-5 border border-gray-300 dark:border-gray-700 rounded-full hover:shadow-md focus-within:shadow-md bg-white dark:bg-gray-900">
+      <div class="flex items-center w-full h-12 px-5 border-gray-300 dark:border-gray-700 rounded-full hover:shadow-md bg-white dark:bg-gray-900">
         <input id="searchInput" type="text" placeholder="Recher sur Baobab..." class="bg-transparent outline-none w-full">
         <button type="button" onclick="startVoice('micIcon')" class="p-1 ml-2">
           <svg id="micIcon" class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Zm5 8c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2Z"/></svg>
         </button>
-        <button type="button" onclick="takePhoto()" class="p-1 ml-1">
-          <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/></svg>
-        </button>
         <button type="submit" class="p-2 ml-1 bg-blue-600 hover:bg-blue-700 rounded-full">
-          <svg class="w-5 h-5 text-white pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
         </button>
-      </div>
-      <div class="flex justify-center gap-3 mt-6">
-        <button type="submit" class="px-5 py-2 bg-gray-100 dark:bg-gray-800 rounded hover:border hover:border-gray-300">Recher</button>
       </div>
     </form>
   </main>
@@ -55,91 +49,84 @@
   <!-- RESULTS -->
   <section id="resultsPage" class="page flex-1 pb-20">
     <div class="sticky top-0 bg-white dark:bg-gray-950 border-b dark:border-gray-800 px-4 lg:px-40 pt-3">
-      <form onsubmit="search(event)" class="flex items-center w-full max-w-2xl h-11 px-4 border border-gray-300 dark:border-gray-700 rounded-full mb-3 bg-white dark:bg-gray-900">
+      <form onsubmit="search(event)" class="flex items-center w-full max-w-2xl h-11 px-4 border-gray-300 dark:border-gray-700 rounded-full mb-3 bg-white dark:bg-gray-900">
         <input id="searchInputResults" type="text" class="bg-transparent outline-none w-full">
-        <button type="button" onclick="startVoice('micIcon2')" class="p-1 ml-2"><svg id="micIcon2" class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Zm5 8c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2Z"/></svg></button>
         <button type="submit" class="p-2 ml-1 bg-blue-600 hover:bg-blue-700 rounded-full">
-          <svg class="w-5 h-5 text-white pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
         </button>
       </form>
-      <div class="flex gap-6 overflow-x-auto text-sm text-gray-600 dark:text-gray-400">
-        <button onclick="switchTab('all')" id="tab-all" class="tab-btn pb-3 border-b-2 border-blue-600 text-blue-600 font-semibold">Tous</button>
-        <button onclick="switchTab('images')" id="tab-images" class="tab-btn pb-3 border-b-2 border-transparent hover:text-black">Images</button>
-        <button onclick="switchTab('videos')" id="tab-videos" class="tab-btn pb-3 border-b-2 border-transparent hover:text-black">Vidéos</button>
-        <button onclick="switchTab('news')" id="tab-news" class="tab-btn pb-3 border-b-2 border-transparent hover:text-black">Actualités</button>
-      </div>
     </div>
-    <div class="flex px-4 lg:px-40 py-4 gap-8">
-      <div class="flex-1 max-w-2xl">
-        <p id="resultCount" class="text-sm text-gray-500 mb-4"></p>
-        <div id="resultsList" class="space-y-6"></div>
-      </div>
-      <aside class="hidden lg:block w-96">
-        <div id="aiSummary" class="border dark:border-gray-800 rounded-xl p-4">
-          <p class="text-sm font-semibold mb-2">✨ Résumé IA par Baobab</p>
-          <p id="aiText" class="text-sm"></p>
-        </div>
-      </aside>
+    <div class="px-4 lg:px-40 py-4">
+      <p id="resultCount" class="text-sm text-gray-500 mb-4"></p>
+      <div id="resultsList" class="space-y-6"></div>
     </div>
   </section>
 
-  <!-- PARAMETRES COMPLETS -->
+  <!-- PARAMETRES 4 SECTIONS -->
   <section id="settingsPage" class="page flex-1 px-4 lg:px-40 py-10 pb-24">
     <h2 id="set_title" class="text-3xl font-bold mb-8 font-sora">Paramètres</h2>
 
+    <!-- 1. COMPTE ET SYNCHRONISATION -->
     <div class="bg-white dark:bg-gray-900 rounded-2xl p-5 mb-4 shadow-sm border dark:border-gray-800">
-      <h3 id="set_lang_title" class="font-semibold text-lg mb-4">1. Langue & Région</h3>
-      <label class="flex flex-col gap-2 py-2"><span id="set_lang_display">Langue d'affichage</span>
+      <h3 id="set_account_title" class="font-semibold text-lg mb-4">1. Compte et Synchronisation</h3>
+      <button class="flex justify-between items-center w-full py-3 border-b dark:border-gray-800"><span id="set_account_info">Gestion du Compte</span> <span>></span></button>
+      <p class="text-sm text-gray-500 mt-1 mb-3">Informations personnelles, modification du mot de passe et récupération.</p>
+      <button class="flex justify-between items-center w-full py-3 border-b dark:border-gray-800"><span id="set_sync">Synchronisation</span> <span>></span></button>
+      <p class="text-sm text-gray-500 mt-1 mb-3">Sauvegarder et synchroniser les données dans le cloud.</p>
+      <button class="flex justify-between items-center w-full py-3"><span id="set_devices">Gestion des appareils</span> <span>></span></button>
+      <p class="text-sm text-gray-500 mt-1">Liste des terminaux connectés au compte.</p>
+    </div>
+
+    <!-- 2. LANGUES ET REGION -->
+    <div class="bg-white dark:bg-gray-900 rounded-2xl p-5 mb-4 shadow-sm border dark:border-gray-800">
+      <h3 id="set_lang_title" class="font-semibold text-lg mb-4">2. Langues et Région</h3>
+      <label class="flex flex-col gap-2 py-3"><span id="set_lang_display">Langue d'affichage</span>
         <select id="uiLanguage" class="w-full bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
           <option value="fr">Français</option><option value="en">English</option><option value="es">Español</option><option value="ru">Русский</option><option value="de">Deutsch</option><option value="it">Italiano</option><option value="pt">Português</option><option value="pt-BR">Português Brasil</option><option value="nl">Nederlands</option><option value="ar">العربية</option><option value="wo">Wolof</option>
         </select>
       </label>
-      <label class="flex flex-col gap-2 py-2"><span id="set_lang_results">Langue des résultats</span>
-        <select id="resultsLanguage" class="w-full bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
-          <option value="any">Toutes les langues</option><option value="fr">Français</option><option value="en">English</option><option value="es">Español</option><option value="de">Deutsch</option><option value="it">Italiano</option><option value="pt">Português</option><option value="ar">العربية</option>
+      <label class="flex flex-col gap-2 py-3"><span id="set_lang_second">Langues secondaires</span>
+        <select id="secondaryLanguages" multiple class="w-full bg-gray-100 dark:bg-gray-800 p-2 rounded-lg h-24">
+          <option value="fr">Français</option><option value="en">English</option><option value="ar">العربية</option><option value="wo">Wolof</option><option value="es">Español</option>
         </select>
       </label>
-      <label class="flex flex-col gap-2 py-2"><span id="set_region">Région géographique</span>
+      <label class="flex flex-col gap-2 py-3"><span id="set_region">Région et Fuseau horaire</span>
         <select id="region" class="w-full bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
-          <option value="sn">Sénégal</option><option value="fr">France</option><option value="us">États-Unis</option><option value="ma">Maroc</option><option value="dz">Algérie</option><option value="world">Monde entier</option>
+          <option value="sn">Sénégal GMT+0</option><option value="fr">France GMT+1</option><option value="us">États-Unis GMT-5</option><option value="ma">Maroc GMT+1</option><option value="dz">Algérie GMT+1</option><option value="world">Monde entier</option>
         </select>
       </label>
     </div>
 
+    <!-- 3. SECURITE ET CONFIDENTIALITE -->
     <div class="bg-white dark:bg-gray-900 rounded-2xl p-5 mb-4 shadow-sm border dark:border-gray-800">
-      <h3 id="set_period_title" class="font-semibold text-lg mb-4">2. Filtres de Recherche</h3>
-      <label class="flex flex-col gap-2 py-2"><span id="set_time">Période</span>
-        <select id="timeFilter" class="w-full bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
-          <option value="any">N'importe quand</option><option value="day">Dernières 24h</option><option value="week">Semaine passée</option><option value="month">Mois passé</option><option value="year">Année passée</option>
-        </select>
-      </label>
-      <label class="flex items-center justify-between py-2"><span id="set_verbatim">Recherche exacte Verbatim</span><input type="checkbox" id="verbatim" class="w-5 h-5 accent-blue-600"></label>
+      <h3 id="set_security_title" class="font-semibold text-lg mb-4">3. Sécurité et Confidentialité</h3>
+      <label class="flex items-center justify-between py-3"><span id="set_2fa">Validation en deux étapes 2FA</span><input type="checkbox" id="twoFA" class="w-5 h-5 accent-blue-600"></label>
+      <label class="flex items-center justify-between py-3"><span id="set_bio">Authentification biométrique</span><input type="checkbox" id="biometric" class="w-5 h-5 accent-blue-600"></label>
+      <button class="flex justify-between items-center w-full py-3 border-b dark:border-gray-800"><span id="set_perms">Autorisations</span> <span>></span></button>
+      <p class="text-sm text-gray-500 mt-1 mb-3">Microphone, Caméra, Localisation</p>
+      <label class="flex items-center justify-between py-3"><span id="set_remote_wipe">Effacement à distance</span><input type="checkbox" id="remoteWipe" class="w-5 h-5 accent-blue-600"></label>
+      <label class="flex items-center justify-between py-3"><span id="set_antimalware">Scan Anti-Malware</span><input type="checkbox" id="antiMalware" class="w-5 h-5 accent-blue-600" checked></label>
+      <button class="flex justify-between items-center w-full py-3"><span id="set_activity">Activité et Historique</span> <span>></span></button>
+      <p class="text-sm text-gray-500 mt-1">Suspendre ou effacer l'historique de recherche</p>
     </div>
 
+    <!-- 4. PREFERENCES D'UTILISATION -->
     <div class="bg-white dark:bg-gray-900 rounded-2xl p-5 mb-4 shadow-sm border dark:border-gray-800">
-      <h3 id="set_privacy_title" class="font-semibold text-lg mb-4">3. Confidentialité & Historique</h3>
-      <label class="flex items-center justify-between py-2"><span id="set_hist">Enregistrer l'historique Web</span><input type="checkbox" id="saveHistory" class="w-5 h-5 accent-blue-600" checked></label>
-      <label class="flex items-center justify-between py-2"><span id="set_pers">Personnalisation des résultats</span><input type="checkbox" id="personalization" class="w-5 h-5 accent-blue-600"></label>
-      <label class="flex flex-col gap-2 py-2"><span id="set_safe">Filtrage SafeSearch</span>
-        <select id="safeSearch" class="w-full bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
-          <option value="off">Désactiver</option><option value="blur">Flouter</option><option value="on">Activer</option>
+      <h3 id="set_pref_title" class="font-semibold text-lg mb-4">4. Préférences d'Utilisation</h3>
+      <button class="flex justify-between items-center w-full py-3 border-b dark:border-gray-800"><span id="set_access">Accessibilité</span> <span>></span></button>
+      <p class="text-sm text-gray-500 mt-1 mb-3">Taille police, contraste, lecteur d'écran</p>
+      <label class="flex flex-col gap-2 py-3"><span id="set_theme">Thème</span>
+        <select id="theme" class="w-full bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
+          <option value="light">Thème Clair</option><option value="dark">Thème Sombre</option><option value="system">Adaptation Système</option>
         </select>
       </label>
-    </div>
-
-    <div class="bg-white dark:bg-gray-900 rounded-2xl p-5 mb-4 shadow-sm border dark:border-gray-800">
-      <h3 id="set_ui_title" class="font-semibold text-lg mb-4">4. Interface & Affichage</h3>
-      <label class="flex flex-col gap-2 py-2"><span id="set_bar">Position de la barre</span>
+      <button class="flex justify-between items-center w-full py-3 border-b dark:border-gray-800"><span id="set_notif">Notifications</span> <span>></span></button>
+      <p class="text-sm text-gray-500 mt-1 mb-3">Push, E-mails, Alertes sonores</p>
+      <button class="flex justify-between items-center w-full py-3"><span id="set_storage">Préférences de stockage</span> <span>></span></button>
+      <p class="text-sm text-gray-500 mt-1 mb-3">Vider cache, hors-ligne, téléchargements</p>
+      <label class="flex flex-col gap-2 py-3"><span id="set_bar">Position de la barre</span>
         <select id="barPosition" class="w-full bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
           <option value="top">Barre en Haut</option><option value="bottom">Barre en Bas</option>
-        </select>
-      </label>
-      <label class="flex items-center justify-between py-2"><span id="set_auto">Saisie semi-automatique</span><input type="checkbox" id="autocomplete" class="w-5 h-5 accent-blue-600" checked></label>
-      <label class="flex items-center justify-between py-2"><span id="set_tab">Ouvrir dans un nouvel onglet</span><input type="checkbox" id="openNewTab" class="w-5 h-5 accent-blue-600"></label>
-      <label class="flex items-center justify-between py-2"><span id="set_voice">Recherche vocale</span><input type="checkbox" id="voiceSearch" class="w-5 h-5 accent-blue-600" checked></label>
-      <label class="flex flex-col gap-2 py-2"><span id="set_theme">Thème</span>
-        <select id="theme" class="w-full bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
-          <option value="light">Thème Clair</option><option value="dark">Thème Sombre</option><option value="system">Système</option>
         </select>
       </label>
     </div>
@@ -151,15 +138,9 @@
 
   <footer class="bg-gray-100 dark:bg-gray-900 text-sm text-gray-600 dark:text-gray-400">
     <div class="px-6 py-3 border-b dark:border-gray-800">Guédiawaye, SN</div>
-    <div class="flex flex-wrap justify-between px-6 py-3">
-      <div class="flex gap-4">
-        <button class="hover:underline">À propos</button>
-        <button class="hover:underline">Confidentialité</button>
-      </div>
-    </div>
   </footer>
 
   <input type="file" id="fileInput" class="hidden">
   <script src="script.js"></script>
 </body>
-  </html>
+    </html>
