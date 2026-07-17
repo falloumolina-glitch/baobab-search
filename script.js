@@ -2,6 +2,26 @@ const YOUTUBE_KEY = "COLLE_TA_CLE_ICI";
 let currentTab = 'all';
 let currentQuery = '';
 
+// 1. TOUTES LES TRADUCTIONS ICI
+const translations = {
+  fr: { dir:"ltr", title:"Paramètres", langLabel:"Langue d'affichage", resultsLabel:"Langue des résultats", regionLabel:"Région géographique", save:"Enregistrer", saved:"✓ Paramètres enregistrés!", back:"← Retour à l'accueil", all:"Tous", images:"Images", videos:"Vidéos", news:"Actualités", ai:"✨ Résumé IA par Baobab", searchPlaceholder:"Rechercher sur Baobab..." },
+  en: { dir:"ltr", title:"Settings", langLabel:"Display Language", resultsLabel:"Results Language", regionLabel:"Region", save:"Save", saved:"✓ Settings saved!", back:"← Back to Home", all:"All", images:"Images", videos:"Videos", news:"News", ai:"✨ AI Summary by Baobab", searchPlaceholder:"Search on Baobab..." },
+  es: { dir:"ltr", title:"Configuración", langLabel:"Idioma de visualización", resultsLabel:"Idioma de resultados", regionLabel:"Región", save:"Guardar", saved:"✓ ¡Configuración guardada!", back:"← Volver al inicio", all:"Todo", images:"Imágenes", videos:"Vídeos", news:"Noticias", ai:"✨ Resumen IA por Baobab", searchPlaceholder:"Buscar en Baobab..." },
+  ru: { dir:"ltr", title:"Настройки", langLabel:"Язык интерфейса", resultsLabel:"Язык результатов", regionLabel:"Регион", save:"Сохранить", saved:"✓ Настройки сохранены!", back:"← На главную", all:"Все", images:"Картинки", videos:"Видео", news:"Новости", ai:"✨ ИИ-сводка от Baobab", searchPlaceholder:"Поиск в Baobab..." },
+  de: { dir:"ltr", title:"Einstellungen", langLabel:"Anzeigesprache", resultsLabel:"Ergebnisprache", regionLabel:"Region", save:"Speichern", saved:"✓ Einstellungen gespeichert!", back:"← Zurück zur Startseite", all:"Alle", images:"Bilder", videos:"Videos", news:"Nachrichten", ai:"✨ KI-Zusammenfassung von Baobab", searchPlaceholder:"Auf Baobab suchen..." },
+  it: { dir:"ltr", title:"Impostazioni", langLabel:"Lingua di visualizzazione", resultsLabel:"Lingua dei risultati", regionLabel:"Regione", save:"Salva", saved:"✓ Impostazioni salvate!", back:"← Torna alla home", all:"Tutto", images:"Immagini", videos:"Video", news:"Notizie", ai:"✨ Riepilogo IA di Baobab", searchPlaceholder:"Cerca su Baobab..." },
+  pt: { dir:"ltr", title:"Configurações", langLabel:"Idioma de exibição", resultsLabel:"Idioma dos resultados", regionLabel:"Região", save:"Salvar", saved:"✓ Configurações salvas!", back:"← Voltar para início", all:"Tudo", images:"Imagens", videos:"Vídeos", news:"Notícias", ai:"✨ Resumo IA da Baobab", searchPlaceholder:"Pesquisar no Baobab..." },
+  "pt-BR": { dir:"ltr", title:"Configurações", langLabel:"Idioma de exibição", resultsLabel:"Idioma dos resultados", regionLabel:"Região", save:"Salvar", saved:"✓ Configurações salvas!", back:"← Voltar para início", all:"Tudo", images:"Imagens", videos:"Vídeos", news:"Notícias", ai:"✨ Resumo IA da Baobab", searchPlaceholder:"Pesquisar no Baobab..." },
+  nl: { dir:"ltr", title:"Instellingen", langLabel:"Weergavetaal", resultsLabel:"Resultaat taal", regionLabel:"Regio", save:"Opslaan", saved:"✓ Instellingen opgeslagen!", back:"← Terug naar start", all:"Alles", images:"Afbeeldingen", videos:"Video's", news:"Nieuws", ai:"✨ AI-samenvatting door Baobab", searchPlaceholder:"Zoeken op Baobab..." },
+  ar: { dir:"rtl", title:"الإعدادات", langLabel:"لغة العرض", resultsLabel:"لغة النتائج", regionLabel:"المنطقة الجغرافية", save:"حفظ", saved:"✓ تم حفظ الإعدادات!", back:"العودة إلى الصفحة الرئيسية →", all:"الكل", images:"الصور", videos:"الفيديوهات", news:"الأخبار", ai:"✨ ملخص الذكاء الاصطناعي من Baobab", searchPlaceholder:"ابحث في Baobab..." },
+  wo: { dir:"ltr", title:"Réglages", langLabel:"Làkk bu feeñ", resultsLabel:"Làkku nataal yi", regionLabel:"Dëkk", save:"Denc", saved:"✓ Réglages bi denc na!", back:"← Dellu fàttaliku", all:"Lépp", images:"Nataal", videos:"Video", news:"Laj", ai:"✨ AI bi Baobab", searchPlaceholder:"Seet ci Baobab..." }
+};
+
+function t(key) {
+  const lang = getSettings().uiLanguage;
+  return translations[lang]?.[key] || translations['fr'][key];
+}
+
 function getSettings() {
   return {
     uiLanguage: localStorage.getItem('uiLanguage') || 'fr',
@@ -34,12 +54,32 @@ function saveSettings() {
   localStorage.setItem('openNewTab', document.getElementById('openNewTab').checked);
   localStorage.setItem('voiceSearch', document.getElementById('voiceSearch').checked);
   localStorage.setItem('theme', document.getElementById('theme').value);
-  
+
+  applyTranslations(); // 2. APPLIQUER LA LANGUE DIRECT
   applyTheme();
   applyBarPosition();
-  
+
+  document.getElementById('saveMsg').innerText = t('saved');
   document.getElementById('saveMsg').classList.remove('hidden');
   setTimeout(() => document.getElementById('saveMsg').classList.add('hidden'), 2000);
+}
+
+// 3. FONCTION QUI CHANGE TOUTE L'ECRITURE
+function applyTranslations() {
+  const lang = getSettings().uiLanguage;
+  document.documentElement.lang = lang;
+  document.documentElement.dir = translations[lang].dir; // POUR ARABE RTL
+
+  // On change seulement les textes principaux
+  if(document.querySelector('#settingsPage h2')) document.querySelector('#settingsPage h2').innerText = t('title');
+  if(document.getElementById('searchInput')) document.getElementById('searchInput').placeholder = t('searchPlaceholder');
+  if(document.getElementById('tab-all')) document.getElementById('tab-all').innerText = t('all');
+  if(document.getElementById('tab-images')) document.getElementById('tab-images').innerText = t('images');
+  if(document.getElementById('tab-videos')) document.getElementById('tab-videos').innerText = t('videos');
+  if(document.getElementById('tab-news')) document.getElementById('tab-news').innerText = t('news');
+  if(document.querySelector('#aiSummary p.font-semibold')) document.querySelector('#aiSummary p.font-semibold').innerText = t('ai');
+  if(document.querySelector('#settingsPage button.bg-gradient-to-r')) document.querySelector('#settingsPage button.bg-gradient-to-r').innerText = t('save');
+  if(document.querySelector('#settingsPage button.text-blue-600')) document.querySelector('#settingsPage button.text-blue-600').innerText = t('back');
 }
 
 function applyTheme() {
@@ -75,14 +115,10 @@ function switchTab(tab) {
   if(currentQuery) search();
 }
 
-function takePhoto() { 
-  document.getElementById('fileInput').click(); 
-}
-
 function startVoice(iconId) {
-  if(!getSettings().voiceSearch) return alert("Recherche vocale désactivée dans Paramètres");
+  if(!getSettings().voiceSearch) return;
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) return alert('Voix non supportée');
+  if (!SpeechRecognition) return;
   let recognition = new SpeechRecognition();
   recognition.lang = getSettings().uiLanguage;
   document.getElementById(iconId).classList.add('text-red-500', 'animate-pulse');
@@ -97,28 +133,11 @@ function startVoice(iconId) {
 function buildSearchUrl(query) {
   const s = getSettings();
   let url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-  
-  // 1. Langue des résultats
-  if(s.resultsLanguage !== 'any') url += `&lr=lang_${s.resultsLanguage}`;
-  
-  // 2. Région
-  if(s.region !== 'world') url += `&gl=${s.region}`;
-  
-  // 3. Période
-  if(s.timeFilter !== 'any') url += `&tbs=qdr:${s.timeFilter}`;
-  
-  // 4. SafeSearch
-  if(s.safeSearch === 'on') url += `&safe=active`;
-  if(s.safeSearch === 'blur') url += `&safe=moderate`;
-  
-  // 5. Verbatim
-  if(s.verbatim) url += `&as_epq=${encodeURIComponent(query)}`;
-  
-  // 6. Onglets
+  if(s.resultsLanguage!== 'any') url += `&lr=lang_${s.resultsLanguage}`;
+  if(s.region!== 'world') url += `&gl=${s.region}`;
   if(currentTab === 'images') url += `&tbm=isch`;
   if(currentTab === 'videos') url += `&tbm=vid`;
   if(currentTab === 'news') url += `&tbm=nws`;
-  
   return url;
 }
 
@@ -126,47 +145,28 @@ function search(event) {
   if(event) event.preventDefault();
   let query = document.getElementById('searchInput')?.value || document.getElementById('searchInputResults').value;
   if(!query) return;
-
   const s = getSettings();
-  if(s.saveHistory) {
-    let history = JSON.parse(localStorage.getItem('searchHistory') || '[]');
-    history.unshift(query);
-    localStorage.setItem('searchHistory', JSON.stringify(history.slice(0,10)));
-  }
-
   currentQuery = query;
   document.getElementById('searchInputResults').value = query;
   showPage('resultsPage');
-  document.getElementById('resultCount').innerText = `Résultats pour "${query}"`;
-  document.getElementById('aiText').innerText = `Résumé IA pour: ${query} en ${s.resultsLanguage}`;
-  
+  document.getElementById('resultCount').innerText = `${t('all')}: "${query}"`;
+  document.getElementById('aiText').innerText = `${t('ai')}: ${query}`;
   const searchUrl = buildSearchUrl(query);
   const target = s.openNewTab? '_blank' : '_self';
-  
   let html = '';
   for(let i=1; i<=5; i++) {
-    html += `<div><a href="${searchUrl}" target="${target}" class="text-xl text-blue-700 hover:underline">${query} - Résultat ${i}</a><p class="text-sm text-green-700">baobab.com/resultat-${i}</p></div>`;
+    html += `<div><a href="${searchUrl}" target="${target}" class="text-xl text-blue-700 hover:underline">${query} - ${t('all')} ${i}</a><p class="text-sm text-green-700">baobab.com/resultat-${i}</p></div>`;
   }
   document.getElementById('resultsList').innerHTML = html;
 }
 
-// CHARGEMENT AU DEMARRAGE
 document.addEventListener('DOMContentLoaded', () => {
   const s = getSettings();
   document.getElementById('uiLanguage').value = s.uiLanguage;
   document.getElementById('resultsLanguage').value = s.resultsLanguage;
   document.getElementById('region').value = s.region;
-  document.getElementById('timeFilter').value = s.timeFilter;
-  document.getElementById('verbatim').checked = s.verbatim;
-  document.getElementById('saveHistory').checked = s.saveHistory;
-  document.getElementById('personalization').checked = s.personalization;
-  document.getElementById('safeSearch').value = s.safeSearch;
-  document.getElementById('barPosition').value = s.barPosition;
-  document.getElementById('autocomplete').checked = s.autocomplete;
-  document.getElementById('openNewTab').checked = s.openNewTab;
-  document.getElementById('voiceSearch').checked = s.voiceSearch;
-  document.getElementById('theme').value = s.theme;
-  
+
+  applyTranslations(); // 4. CHARGER LA LANGUE AU DEMARRAGE
   applyTheme();
   applyBarPosition();
 });
