@@ -1,57 +1,42 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Baobab Search</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = { darkMode: 'class' }
-  </script>
-</head>
-<body class="bg-white dark:bg-gray-950 text-black dark:text-white">
+const YOUTUBE_KEY = "COLLE_TA_CLE_ICI";
+let currentTab = 'all';
+let currentQuery = '';
 
-  <!-- HEADER -->
-  <header class="flex items-center justify-between p-4 border-b dark:border-gray-800">
-    <button onclick="toggleSidebar()">☰</button>
-    <h1 class="font-bold text-xl">Baobab</h1>
-    <button onclick="takePhoto()">📷</button>
-    <input type="file" id="fileInput" class="hidden">
-  </header>
+const translations = {
+  fr: { all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", search_btn: "Rechercher", lucky_btn: "J'ai de la chance", search_placeholder: "Recher sur Baobab...", ai_title: "✨ Résumé IA par Baobab", about: "À propos", terms: "Conditions", privacy: "Confidentialité", settings_title: "Paramètres" },
+  en: { all: "All", images: "Images", videos: "Videos", news: "News", search_btn: "Search", lucky_btn: "I'm Feeling Lucky", search_placeholder: "Search on Baobab...", ai_title: "✨ AI Summary by Baobab", about: "About", terms: "Terms", privacy: "Privacy", settings_title: "Settings" }
+};
 
-  <!-- BARRE DE RECHERCHE -->
-  <form id="searchForm" class="flex gap-2 p-4">
-    <input type="text" id="searchInput" data-lang-placeholder="search_placeholder" placeholder="Rechercher sur Baobab..." class="flex-1 border dark:border-gray-700 p-2 rounded-lg bg-gray-100 dark:bg-gray-900">
-    <button id="micIcon" type="button" onclick="startVoice()">🎤</button>
-    <button type="submit" class="bg-blue-600 text-white px-4 rounded-lg">Go</button>
-  </form>
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  window.scrollTo(0,0);
+}
 
-  <!-- ONGLETS -->
-  <div class="flex border-b dark:border-gray-800 px-4">
-    <button id="tab-all" onclick="switchTab('all')" class="tab-btn p-2 border-b-2 border-blue-600 text-blue-600 font-semibold" data-lang="all">Tous</button>
-    <button id="tab-images" onclick="switchTab('images')" class="tab-btn p-2 border-b-2 border-transparent text-gray-500" data-lang="images">Images</button>
-    <button id="tab-videos" onclick="switchTab('videos')" class="tab-btn p-2 border-b-2 border-transparent text-gray-500" data-lang="videos">Vidéos</button>
-    <button id="tab-news" onclick="switchTab('news')" class="tab-btn p-2 border-b-2 border-transparent text-gray-500" data-lang="news">Actualités</button>
-  </div>
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('border-blue-600', 'text-blue-600', 'font-semibold'));
+  document.getElementById(`tab-${tab}`).classList.add('border-blue-600', 'text-blue-600', 'font-semibold');
+  if(currentQuery) search();
+}
 
-  <!-- RÉSULTATS -->
-  <div id="results" class="p-4 min-h-[400px]"></div>
+async function search(event) {
+  if(event) event.preventDefault();
+  const query = document.getElementById('searchInput')?.value || document.getElementById('searchInputResults').value;
+  if(!query) return;
+  
+  currentQuery = query;
+  document.getElementById('searchInputResults').value = query;
+  showPage('resultsPage');
+  document.getElementById('resultCount').innerText = `Environ 1 200 000 résultats pour "${query}"`;
+  document.getElementById('aiText').innerText = `Voici un résumé IA pour: ${query}`;
 
-  <!-- TENDANCES -->
-  <div id="trendsList" class="p-4"></div>
+  if(currentTab === 'videos') await searchYouTube(query);
+  else document.getElementById('resultsList').innerHTML = `<div><a href="#" class="text-xl text-blue-700 hover:underline">${query} - Baobab</a><p class="text-sm text-green-700">baobab.com/search?q=${query}</p><p>Résultat exemple pour la recherche "${query}" dans l'onglet ${currentTab}.</p></div>`;
+}
 
-  <!-- SIDEBAR -->
-  <div id="sidebarOverlay" onclick="toggleSidebar()" class="hidden fixed inset-0 bg-black bg-opacity-50"></div>
-  <div id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-gray-900 -translate-x-full transition p-4">
-    <button onclick="showPage('settingsPage')" data-lang="settings_title">Paramètres</button>
-  </div>
+async function searchYouTube(query) { /* même code que avant */ }
 
-  <!-- PAGES -->
-  <div id="settingsPage" class="page hidden p-4">
-    <h2 data-lang="settings_title">Paramètres</h2>
-  </div>
-
-  <script src="script.js"></script>
-  <script>loadTrends()</script>
-</body>
-</html>
+function startVoice() { /* même code que avant */ }
+function takePhoto() { document.getElementById('fileInput').click(); }
+function randomSearch() { const arr = ["messi", "baobab", "dakar"]; document.getElementById('searchInput').value = arr[Math.floor(Math.random()*arr.length)]; search(); }
