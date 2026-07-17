@@ -11,11 +11,11 @@
 </head>
 <body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-inter min-h-screen flex flex-col">
 
-  <!-- 1. HEADER -->
+  <!-- HEADER -->
   <header class="w-full flex items-center justify-between px-6 py-3 text-sm">
     <div class="flex gap-4">
-      <a href="#" onclick="switchTab('images')" class="hover:underline" data-lang="images">Images</a>
-      <a href="#" onclick="switchTab('news')" class="hover:underline" data-lang="news">Actualités</a>
+      <button onclick="quickTab('images')" class="hover:underline" data-lang="images">Images</button>
+      <button onclick="quickTab('news')" class="hover:underline" data-lang="news">Actualités</button>
     </div>
     <div class="flex items-center gap-3">
       <button onclick="showPage('appsPage')" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
@@ -25,24 +25,20 @@
     </div>
   </header>
 
-  <!-- 2. ZONE CENTRALE - HOME -->
+  <!-- HOME -->
   <main id="homePage" class="page active flex-1 flex flex-col items-center justify-center px-4 -mt-20">
-    <!-- LOGO -->
     <h1 class="font-sora text-6xl font-bold mb-8 bg-gradient-to-r from-blue-600 to-blue-900 bg-clip-text text-transparent">Baobab</h1>
-    
-    <!-- BARRE DE RECHERCHE -->
     <form onsubmit="search(event)" class="w-full max-w-2xl">
       <div class="flex items-center w-full h-12 px-5 border border-gray-300 dark:border-gray-700 rounded-full hover:shadow-md focus-within:shadow-md bg-white dark:bg-gray-900">
         <svg class="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
         <input id="searchInput" type="text" data-lang-placeholder="search_placeholder" placeholder="Recher sur Baobab..." class="bg-transparent outline-none w-full">
-        <button type="button" onclick="startVoice()" class="p-1 ml-2">
+        <button type="button" onclick="startVoice('micIcon')" class="p-1 ml-2">
           <svg id="micIcon" class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Zm5 8c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2Z"/></svg>
         </button>
         <button type="button" onclick="takePhoto()" class="p-1 ml-1">
           <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/></svg>
         </button>
       </div>
-      <!-- BOUTONS D'ACTION -->
       <div class="flex justify-center gap-3 mt-6">
         <button type="submit" class="px-5 py-2 bg-gray-100 dark:bg-gray-800 rounded hover:border hover:border-gray-300" data-lang="search_btn">Rechercher</button>
         <button type="button" onclick="randomSearch()" class="px-5 py-2 bg-gray-100 dark:bg-gray-800 rounded hover:border hover:border-gray-300" data-lang="lucky_btn">J'ai de la chance</button>
@@ -50,13 +46,12 @@
     </form>
   </main>
 
-  <!-- 2. ZONE CENTRALE - RESULTATS -->
+  <!-- RESULTS -->
   <section id="resultsPage" class="page flex-1">
-    <!-- BARRE DE FILTRE -->
     <div class="sticky top-0 bg-white dark:bg-gray-950 border-b dark:border-gray-800 px-4 lg:px-40 pt-3">
       <form onsubmit="search(event)" class="flex items-center w-full max-w-2xl h-11 px-4 border-gray-300 dark:border-gray-700 rounded-full mb-3">
         <input id="searchInputResults" type="text" class="bg-transparent outline-none w-full">
-        <button type="button" onclick="startVoice()" class="p-1 ml-2"><svg id="micIcon2" class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Zm5 8c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2Z"/></svg></button>
+        <button type="button" onclick="startVoice('micIcon2')" class="p-1 ml-2"><svg id="micIcon2" class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Zm5 8c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2Z"/></svg></button>
       </form>
       <div class="flex gap-6 overflow-x-auto text-sm text-gray-600 dark:text-gray-400">
         <button onclick="switchTab('all')" id="tab-all" class="tab-btn pb-3 border-b-2 border-blue-600 text-blue-600 font-semibold" data-lang="all">Tous</button>
@@ -65,7 +60,6 @@
         <button onclick="switchTab('news')" id="tab-news" class="tab-btn pb-3 border-b-2 border-transparent hover:text-black" data-lang="news">Actualités</button>
       </div>
     </div>
-    <!-- RESULTATS + SIDEBAR -->
     <div class="flex px-4 lg:px-40 py-4 gap-8">
       <div class="flex-1 max-w-2xl">
         <p id="resultCount" class="text-sm text-gray-500 mb-4"></p>
@@ -80,21 +74,35 @@
     </div>
   </section>
 
-  <!-- PAGES -->
-  <section id="settingsPage" class="page flex-1 px-6 py-10 max-w-2xl mx-auto">...</section>
-  <section id="appsPage" class="page flex-1 px-6 py-10 max-w-2xl mx-auto">...</section>
+  <!-- SETTINGS -->
+  <section id="settingsPage" class="page flex-1 px-6 py-10 max-w-2xl mx-auto">
+    <h2 class="text-2xl font-bold mb-4 font-sora" data-lang="settings_title">Paramètres</h2>
+    <div class="bg-white dark:bg-gray-900 rounded-2xl p-4 mb-4 shadow-sm border dark:border-gray-800">
+      <h3 class="font-semibold mb-3" data-lang="appearance">Apparence</h3>
+      <label class="flex items-center py-2 cursor-pointer"><input type="radio" name="theme" value="light" class="mr-2 w-4 h-4 accent-blue-600"><span data-lang="light_theme">Thème Clair</span></label>
+      <label class="flex items-center py-2 cursor-pointer"><input type="radio" name="theme" value="dark" class="mr-2 w-4 h-4 accent-blue-600"><span data-lang="dark_theme">Thème Sombre</span></label>
+    </div>
+    <button onclick="saveSettings()" class="bg-blue-600 text-white w-full py-3 rounded-full font-bold" data-lang="save">Enregistrer</button>
+    <button onclick="showPage('homePage')" class="mt-4 text-blue-600 w-full" data-lang="back">← Retour</button>
+  </section>
 
-  <!-- 3. FOOTER -->
+  <!-- APPS -->
+  <section id="appsPage" class="page flex-1 px-6 py-10 max-w-2xl mx-auto">
+    <h2 class="text-2xl font-bold mb-4">Applications Baobab</h2>
+    <div class="grid grid-cols-3 gap-4">
+      <button onclick="showPage('homePage')" class="p-4 border rounded-lg hover:bg-gray-100">🔍 Search</button>
+      <button onclick="showPage('settingsPage')" class="p-4 border rounded-lg hover:bg-gray-100">⚙️ Paramètres</button>
+    </div>
+    <button onclick="showPage('homePage')" class="mt-4 text-blue-600 w-full">← Retour</button>
+  </section>
+
+  <!-- FOOTER -->
   <footer class="bg-gray-100 dark:bg-gray-900 text-sm text-gray-600 dark:text-gray-400">
     <div class="px-6 py-3 border-b dark:border-gray-800">Guédiawaye, SN</div>
     <div class="flex flex-wrap justify-between px-6 py-3">
       <div class="flex gap-4">
-        <a href="#" onclick="showPage('aboutPage')" class="hover:underline" data-lang="about">À propos</a>
-        <a href="#" onclick="showPage('privacyPage')" class="hover:underline" data-lang="privacy">Confidentialité</a>
-        <a href="#" onclick="showPage('termsPage')" class="hover:underline" data-lang="terms">Conditions</a>
-      </div>
-      <div class="flex gap-4">
-        <a href="#" onclick="showPage('settingsPage')" class="hover:underline" data-lang="settings_title">Paramètres</a>
+        <button onclick="showPage('aboutPage')" class="hover:underline" data-lang="about">À propos</button>
+        <button onclick="showPage('privacyPage')" class="hover:underline" data-lang="privacy">Confidentialité</button>
       </div>
     </div>
   </footer>
