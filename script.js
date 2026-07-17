@@ -62,7 +62,7 @@ function switchTab(tab) {
   const activeBtn = document.getElementById(`tab-${tab}`);
   activeBtn.classList.add('border-blue-600', 'text-blue-600', 'font-semibold');
   activeBtn.classList.remove('border-transparent', 'text-gray-500');
-  if(currentQuery) search(); // Relance la recherche avec le nouvel onglet
+  if(currentQuery) search();
 }
 
 function changeLanguage(lang) {
@@ -121,12 +121,12 @@ async function search(event) {
 
   document.getElementById('resultCount').innerText = `Résultats pour "${query}"`;
   document.getElementById('resultsList').innerHTML = "Chargement...";
-  document.getElementById('aiText').innerText = `Voici un résumé pour: ${query}`;
+  document.getElementById('aiText').innerText = `Voici un résumé IA pour: ${query}`;
 
   if(currentTab === 'videos') {
     await searchYouTube(query);
   } else {
-    document.getElementById('resultsList').innerHTML = `<p>Résultats "${currentTab}" pour: <b>${query}</b></p>`;
+    document.getElementById('resultsList').innerHTML = `<p class="text-center text-gray-500">Résultats "${currentTab}" pour: <b>${query}</b></p>`;
   }
 }
 
@@ -165,12 +165,6 @@ function saveSettings() {
   document.getElementById('saveMsg').classList.remove('hidden');
   setTimeout(() => document.getElementById('saveMsg').classList.add('hidden'), 2000);
 }
-
-// BLOQUE LE RECHARGEMENT DU FORM
-document.getElementById('searchForm').addEventListener('submit', function(e){
-  e.preventDefault();
-  search();
-});
 
 // Au chargement
 document.addEventListener('DOMContentLoaded', () => {
