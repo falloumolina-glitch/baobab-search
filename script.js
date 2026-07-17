@@ -1,5 +1,5 @@
 // 1. COLLE TA CLÉ ICI
-const YOUTUBE_KEY = "COLLE_TA_CLE_ICI";
+const YOUTUBE_KEY = "AIzaSyD6aTPeBpKTBFNNT6LOaXbfmpMG7XWl2V4";
 const YOUTUBE_URL = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=6&q=`;
 
 const translations = {
