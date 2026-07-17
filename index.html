@@ -3,165 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Baobab IA</title>
+  <title>Baobab Search</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>tailwind.config = { darkMode: 'class' }</script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <script>
+    tailwind.config = { darkMode: 'class' }
+  </script>
 </head>
-<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-inter pb-20">
-
-  <!-- MENU LATERAL GAUCHE - SEULEMENT PHOTOS/DOCS -->
-  <div id="sidebar" class="fixed top-0 left-0 h-full w-72 bg-white dark:bg-gray-900 shadow-2xl z-50 -translate-x-full transition-transform duration-300">
-    <div class="p-4 border-b dark:border-gray-800 flex items-center justify-between">
-      <h2 class="font-sora text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-900 bg-clip-text text-transparent">Baobab</h2>
-      <button onclick="toggleSidebar()" class="p-2">
-        <svg class="w-6 h-6 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-      </button>
-    </div>
-    <nav class="p-4 space-y-2">
-      <button onclick="uploadFile('image')" class="w-full flex items-center gap-3 p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg text-left">
-        <svg class="w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-        <span data-lang="my_photos">Mes Photos</span>
-      </button>
-      <button onclick="uploadFile('document')" class="w-full flex items-center gap-3 p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg text-left">
-        <svg class="w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-        <span data-lang="my_docs">Mes Documents</span>
-      </button>
-
-      <hr class="my-3 dark:border-gray-800">
-
-      <button onclick="showPage('aboutPage')" class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg" data-lang="about">À propos</button>
-      <button onclick="showPage('termsPage')" class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg" data-lang="terms">Conditions</button>
-      <button onclick="showPage('privacyPage')" class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg" data-lang="privacy">Confidentialité</button>
-    </nav>
-  </div>
-  <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden"></div>
+<body class="bg-white dark:bg-gray-950 text-black dark:text-white">
 
   <!-- HEADER -->
-  <header class="w-full h-14 flex items-center justify-between px-4 sticky top-0 bg-white/80 dark:bg-gray-950/80 backdrop-blur z-30">
-    <button onclick="toggleSidebar()" class="p-2">
-      <svg class="w-6 h-6 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-    </button>
-    <h1 class="font-sora text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-900 bg-clip-text text-transparent">Baobab</h1>
-    <button onclick="showPage('settingsPage')" class="p-2">
-      <svg class="w-6 h-6 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/></svg>
-    </button>
+  <header class="flex items-center justify-between p-4 border-b dark:border-gray-800">
+    <button onclick="toggleSidebar()">☰</button>
+    <h1 class="font-bold text-xl">Baobab</h1>
+    <button onclick="takePhoto()">📷</button>
+    <input type="file" id="fileInput" class="hidden">
   </header>
 
-  <!-- HOME -->
-  <section id="homePage" class="page active px-2 pt-2">
-    <div id="trendsList" class="space-y-1"></div>
-  </section>
+  <!-- BARRE DE RECHERCHE -->
+  <form id="searchForm" class="flex gap-2 p-4">
+    <input type="text" id="searchInput" data-lang-placeholder="search_placeholder" placeholder="Rechercher sur Baobab..." class="flex-1 border dark:border-gray-700 p-2 rounded-lg bg-gray-100 dark:bg-gray-900">
+    <button id="micIcon" type="button" onclick="startVoice()">🎤</button>
+    <button type="submit" class="bg-blue-600 text-white px-4 rounded-lg">Go</button>
+  </form>
 
-  <!-- RESULTS AVEC ONGLETS EN HAUT -->
-  <section id="resultsPage" class="page px-0 pt-4">
-    <!-- ONGLETS STYLE GOOGLE - APPARAISSENT APRES RECHERCHE -->
-    <div class="border-b dark:border-gray-800 px-4">
-      <div class="flex gap-6 overflow-x-auto">
-        <button onclick="switchTab('all')" id="tab-all" class="tab-btn pb-3 border-b-2 border-blue-600 text-blue-600 font-semibold flex items-center gap-2">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-          <span data-lang="all">Tous</span>
-        </button>
-        <button onclick="switchTab('images')" id="tab-images" class="tab-btn pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-700 flex items-center gap-2">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-          <span data-lang="images">Images</span>
-        </button>
-        <button onclick="switchTab('videos')" id="tab-videos" class="tab-btn pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-700 flex items-center gap-2">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-          <span data-lang="videos">Vidéos</span>
-        </button>
-        <button onclick="switchTab('news')" id="tab-news" class="tab-btn pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-700 flex items-center gap-2">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-          <span data-lang="news">Actualités</span>
-        </button>
-      </div>
-    </div>
-
-    <div class="px-4 pt-4">
-      <div id="aiSummary" class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-l-4 border-blue-500 rounded-r-lg p-4 mb-4">
-        <p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-1" data-lang="ai_title">✨ Résumé IA par Baobab</p>
-        <p id="aiText" class="text-sm"></p>
-      </div>
-      <p id="resultCount" class="text-sm text-gray-500 mb-3"></p>
-      <div id="resultsList" class="space-y-5"></div>
-    </div>
-  </section>
-
-  <!-- PARAMETRES -->
-  <section id="settingsPage" class="page px-4 pt-4 pb-10">
-    <h2 class="text-2xl font-bold mb-4 font-sora" data-lang="settings_title">Paramètres</h2>
-    <div class="bg-white dark:bg-gray-900 rounded-2xl p-4 mb-4 shadow-sm border dark:border-gray-800">
-      <h3 class="font-semibold mb-3">Recherche</h3>
-      <label class="flex items-center justify-between py-2"><span data-lang="ai_summary">Résumé IA</span><input type="checkbox" id="aiSummaryToggle" class="w-5 h-5 accent-blue-600"></label>
-      <label class="flex items-center justify-between py-2"><span data-lang="new_tab">Nouvel onglet</span><input type="checkbox" id="openNewTab" class="w-5 h-5 accent-blue-600"></label>
-    </div>
-    <div class="bg-white dark:bg-gray-900 rounded-2xl p-4 mb-4 shadow-sm border dark:border-gray-800">
-      <h3 class="font-semibold mb-3" data-lang="lang_region">Langue & Région</h3>
-      <select id="language" onchange="changeLanguage(this.value)" class="w-full bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
-        <option value="fr">Français</option><option value="en">English</option><option value="wo">Wolof</option>
-      </select>
-    </div>
-    <div class="bg-white dark:bg-gray-900 rounded-2xl p-4 mb-4 shadow-sm border dark:border-gray-800">
-      <h3 class="font-semibold mb-3" data-lang="appearance">Apparence</h3>
-      <label class="flex items-center py-2 cursor-pointer"><input type="radio" name="theme" value="light" class="mr-2 w-4 h-4 accent-blue-600"><span data-lang="light_theme">Thème Clair</span></label>
-      <label class="flex items-center py-2 cursor-pointer"><input type="radio" name="theme" value="dark" class="mr-2 w-4 h-4 accent-blue-600"><span data-lang="dark_theme">Thème Sombre</span></label>
-    </div>
-    <button onclick="saveSettings()" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white w-full py-3.5 rounded-full font-bold" data-lang="save">Enregistrer</button>
-    <p id="saveMsg" class="text-green-600 text-center mt-3 hidden" data-lang="saved">✓ Paramètres enregistrés!</p>
-    <button onclick="showPage('homePage')" class="mt-4 text-blue-600 w-full" data-lang="back">← Retour</button>
-  </section>
-
-  <!-- PAGES LEGALES TEXTE COMPLET -->
-  <section id="aboutPage" class="page px-4 pt-4 pb-10 leading-relaxed">
-    <h2 class="text-2xl font-bold mb-4 font-sora" data-lang="about_title">À propos de Baobab Search</h2>
-    <p class="mb-4">Bienvenue sur Baobab Search, un moteur de recherche inspiré du baobab, symbole de sagesse, de connaissance et de solidité.</p>
-    <p class="mb-4">Notre objectif est d'offrir une expérience de recherche rapide, simple et agréable, tout en mettant en avant des valeurs d'accessibilité et de fiabilité.</p>
-    <p class="mb-4">Baobab Search s'efforce de proposer des résultats pertinents et utiles, afin de vous aider à trouver facilement l'information que vous cherchez.</p>
-    <p class="mb-4">Merci de faire partie de l'aventure Baobab Search.</p>
-    <button onclick="showPage('homePage')" class="bg-blue-600 text-white px-6 py-3 rounded-full" data-lang="back">← Retour</button>
-  </section>
-
-  <section id="termsPage" class="page px-4 pt-4 pb-10 leading-relaxed">
-    <h2 class="text-2xl font-bold mb-4 font-sora" data-lang="terms_title">Conditions d'utilisation</h2>
-    <p class="mb-2">1. Baobab Search est destiné à un usage légal et respectueux des lois en vigueur.</p>
-    <p class="mb-2">2. Il est interdit d'utiliser le service pour diffuser des contenus illégaux, offensants ou trompeurs.</p>
-    <p class="mb-2">3. Baobab Search se réserve le droit de modifier ou d'interrompre le service à tout moment.</p>
-    <p class="mb-2">4. L'utilisateur est responsable de l'utilisation qu'il fait du moteur de recherche.</p>
-    <p class="mb-4">En utilisant Baobab Search, vous acceptez pleinement ces conditions.</p>
-    <button onclick="showPage('homePage')" class="bg-blue-600 text-white px-6 py-3 rounded-full" data-lang="back">← Retour</button>
-  </section>
-
-  <section id="privacyPage" class="page px-4 pt-4 pb-10 leading-relaxed">
-    <h2 class="text-2xl font-bold mb-4 font-sora" data-lang="privacy_title">Politique de confidentialité</h2>
-    <p class="mb-4">Votre vie privée est importante pour nous. Baobab Search s'efforce de limiter la collecte des données personnelles au strict nécessaire pour améliorer votre expérience.</p>
-    <p class="mb-2">- Nous ne vendons jamais vos données personnelles à des tiers.</p>
-    <p class="mb-2">- Les informations collectées servent uniquement à améliorer la pertinence des résultats de recherche.</p>
-    <p class="mb-2">- Vous pouvez demander la suppression de vos données à tout moment en nous contactant.</p>
-    <p class="mb-4">En utilisant Baobab Search, vous acceptez notre politique de confidentialité.</p>
-    <button onclick="showPage('homePage')" class="bg-blue-600 text-white px-6 py-3 rounded-full" data-lang="back">← Retour</button>
-  </section>
-
-  <!-- BARRE DU BAS -->
-  <div class="fixed bottom-0 left-0 right-0 h-16 bg-white dark:bg-gray-900 border-t dark:border-gray-800 flex items-center px-3">
-    <form onsubmit="search(event)" class="flex-1 h-12 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center px-1">
-      <div class="w-10 h-10 flex items-center justify-center mr-1">
-        <div class="bs-badge w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs">BS</div>
-      </div>
-      <input id="searchInput" type="text" data-lang-placeholder="search_placeholder" placeholder="Recher sur Baobab..." class="bg-transparent outline-none w-full font-medium">
-      <button type="button" onclick="startVoice()" class="p-2">
-        <svg id="micIcon" class="w-5 h-5 text-gray-600 dark:text-gray-300 pointer-events-none" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Zm5 8c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2Z"/></svg>
-      </button>
-      <button type="button" onclick="takePhoto()" class="p-2">
-        <svg class="w-5 h-5 text-gray-600 dark:text-gray-300 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/></svg>
-      </button>
-      <button type="submit" class="p-2 ml-1 bg-blue-600 hover:bg-blue-700 rounded-full">
-        <svg class="w-5 h-5 text-white pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-      </button>
-    </form>
+  <!-- ONGLETS -->
+  <div class="flex border-b dark:border-gray-800 px-4">
+    <button id="tab-all" onclick="switchTab('all')" class="tab-btn p-2 border-b-2 border-blue-600 text-blue-600 font-semibold" data-lang="all">Tous</button>
+    <button id="tab-images" onclick="switchTab('images')" class="tab-btn p-2 border-b-2 border-transparent text-gray-500" data-lang="images">Images</button>
+    <button id="tab-videos" onclick="switchTab('videos')" class="tab-btn p-2 border-b-2 border-transparent text-gray-500" data-lang="videos">Vidéos</button>
+    <button id="tab-news" onclick="switchTab('news')" class="tab-btn p-2 border-b-2 border-transparent text-gray-500" data-lang="news">Actualités</button>
   </div>
-  <input type="file" id="fileInput" class="hidden">
+
+  <!-- RÉSULTATS -->
+  <div id="results" class="p-4 min-h-[400px]"></div>
+
+  <!-- TENDANCES -->
+  <div id="trendsList" class="p-4"></div>
+
+  <!-- SIDEBAR -->
+  <div id="sidebarOverlay" onclick="toggleSidebar()" class="hidden fixed inset-0 bg-black bg-opacity-50"></div>
+  <div id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-gray-900 -translate-x-full transition p-4">
+    <button onclick="showPage('settingsPage')" data-lang="settings_title">Paramètres</button>
+  </div>
+
+  <!-- PAGES -->
+  <div id="settingsPage" class="page hidden p-4">
+    <h2 data-lang="settings_title">Paramètres</h2>
+  </div>
 
   <script src="script.js"></script>
+  <script>loadTrends()</script>
 </body>
-        </html>
+      </html>
