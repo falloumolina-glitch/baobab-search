@@ -1,10 +1,14 @@
+// 1. COLLE TA CLÉ ICI
+const YOUTUBE_KEY = "COLLE_TA_CLE_ICI";
+const YOUTUBE_URL = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=6&q=`;
+
 const translations = {
   fr: { all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", about: "À propos", terms: "Conditions", privacy: "Confidentialité", settings_title: "Paramètres", lang_region: "Langue & Région", appearance: "Apparence", light_theme: "Thème Clair", dark_theme: "Thème Sombre", save: "Enregistrer", saved: "✓ Paramètres enregistrés!", back: "← Retour", search_placeholder: "Rechercher sur Baobab...", ai_title: "✨ Résumé IA par Baobab", ai_summary: "Résumé IA", new_tab: "Nouvel onglet", about_title: "À propos de Baobab Search", terms_title: "Conditions d'utilisation", privacy_title: "Politique de confidentialité" },
   en: { all: "All", images: "Images", videos: "Videos", news: "News", about: "About", terms: "Terms", privacy: "Privacy", settings_title: "Settings", lang_region: "Language & Region", appearance: "Appearance", light_theme: "Light Theme", dark_theme: "Dark Theme", save: "Save", saved: "✓ Settings saved!", back: "← Back", search_placeholder: "Search on Baobab...", ai_title: "✨ AI Summary by Baobab", ai_summary: "AI Summary", new_tab: "New tab", about_title: "About Baobab Search", terms_title: "Terms of Service", privacy_title: "Privacy Policy" },
   pt: { all: "Tudo", images: "Imagens", videos: "Vídeos", news: "Notícias", about: "Sobre", terms: "Termos", privacy: "Privacidade", settings_title: "Definições", lang_region: "Idioma e Região", appearance: "Aparência", light_theme: "Tema Claro", dark_theme: "Tema Escuro", save: "Guardar", saved: "✓ Definições guardadas!", back: "← Voltar", search_placeholder: "Pesquisar no Baobab...", ai_title: "✨ Resumo IA por Baobab", ai_summary: "Resumo IA", new_tab: "Nova aba", about_title: "Sobre o Baobab Search", terms_title: "Termos de Uso", privacy_title: "Política de Privacidade" },
   it: { all: "Tutti", images: "Immagini", videos: "Video", news: "Notizie", about: "Informazioni", terms: "Termini", privacy: "Privacy", settings_title: "Impostazioni", lang_region: "Lingua e Regione", appearance: "Aspetto", light_theme: "Tema Chiaro", dark_theme: "Tema Scuro", save: "Salva", saved: "✓ Impostazioni salvate!", back: "← Indietro", search_placeholder: "Cerca su Baobab...", ai_title: "✨ Riepilogo IA di Baobab", ai_summary: "Riepilogo IA", new_tab: "Nuova scheda", about_title: "Informazioni su Baobab Search", terms_title: "Termini di Servizio", privacy_title: "Informativa sulla Privacy" },
   de: { all: "Alle", images: "Bilder", videos: "Videos", news: "Nachrichten", about: "Über", terms: "Bedingungen", privacy: "Datenschutz", settings_title: "Einstellungen", lang_region: "Sprache & Region", appearance: "Aussehen", light_theme: "Helles Thema", dark_theme: "Dunkles Thema", save: "Speichern", saved: "✓ Einstellungen gespeichert!", back: "← Zurück", search_placeholder: "Auf Baobab suchen...", ai_title: "✨ KI-Zusammenfassung von Baobab", ai_summary: "KI-Zusammenfassung", new_tab: "Neuer Tab", about_title: "Über Baobab Search", terms_title: "Nutzungsbedingungen", privacy_title: "Datenschutzrichtlinie" },
-  ru: { all: "Все", images: "Картинки", videos: "Видео", news: "Новости", about: "О нас", terms: "Условия", privacy: "Конфиденциальность", settings_title: "Настройки", lang_region: "Язык и регион", appearance: "Внешний вид", light_theme: "Светлая тема", dark_theme: "Темная тема", save: "Сохранить", saved: "✓ Настройки сохранены!", back: "← Назад", search_placeholder: "Поиск в Baobab...", ai_title: "✨ ИИ-резюме от Baobab", ai_summary: "ИИ-резюме", new_tab: "Новая вкладка", about_title: "О Baobab Search", terms_title: "Условия использования", privacy_title: "Политика конфиденциальности" },
+  ru: { all: "Все", images: "Картинки", videos: "Видео", news: "Новости", about: "О нас", terms: "Условия", privacy: "Конфиденциальность", settings_title: "Настройки", lang_region: "Язык и регион", appearance: "Внешний вид", light_theme: "Светлая тема", dark_theme: "Темная тема", save: "Сохранить", saved: "✓ Настройки сохранены!", back: "← Назад", search_placeholder: "Поиск в Baobab...", ai_title: "✨ ИИ-резюме от Baobab", ai_summary: "И-резюме", new_tab: "Новая вкладка", about_title: "О Baobab Search", terms_title: "Условия использования", privacy_title: "Политика конфиденциальности" },
   nl: { all: "Alles", images: "Afbeeldingen", videos: "Video's", news: "Nieuws", about: "Over", terms: "Voorwaarden", privacy: "Privacy", settings_title: "Instellingen", lang_region: "Taal & Regio", appearance: "Weergave", light_theme: "Licht thema", dark_theme: "Donker thema", save: "Opslaan", saved: "✓ Instellingen opgeslagen!", back: "← Terug", search_placeholder: "Zoeken op Baobab...", ai_title: "✨ AI-samenvatting door Baobab", ai_summary: "AI-samenvatting", new_tab: "Nieuw tabblad", about_title: "Over Baobab Search", terms_title: "Gebruiksvoorwaarden", privacy_title: "Privacybeleid" },
   wo: { all: "Lépp", images: "Nataal", videos: "Video", news: "Lëndëm", about: "Ci Baobab", terms: "Yoon yi", privacy: "Sutura", settings_title: "Jëfandikoo", lang_region: "Làkk ak Dëkku", appearance: "Nataal", light_theme: "Leer", dark_theme: "Guddi", save: "Denc", saved: "✓ Denc na!", back: "← Dellu", search_placeholder: "Laaj Baobab...", ai_title: "✨ Résumé AI", ai_summary: "Résumé AI", new_tab: "Fenetra bes", about_title: "Ci Baobab Search", terms_title: "Yoon yi", privacy_title: "Sutura" }
 };
@@ -47,6 +51,43 @@ function switchTab(tab) {
   activeBtn.classList.remove('border-transparent', 'text-gray-500');
   search();
 }
+
+async function search() {
+  const query = document.getElementById('searchInput').value;
+  if(!query) return;
+
+  document.getElementById('results').innerHTML = "Chargement...";
+
+  if(currentTab === 'videos') {
+    await searchYouTube(query);
+  } else {
+    document.getElementById('results').innerHTML = "Résultats pour: " + query;
+  }
+}
+
+async function searchYouTube(query) {
+  if(YOUTUBE_KEY === "COLLE_TA_CLE_ICI") {
+    document.getElementById('results').innerHTML = "Erreur: Colle ta clé YouTube dans script.js";
+    return;
+  }
+
+  const url = `${YOUTUBE_URL}${encodeURIComponent(query)}&key=${YOUTUBE_KEY}`;
+  const res = await fetch(url);
+  const data = await res.json();
+
+  let html = '<div class="grid grid-cols-2 gap-4">';
+  data.items.forEach(item => {
+    html += `
+      <div class="cursor-pointer" onclick="window.open('https://youtube.com/watch?v=${item.id.videoId}')">
+        <img src="${item.snippet.thumbnails.medium.url}" class="rounded-lg">
+        <p class="text-sm mt-2">${item.snippet.title}</p>
+      </div>
+    `;
+  });
+  html += '</div>';
+  document.getElementById('results').innerHTML = html;
+}
+
 function changeLanguage(lang) {
   localStorage.setItem('language', lang);
   const t = translations[lang];
@@ -96,32 +137,4 @@ function loadSettingsUI() {
 function quickSearch(query) {
   document.getElementById('searchInput').value = query;
   search();
-}
-function search(e) {
-  if(e) e.preventDefault();
-  const s = getSettings();
-  const q = document.getElementById('searchInput').value;
-  if(!q.trim()) return;
-  showPage('resultsPage');
-  document.getElementById('aiSummary').style.display = s.aiSummary? 'block' : 'none';
-  document.getElementById('aiText').innerText = `${t.ai_summary}: ${q}`;
-  document.getElementById('resultCount').innerText = `Résultats "${currentTab}" pour: ${q}`;
-}
-function saveSettings() {
-  localStorage.setItem('aiSummary', document.getElementById('aiSummaryToggle').checked);
-  localStorage.setItem('openNewTab', document.getElementById('openNewTab').checked);
-  localStorage.setItem('theme', document.querySelector('input[name="theme"]:checked').value);
-  applyTheme(document.querySelector('input[name="theme"]:checked').value);
-  document.getElementById('saveMsg').classList.remove('hidden');
-  setTimeout(() => document.getElementById('saveMsg').classList.add('hidden'), 2000);
-}
-function applyTheme(t) {
-  if(t === 'dark') document.documentElement.classList.add('dark');
-  else document.documentElement.classList.remove('dark');
-}
-document.addEventListener('DOMContentLoaded', () => {
-  loadTrends();
-  const s = getSettings();
-  changeLanguage(s.language);
-  applyTheme(s.theme);
-});
+    }
