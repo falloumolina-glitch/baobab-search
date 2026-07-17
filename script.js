@@ -5,8 +5,6 @@ let recognition;
 
 function getSettings() {
   return {
-    userName: localStorage.getItem('userName') || '',
-    userEmail: localStorage.getItem('userEmail') || '',
     uiLanguage: localStorage.getItem('uiLanguage') || 'fr',
     resultsLanguage: localStorage.getItem('resultsLanguage') || 'any',
     region: localStorage.getItem('region') || 'sn',
@@ -19,32 +17,37 @@ function getSettings() {
     autocomplete: localStorage.getItem('autocomplete')!== 'false',
     openNewTab: localStorage.getItem('openNewTab') === 'true',
     voiceSearch: localStorage.getItem('voiceSearch')!== 'false',
-    twoFactor: localStorage.getItem('twoFactor') === 'true',
     theme: localStorage.getItem('theme') || 'system'
   }
 }
 
 function saveSettings() {
-  localStorage.setItem('userName', document.getElementById('userName').value);
-  localStorage.setItem('userEmail', document.getElementById('userEmail').value);
-  localStorage.setItem('uiLanguage', document.getElementById('uiLanguage').value);
-  localStorage.setItem('resultsLanguage', document.getElementById('resultsLanguage').value);
-  localStorage.setItem('region', document.getElementById('region').value);
-  localStorage.setItem('timeFilter', document.getElementById('timeFilter').value);
-  localStorage.setItem('verbatim', document.getElementById('verbatim').checked);
-  localStorage.setItem('saveHistory', document.getElementById('saveHistory').checked);
-  localStorage.setItem('personalization', document.getElementById('personalization').checked);
-  localStorage.setItem('safeSearch', document.getElementById('safeSearch').value);
-  localStorage.setItem('barPosition', document.getElementById('barPosition').value);
-  localStorage.setItem('autocomplete', document.getElementById('autocomplete').checked);
-  localStorage.setItem('openNewTab', document.getElementById('openNewTab').checked);
-  localStorage.setItem('voiceSearch', document.getElementById('voiceSearch').checked);
-  localStorage.setItem('twoFactor', document.getElementById('twoFactor').checked);
-  localStorage.setItem('theme', document.getElementById('theme').value);
+  const getVal = (id) => document.getElementById(id);
+  const getChecked = (id) => getVal(id) ? getVal(id).checked : false;
+  const getValue = (id) => getVal(id) ? getVal(id).value : '';
+
+  localStorage.setItem('uiLanguage', getValue('uiLanguage'));
+  localStorage.setItem('resultsLanguage', getValue('resultsLanguage'));
+  localStorage.setItem('region', getValue('region'));
+  localStorage.setItem('timeFilter', getValue('timeFilter'));
+  localStorage.setItem('verbatim', getChecked('verbatim'));
+  localStorage.setItem('saveHistory', getChecked('saveHistory'));
+  localStorage.setItem('personalization', getChecked('personalization'));
+  localStorage.setItem('safeSearch', getValue('safeSearch'));
+  localStorage.setItem('barPosition', getValue('barPosition'));
+  localStorage.setItem('autocomplete', getChecked('autocomplete'));
+  localStorage.setItem('openNewTab', getChecked('openNewTab'));
+  localStorage.setItem('voiceSearch', getChecked('voiceSearch'));
+  localStorage.setItem('theme', getValue('theme'));
+  
   applyTheme();
   applyBarPosition();
-  document.getElementById('saveMsg').classList.remove('hidden');
-  setTimeout(() => document.getElementById('saveMsg').classList.add('hidden'), 2000);
+  
+  const msg = document.getElementById('saveMsg');
+  if(msg){
+    msg.classList.remove('hidden');
+    setTimeout(() => msg.classList.add('hidden'), 2000);
+  }
 }
 
 function applyTheme() {
@@ -58,12 +61,15 @@ function applyTheme() {
 
 function applyBarPosition() {
   const pos = getSettings().barPosition;
+  const topBar = document.getElementById('topBar');
+  const bottomBar = document.getElementById('bottomBar');
+  if(!topBar || !bottomBar) return;
   if(pos === 'bottom') {
-    document.getElementById('topBar').classList.add('hidden');
-    document.getElementById('bottomBar').classList.remove('hidden');
+    topBar.classList.add('hidden');
+    bottomBar.classList.remove('hidden');
   } else {
-    document.getElementById('topBar').classList.remove('hidden');
-    document.getElementById('bottomBar').classList.add('hidden');
+    topBar.classList.remove('hidden');
+    bottomBar.classList.add('hidden');
   }
 }
 
@@ -165,24 +171,23 @@ async function searchYouTube(query) {
 // CHARGEMENT
 document.addEventListener('DOMContentLoaded', () => {
   const s = getSettings();
-  if(document.getElementById('userName')) {
-    document.getElementById('userName').value = s.userName;
-    document.getElementById('userEmail').value = s.userEmail;
-    document.getElementById('uiLanguage').value = s.uiLanguage;
-    document.getElementById('resultsLanguage').value = s.resultsLanguage;
-    document.getElementById('region').value = s.region;
-    document.getElementById('timeFilter').value = s.timeFilter;
-    document.getElementById('verbatim').checked = s.verbatim;
-    document.getElementById('saveHistory').checked = s.saveHistory;
-    document.getElementById('personalization').checked = s.personalization;
-    document.getElementById('safeSearch').value = s.safeSearch;
-    document.getElementById('barPosition').value = s.barPosition;
-    document.getElementById('autocomplete').checked = s.autocomplete;
-    document.getElementById('openNewTab').checked = s.openNewTab;
-    document.getElementById('voiceSearch').checked = s.voiceSearch;
-    document.getElementById('twoFactor').checked = s.twoFactor;
-    document.getElementById('theme').value = s.theme;
-  }
+  const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; }
+  const setChecked = (id, val) => { const el = document.getElementById(id); if(el) el.checked = val; }
+
+  setVal('uiLanguage', s.uiLanguage);
+  setVal('resultsLanguage', s.resultsLanguage);
+  setVal('region', s.region);
+  setVal('timeFilter', s.timeFilter);
+  setChecked('verbatim', s.verbatim);
+  setChecked('saveHistory', s.saveHistory);
+  setChecked('personalization', s.personalization);
+  setVal('safeSearch', s.safeSearch);
+  setVal('barPosition', s.barPosition);
+  setChecked('autocomplete', s.autocomplete);
+  setChecked('openNewTab', s.openNewTab);
+  setChecked('voiceSearch', s.voiceSearch);
+  setVal('theme', s.theme);
+
   applyTheme();
   applyBarPosition();
 });
