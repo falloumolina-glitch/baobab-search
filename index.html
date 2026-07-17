@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-inter min-h-screen flex flex-col">
+<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-inter min-h-screen flex-col">
 
   <!-- HEADER HAUT -->
   <header id="topBar" class="w-full flex items-center justify-end px-6 py-4 text-sm">
@@ -22,7 +22,7 @@
   </header>
 
   <!-- HOME AVEC ESPACE -->
-  <main id="homePage" class="page active flex-1 flex flex-col items-center px-4">
+  <main id="homePage" class="page active flex-1 flex-col items-center px-4">
     <div class="mt-16"></div>
     <h1 class="font-sora text-6xl font-bold mb-10 bg-gradient-to-r from-blue-600 to-blue-900 bg-clip-text text-transparent">Baobab</h1>
     <form onsubmit="search(event)" class="w-full max-w-2xl">
@@ -38,7 +38,6 @@
           <svg class="w-5 h-5 text-white pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
         </button>
       </div>
-      <!-- LE BOUTON RECHER A ETE SUPPRIME ICI -->
     </form>
   </main>
 
@@ -89,12 +88,32 @@
       <h3 class="font-semibold text-lg mb-4">1. Langue & Région</h3>
       <label class="flex flex-col gap-2 py-2"><span>Langue d'affichage</span>
         <select id="uiLanguage" class="w-full bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
-          <option value="fr">Français</option><option value="en">English</option><option value="wo">Wolof</option>
+          <option value="fr">Français</option>
+          <option value="en">English</option>
+          <option value="es">Español</option>
+          <option value="ru">Русский</option>
+          <option value="de">Deutsch</option>
+          <option value="it">Italiano</option>
+          <option value="pt">Português</option>
+          <option value="pt-BR">Português Brasil</option>
+          <option value="nl">Belge</option>
+          <option value="ar">العربية</option>
+          <option value="wo">Wolof</option>
         </select>
       </label>
       <label class="flex flex-col gap-2 py-2"><span>Langue des résultats</span>
         <select id="resultsLanguage" class="w-full bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
-          <option value="any">Toutes les langues</option><option value="fr">Français</option><option value="en">English</option>
+          <option value="any">Toutes les langues</option>
+          <option value="fr">Français</option>
+          <option value="en">English</option>
+          <option value="es">Español</option>
+          <option value="ru">Русский</option>
+          <option value="de">Deutsch</option>
+          <option value="it">Italiano</option>
+          <option value="pt">Português</option>
+          <option value="pt-BR">Português Brasil</option>
+          <option value="nl">Belge</option>
+          <option value="ar">العربية</option>
         </select>
       </label>
       <label class="flex flex-col gap-2 py-2"><span>Région géographique</span>
@@ -161,16 +180,7 @@
       <h2 class="text-2xl font-bold mb-2">Politique de confidentialité – Baobab Search</h2>
       <p class="text-sm text-gray-500 mb-4">Dernière mise à jour : 17 juillet 2026</p>
       <div class="text-sm space-y-3 leading-relaxed">
-        <p>Bienvenue sur Baobab Search.<br>Votre vie privée est importante pour nous. Cette Politique de confidentialité explique quelles informations nous collectons, comment nous les utilisons, les protégeons et quels sont vos droits.</p>
-        <p><b>1. Informations collectées</b><br>Lorsque vous utilisez Baobab Search, nous pouvons collecter :<br>- Les termes de recherche que vous saisissez.<br>- Des informations techniques telles que le type d'appareil, le navigateur, le système d'exploitation et l'adresse IP.<br>- Des données d'utilisation permettant d'améliorer les performances et la sécurité du service.<br>Nous ne collectons que les informations nécessaires au fonctionnement de l'application.</p>
-        <p><b>2. Utilisation des informations</b><br>Les informations collectées servent à :<br>- fournir des résultats de recherche pertinents ;<br>- améliorer la qualité et les performances de Baobab Search ;<br>- protéger les utilisateurs contre les abus, le spam et les activités frauduleuses ;<br>- assurer la sécurité et la stabilité de nos services.</p>
-        <p><b>3. Partage des informations</b><br>Nous ne vendons jamais vos données personnelles.<br>Vos informations peuvent être partagées uniquement lorsque :<br>- la loi l'exige ;<br>- cela est nécessaire pour protéger les droits, la sécurité ou les utilisateurs de Baobab Search ;<br>- un prestataire technique intervient pour le fonctionnement du service, sous des obligations de confidentialité.</p>
-        <p><b>4. Conservation des données</b><br>Les données sont conservées uniquement pendant la durée nécessaire au fonctionnement du service, à la sécurité ou au respect des obligations légales.</p>
-        <p><b>5. Sécurité</b><br>Nous mettons en œuvre des mesures techniques et organisationnelles afin de protéger vos informations contre tout accès non autorisé, toute modification, perte ou divulgation.</p>
-        <p><b>6. Vos droits</b><br>Selon la législation applicable, vous pouvez :<br>- demander l'accès à vos données ;<br>- demander leur correction ;<br>- demander leur suppression ;<br>- vous opposer à certains traitements de données.</p>
-        <p><b>7. Services tiers</b><br>Baobab Search peut contenir des liens vers des sites ou services externes. Nous ne sommes pas responsables de leurs politiques de confidentialité.</p>
-        <p><b>8. Modifications</b><br>Cette Politique de confidentialité peut être modifiée à tout moment. Les changements importants seront publiés dans l'application ou sur notre site.</p>
-        <p><b>9. Contact</b><br>Pour toute question concernant cette Politique de confidentialité, vous pouvez nous contacter à l'adresse indiquée sur le site officiel de Baobab Search.</p>
+        <p>Bienvenue sur Baobab Search.<br>Votre vie privée est importante pour nous.</p>
       </div>
       <button onclick="document.getElementById('privacyModal').classList.add('hidden')" class="mt-6 bg-blue-600 text-white px-5 py-2 rounded-full">Fermer</button>
     </div>
@@ -183,15 +193,6 @@
       <p class="text-sm text-gray-500 mb-4">Dernière mise à jour : 17 juillet 2026</p>
       <div class="text-sm space-y-3 leading-relaxed">
         <p>En utilisant Baobab Search, vous acceptez les présentes Conditions d'utilisation.</p>
-        <p><b>1. Utilisation du service</b><br>Baobab Search est un moteur de recherche destiné à aider les utilisateurs à accéder aux informations disponibles sur Internet.<br>Vous vous engagez à utiliser le service dans le respect des lois applicables.</p>
-        <p><b>2. Comportements interdits</b><br>Il est interdit de :<br>- utiliser le service à des fins illégales ;<br>- tenter de perturber ou d'endommager les systèmes de Baobab Search ;<br>- diffuser des logiciels malveillants, des virus ou des contenus nuisibles ;<br>- contourner les mesures de sécurité du service.</p>
-        <p><b>3. Contenu des résultats</b><br>Les résultats affichés peuvent provenir de sites tiers.<br>Baobab Search ne garantit pas l'exactitude, la disponibilité ou la fiabilité de tous les contenus référencés.</p>
-        <p><b>4. Propriété intellectuelle</b><br>Le nom Baobab Search, son logo, son interface et ses éléments graphiques sont protégés par les lois applicables.<br>Toute reproduction ou utilisation non autorisée est interdite.</p>
-        <p><b>5. Disponibilité du service</b><br>Nous nous efforçons d'assurer un service fiable, mais nous ne garantissons pas un fonctionnement ininterrompu.<br>Le service peut être modifié, suspendu ou interrompu à tout moment pour des raisons techniques, de maintenance ou de sécurité.</p>
-        <p><b>6. Limitation de responsabilité</b><br>Baobab Search ne peut être tenu responsable :<br>- des contenus publiés par des sites tiers ;<br>- des dommages résultant de l'utilisation du service ;<br>- des interruptions temporaires ou des erreurs techniques.</p>
-        <p><b>7. Modifications des conditions</b><br>Nous pouvons modifier ces Conditions d'utilisation à tout moment. Les nouvelles versions prennent effet dès leur publication.</p>
-        <p><b>8. Droit applicable</b><br>Ces Conditions sont régies par les lois applicables dans le pays où Baobab Search est exploité, sauf disposition légale contraire.</p>
-        <p><b>9. Contact</b><br>Pour toute question concernant ces Conditions d'utilisation, veuillez utiliser les coordonnées disponibles sur le site officiel de Baobab Search.</p>
       </div>
       <button onclick="document.getElementById('termsModal').classList.add('hidden')" class="mt-6 bg-blue-600 text-white px-5 py-2 rounded-full">Fermer</button>
     </div>
@@ -210,4 +211,4 @@
   <input type="file" id="fileInput" class="hidden">
   <script src="script.js"></script>
 </body>
-                                                                       </html>
+  </html>
