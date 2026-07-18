@@ -1,9 +1,6 @@
 // ========================================
-// BAOBAB SEARCH - VERSION AVEC IA GROQ
+// BAOBAB SEARCH - VERSION 100% GRATUITE SANS CLÉ
 // ========================================
-
-// COLLE TA CLÉ GROQ ICI. Elle commence par gsk_
-const GEMINI_API_KEY = "AQ.Ab8RN6L6XnRBAiaSRhJd3UTg0-iep0d1I93rUQVgeLSgqSlipA"; 
 
 let currentLang = 'fr';
 let currentSecurity = 'balanced';
@@ -13,8 +10,8 @@ const $ = (id) => document.getElementById(id);
 
 // TRADUCTIONS
 const translations = {
-  fr: { title: "Baobab Search", tagline: "La recherche africaine, intelligente et respectueuse.", placeholder: "Pose ta question à Baobab...", searching: "Recherche en cours...", aiTitle: "Baobab IA", aiThink: "Réflexion de Baobab IA...", aiBtn: "Demander à Baobab IA", aiSources: "Sources", footer: "Fait avec ❤️ pour l'Afrique. Inspiré par le Baobab, arbre de sagesse." },
-  wo: { title: "Baobab Seet", tagline: "Seetug Afrik bi, xel te jàmm.", placeholder: "Laj Baobab...", searching: "Dii seet...", aiTitle: "Baobab AI", aiThink: "Xalaat bi... ", aiBtn: "Laj Baobab AI", aiSources: "Lëndëm yi", footer: "Def nañ ko ak bégg. Baobab, garab xam-xam." }
+  fr: { title: "Baobab Search", tagline: "La recherche africaine, intelligente et respectueuse.", placeholder: "Pose ta question à Baobab...", searching: "Recherche en cours...", aiTitle: "Baobab IA", aiThink: "Baobab réfléchit à partir de Wikipedia...", aiBtn: "Demander à Baobab IA", aiSources: "Sources", footer: "Fait avec ❤️ pour l'Afrique. 100% Gratuit, 0 clé API." },
+  wo: { title: "Baobab Seet", tagline: "Seetug Afrik bi, xel te jàmm.", placeholder: "Laj Baobab...", searching: "Dii seet...", aiTitle: "Baobab AI", aiThink: "Baobab di xalaat...", aiBtn: "Laj Baobab AI", aiSources: "Lëndëm yi", footer: "Def nañ ko ak bégg. Baobab, garab xam-xam. Free 100%." }
 };
 
 // THÈMES
@@ -57,27 +54,24 @@ function toggleTheme() {
   applyTheme();
 }
 
-// RECHERCHE
+// RECHERCHE WIKIPEDIA
 async function performSearch() {
   const query = $('#searchInput').value.trim();
   if(!query) return;
-  
+
   $('#results').innerHTML = `<p>${translations[currentLang].searching}</p>`;
   $('#aiBlock').classList.add('hidden');
   $('#aiBtn').classList.remove('hidden');
 
-  // ICI ON APPELLE WIKIPEDIA + IA
   const wikiResults = await searchWikipedia(query);
   displayResults(wikiResults, query);
-  
-  // On lance l'IA en fond
+
   if(currentSecurity!== 'strong') {
-    runBaobabAI(query);
+    runBaobabAI(query); // L'IA va résumer Wikipedia
   }
 }
 
 async function searchWikipedia(query) {
-  const lang = currentLang === 'wo'? 'fr' : currentLang; // Wikipedia wolof limité
   const url = `https://fr.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*`;
   try {
     const res = await fetch(url);
@@ -99,7 +93,7 @@ function displayResults(results, query) {
   `).join('');
 }
 
-// BAOBAB IA AVEC GROQ
+// BAOBAB IA SANS CLÉ - IL RÉSUME WIKIPEDIA
 async function runBaobabAI(query) {
   const aiBlock = $('#aiBlock');
   if(currentSecurity === 'strong') { aiBlock.classList.add('hidden'); return; }
@@ -108,29 +102,21 @@ async function runBaobabAI(query) {
   $('#aiBtn').classList.add('hidden');
 
   try {
-    const response = await fetch(`https://api.groq.com/openai/v1/chat/completions`, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json', 
-        'Authorization': `Bearer ${GEMINI_API_KEY}` 
-      },
-      body: JSON.stringify({
-        model: "llama3-8b-8192",
-        messages: [
-          {role: "system", content: `Tu es Baobab IA, un assistant de recherche pour l'Afrique. Réponds de manière claire, utile et chaleureuse en ${currentLang}. Donne des infos concrètes.`},
-          {role: "user", content: query}
-        ]
-      })
-    });
-    
-    if(!response.ok) throw new Error("API Error");
-    
-    const data = await response.json();
-    $('#aiText').innerText = data.choices[0].message.content;
-    $('#aiSources').innerHTML = `<span>Source: Llama 3 par Groq</span>`;
+    // On prend le 1er résultat Wikipedia et on le "résume"
+    const res = await fetch(`https://fr.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&titles=${encodeURIComponent(query)}&format=json&origin=*`);
+    const data = await res.json();
+    const pages = data.query.pages;
+    const pageId = Object.keys(pages)[0];
+    let extract = pages[pageId].extract || "Désolé, je n'ai rien trouvé sur ça.";
+
+    // On coupe pour faire un résumé
+    if(extract.length > 600) extract = extract.substring(0, 600) + "...";
+
+    $('#aiText').innerText = extract;
+    $('#aiSources').innerHTML = `<span>Source: Wikipedia</span>`;
     $('#aiBtn').classList.remove('hidden');
-  } catch (error) { 
-    $('#aiText').innerText = "Erreur API. Vérifie que ta clé gsk_ est bien collée ligne 5."; 
+  } catch (error) {
+    $('#aiText').innerText = "Baobab n'a pas trouvé d'info. Essaie une autre question.";
     $('#aiBtn').classList.remove('hidden');
   }
-       }
+}
