@@ -5,86 +5,105 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Baobab Search</title>
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <div class="logo-header" onclick="goHome()">BS</div>
-    <nav>
-      <a onclick="goHome()">Recherche</a>
-      <a onclick="alert('À propos de Baobab')">À propos</a>
-      <a onclick="showPage('settings')">⚙️ Paramètres</a>
-    </nav>
-  </header>
-
-  <!-- ACCUEIL -->
+  <!-- 1. ACCUEIL -->
   <main id="home" class="page active">
-    <div class="center">
-      <div class="logo-main">BS</div>
-      <p class="slogan">Baobab Search — L'arbre de la connaissance</p>
-      
-      <form onsubmit="search(event)" class="search-form">
-        <span>🔍</span>
-        <input id="searchInput" type="text" placeholder="Recher sur Baobab...">
-        <button type="submit">Q</button>
-      </form>
+    <header class="top-nav">
+      <div class="logo" onclick="goHome()">BS</div>
+      <button onclick="showPage('settings')">Paramètres</button>
+    </header>
 
-      <div class="sub-links">
-        <a onclick="quickSearch('web')">Recherche Web</a>
-        <a onclick="quickSearch('images')">Images</a>
-        <a onclick="quickSearch('vidéos')">Vidéos</a>
-        <a onclick="quickSearch('actualités')">Actualités</a>
+    <div class="home-center">
+      <h1>Baobab <span>Search</span></h1>
+      
+      <!-- BARRE DE RECHERCHE -->
+      <div class="search-bar" id="searchBar">
+        <input id="searchInput" type="text" placeholder="Recher sur Baobab..." onfocus="showSuggestions()" oninput="liveSuggest()">
+        <button onclick="search()">Recher</button>
+      </div>
+
+      <!-- ECRAN DE SAISIE -->
+      <div id="suggestions" class="suggestions hidden">
+        <div class="section-title">Historique récent</div>
+        <div class="item">baobab dakar</div>
+        <div class="item">météo louga</div>
+        <div class="section-title">Suggestions</div>
+        <div class="item">baobab arbre</div>
+        <div class="item">baobab fruit bienfaits</div>
+        <div class="shortcuts">
+          <button>Images</button><button>Vidéos</button><button>Actualités</button>
+        </div>
       </div>
     </div>
-
-    <footer>
-      <div>
-        <a href="#">Confidentialité</a>
-        <a href="#">Conditions d'utilisation</a>
-        <a href="#">Contact</a>
-      </div>
-      <span>Version : Baobab Search v0.1</span>
-    </footer>
   </main>
 
-  <!-- RESULTATS -->
+  <!-- 2. RESULTATS -->
   <main id="results" class="page">
-    <div class="results-header">
-      <div class="logo-header" onclick="goHome()">BS</div>
-      <form onsubmit="search(event)" class="search-small">
+    <header class="results-header">
+      <div class="logo" onclick="goHome()">BS</div>
+      <div class="search-bar small">
         <input id="searchInput2" type="text">
-        <button>Q</button>
-      </form>
+        <button onclick="search()">Recher</button>
+      </div>
+    </header>
+
+    <div class="filter-bar">
+      <button class="active">Tous</button>
+      <button>Images</button>
+      <button>Vidéos</button>
+      <button>Actualités</button>
+      <button>Maps</button>
     </div>
-    <div class="filters">
-      <button class="active">Tout</button><button>Images</button><button>Vidéos</button><button>Actualités</button><button>Documents</button>
-    </div>
+
     <div id="resultsList" class="results"></div>
   </main>
 
-  <!-- PARAMETRES -->
+  <!-- 3. PARAMETRES -->
   <main id="settings" class="page">
-    <h2>⚙️ Paramètres Baobab Search</h2>
-    <div class="setting">
+    <h2>Paramètres</h2>
+    
+    <div class="setting-group">
       <h3>Général</h3>
-      <label>Langue : 
-        <select>
-          <option>Français</option>
-          <option>English</option>
-          <option>Wolof</option>
-        </select>
-      </label>
-      <label>Mode : 
+      <label>Langue de recherche: <select><option>Français</option><option>English</option><option>Wolof</option></select></label>
+      <label>Région: <select><option>Sénégal</option><option>France</option></select></label>
+      <label><input type="checkbox"> SafeSearch</label>
+    </div>
+
+    <div class="setting-group">
+      <h3>Vie privée & Historique</h3>
+      <label><input type="checkbox" checked> Enregistrer l'activité</label>
+      <button onclick="clearHistory()">Effacer l'historique récent</button>
+    </div>
+
+    <div class="setting-group">
+      <h3>Apparence</h3>
+      <label>Thème: 
         <select onchange="setTheme(this.value)">
+          <option value="system">Système</option>
           <option value="light">Clair</option>
           <option value="dark">Sombre</option>
         </select>
       </label>
+      <label>Taille du texte: 
+        <select onchange="setFontSize(this.value)">
+          <option value="14px">Petit</option>
+          <option value="16px">Moyen</option>
+          <option value="18px">Grand</option>
+        </select>
+      </label>
     </div>
-    <button onclick="goHome()">Retour</button>
+
+    <div class="setting-group">
+      <h3>Confidentialité & Compte</h3>
+      <label><input type="checkbox"> Résultats personnels</label>
+      <button>Se déconnecter</button>
+    </div>
+    <button class="back" onclick="goHome()">Retour</button>
   </main>
 
 <script src="script.js"></script>
 </body>
-        </html>
+  </html>
