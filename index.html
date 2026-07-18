@@ -13,41 +13,36 @@
   <main id="home" class="page active">
     <header class="top-nav">
       <div class="logo" onclick="goHome()">BS</div>
-      <button onclick="showPage('settings')">Paramètres</button>
+      <button data-i18n="settings" onclick="showPage('settings')">Paramètres</button>
     </header>
 
     <div class="home-center">
       <h1>Baobab <span>Search</span></h1>
       
-      <!-- BARRE DE RECHERCHE EXACTE -->
       <div class="search-bar" id="searchBar">
-        <input id="searchInput" type="text" placeholder="Recher sur Baobab..." onfocus="showSuggestions()" oninput="liveSuggest()">
+        <input id="searchInput" type="text" data-i18n-placeholder="searchPlaceholder" placeholder="Recher sur Baobab..." onfocus="showSuggestions()" oninput="liveSuggest()">
         
         <div class="search-icons">
-          <!-- Micro BLEU -->
           <button class="icon-btn" onclick="startVoice()" aria-label="Recherche vocale">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="#1A73E8"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zm5 8a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2z"/></svg>
           </button>
-          <!-- Appareil photo CONTOUR BLEU -->
           <button class="icon-btn" onclick="startImageSearch()" aria-label="Recherche par image">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A73E8" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
           </button>
-          <!-- Loupe BLANCHE DANS ROND BLEU -->
           <button class="icon-btn primary" onclick="search()" aria-label="Recher">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
           </button>
         </div>
       </div>
 
-      <!-- ECRAN DE SAISIE -->
       <div id="suggestions" class="suggestions hidden">
-        <div class="section-title">Historique récent</div>
+        <div class="section-title" data-i18n="recent">Historique récent</div>
         <div id="historyList"></div>
-        <div class="section-title">Suggestions</div>
+        <div class="section-title" data-i18n="suggestions">Suggestions</div>
         <div class="item" onclick="selectSuggest('baobab arbre')">baobab arbre</div>
         <div class="item" onclick="selectSuggest('baobab fruit bienfaits')">baobab fruit bienfaits</div>
         <div class="shortcuts">
-          <button>Images</button><button>Vidéos</button><button>Actualités</button>
+          <button data-i18n="images">Images</button><button data-i18n="videos">Vidéos</button><button data-i18n="news">Actualités</button>
         </div>
       </div>
     </div>
@@ -58,7 +53,7 @@
     <header class="results-header">
       <div class="logo" onclick="goHome()">BS</div>
       <div class="search-bar small">
-        <input id="searchInput2" type="text" onkeydown="if(event.key==='Enter') search()">
+        <input id="searchInput2" type="text" data-i18n-placeholder="searchPlaceholder" onkeydown="if(event.key==='Enter') search()">
         <div class="search-icons">
           <button class="icon-btn primary" onclick="search()" aria-label="Recher">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -68,11 +63,11 @@
     </header>
 
     <div class="filter-bar">
-      <button class="active">Tous</button>
-      <button>Images</button>
-      <button>Vidéos</button>
-      <button>Actualités</button>
-      <button>Maps</button>
+      <button class="active" data-i18n="all">Tous</button>
+      <button data-i18n="images">Images</button>
+      <button data-i18n="videos">Vidéos</button>
+      <button data-i18n="news">Actualités</button>
+      <button data-i18n="maps">Maps</button>
     </div>
 
     <div id="resultsList" class="results"></div>
@@ -80,11 +75,11 @@
 
   <!-- 3. PARAMETRES -->
   <main id="settings" class="page">
-    <h2>Paramètres</h2>
+    <h2 data-i18n="settings">Paramètres</h2>
     
     <div class="setting-group">
-      <h3>Général</h3>
-      <label>Langue de recherche: 
+      <h3 data-i18n="general">Général</h3>
+      <label><span data-i18n="langSearch">Langue de recherche:</span> 
         <select id="langSelect">
           <option value="fr-FR">Français</option>
           <option value="en-US">English</option>
@@ -95,42 +90,42 @@
           <option value="ar-SA">العربية</option>
         </select>
       </label>
-      <label>Région: <select><option>Sénégal</option><option>France</option></select></label>
-      <label><input type="checkbox"> SafeSearch</label>
+      <label><span data-i18n="region">Région:</span> <select><option>Sénégal</option><option>France</option></select></label>
+      <label><input type="checkbox"> <span data-i18n="safeSearch">SafeSearch</span></label>
     </div>
 
     <div class="setting-group">
-      <h3>Vie privée & Historique</h3>
-      <label><input type="checkbox" id="saveActivity" checked> Enregistrer l'activité</label>
-      <button onclick="clearHistory()">Effacer l'historique récent</button>
+      <h3 data-i18n="privacy">Vie privée & Historique</h3>
+      <label><input type="checkbox" id="saveActivity" checked> <span data-i18n="saveActivity">Enregistrer l'activité</span></label>
+      <button onclick="clearHistory()" data-i18n="clearHistory">Effacer l'historique récent</button>
     </div>
 
     <div class="setting-group">
-      <h3>Apparence</h3>
-      <label>Thème: 
+      <h3 data-i18n="appearance">Apparence</h3>
+      <label><span data-i18n="theme">Thème:</span> 
         <select onchange="setTheme(this.value)">
-          <option value="light">Clair</option>
-          <option value="dark">Sombre</option>
-          <option value="system">Système</option>
+          <option value="light" data-i18n="light">Clair</option>
+          <option value="dark" data-i18n="dark">Sombre</option>
+          <option value="system" data-i18n="system">Système</option>
         </select>
       </label>
-      <label>Taille du texte: 
+      <label><span data-i18n="fontSize">Taille du texte:</span> 
         <select onchange="setFontSize(this.value)">
-          <option value="14px">Petit</option>
-          <option value="16px" selected>Moyen</option>
-          <option value="18px">Grand</option>
+          <option value="14px" data-i18n="small">Petit</option>
+          <option value="16px" selected data-i18n="medium">Moyen</option>
+          <option value="18px" data-i18n="large">Grand</option>
         </select>
       </label>
     </div>
 
     <div class="setting-group">
-      <h3>Confidentialité & Compte</h3>
-      <label><input type="checkbox"> Résultats personnels</label>
-      <button>Se déconnecter</button>
+      <h3 data-i18n="account">Confidentialité & Compte</h3>
+      <label><input type="checkbox"> <span data-i18n="personalResults">Résultats personnels</span></label>
+      <button data-i18n="logout">Se déconnecter</button>
     </div>
-    <button class="back" onclick="goHome()">Retour</button>
+    <button class="back" onclick="goHome()" data-i18n="back">Retour</button>
   </main>
 
 <script src="script.js"></script>
 </body>
-  </html>
+            </html>
