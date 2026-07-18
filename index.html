@@ -4,144 +4,63 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Baobab Search</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>tailwind.config = { darkMode: 'class' }</script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-[#FFFFFF] dark:bg-[#202124] text-[#202124] dark:text-[#FFFFFF] font-inter transition-colors duration-300">
+<body class="light">
 
-  <!-- BARRE SUPERIEURE -->
-  <header class="w-full h-16 flex items-center justify-between px-4 md:px-6 sticky top-0 bg-[#FFFFFF]/90 dark:bg-[#202124]/90 backdrop-blur z-40 border-b border-[#DADCE0] dark:border-[#303134]">
-    <div class="flex items-center gap-2 cursor-pointer" onclick="goHome()">
-      <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#2563EB] to-[#8AB4F8]"></div>
-      <span class="font-sora text-xl font-bold">Baobab Search</span>
-    </div>
-    <div class="flex items-center gap-2">
-      <button class="icon-btn" title="Applications">
-        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 10c-1.1 0-2.9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2.9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2.9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-      </button>
-      <button class="icon-btn" title="Notifications">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0.538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-      </button>
-      <button class="icon-btn" title="Profil" onclick="showPage('profilePage')">
-        <div class="w-8 h-8 rounded-full bg-[#F1F3F4] dark:bg-[#303134]"></div>
-      </button>
-      <button class="icon-btn" title="Paramètres" onclick="showPage('settingsPage')">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/></svg>
-      </button>
-    </div>
+  <!-- HEADER -->
+  <header>
+    <div class="logo-small" onclick="goHome()">BS</div>
+    <button class="icon-btn" onclick="showPage('settings')">⚙️</button>
   </header>
 
-  <!-- PAGE ACCUEIL -->
-  <section id="homePage" class="page active min-h-[calc(100vh-128px)] flex-col items-center justify-center px-4">
-    <div class="w-full max-w-2xl text-center animate-fade-in">
-      <div class="w-20 h-20 rounded-full bg-gradient-to-br from-[#2563EB] to-[#8AB4F8] mx-auto mb-4"></div>
-      <h1 class="font-sora text-5xl font-bold mb-8">Baobab Search</h1>
-
-      <form onsubmit="search(event)" class="relative">
-        <div class="w-full h-14 bg-[#FFFFFF] dark:bg-[#303134] rounded-full flex items-center px-2 shadow-sm border-[#DADCE0] dark:border-[#5F6368] hover:shadow-md transition-shadow">
-          <svg class="w-5 h-5 text-[#5F6368] ml-3 mr-2"><path fill="currentColor" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-          <input id="searchInput" type="text" oninput="showAutocomplete(this.value)" placeholder="Rechercher sur Baobab" class="bg-transparent outline-none w-full font-medium text-[#202124] dark:text-[#FFFFFF]">
-          <button type="button" onclick="startVoice()" class="p-3 text-[#5F6368] hover:bg-[#F1F3F4] dark:hover:bg-[#3C4043] rounded-full"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Zm5 8c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2Z"/></svg></button>
-          <button type="button" onclick="takePhoto()" class="p-3 text-[#5F6368] hover:bg-[#F1F3F4] dark:hover:bg-[#3C4043] rounded-full"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/></svg></button>
-        </div>
-        <div id="autocompleteList" class="absolute top-16 left-0 right-0 bg-[#FFFFFF] dark:bg-[#303134] rounded-lg shadow-lg border border-[#DADCE0] dark:border-[#5F6368] hidden z-50"></div>
+  <!-- 1. ECRAN ACCUEIL -->
+  <main id="home" class="page active">
+    <div class="home-center">
+      <div class="logo-big">BS</div>
+      <h1>Baobab <span>Search</span></h1>
+      
+      <form onsubmit="search(event)" class="search-box">
+        <span class="icon-loupe">🔍</span>
+        <input id="searchInput" type="text" placeholder="Rechercher sur Baobab">
+        <button type="submit" class="btn-q">Q</button>
       </form>
 
-      <div class="flex justify-center gap-3 mt-6">
-        <button onclick="search(event)" class="btn-primary">Recher</button>
-        <button onclick="showPage('aiPage')" class="btn-secondary">Explorer avec IA</button>
+      <div class="shortcuts">
+        <button onclick="quickSearch('actualités')">📰 Actualités</button>
+        <button onclick="quickSearch('images')">🖼️ Images</button>
+        <button onclick="quickSearch('vidéos')">▶️ Vidéos</button>
+        <button onclick="quickSearch('baobab ai')">✨ Baobab AI</button>
       </div>
     </div>
+  </main>
 
-    <!-- PIED DE PAGE -->
-    <footer class="absolute bottom-4 w-full flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-[#5F6368]">
-      <a href="#" onclick="showPage('aboutPage')" class="hover:underline">À propos</a>
-      <a href="#" onclick="showPage('privacyPage')" class="hover:underline">Confidentialité</a>
-      <a href="#" onclick="showPage('termsPage')" class="hover:underline">Conditions d'utilisation</a>
-      <a href="#" onclick="showPage('contactPage')" class="hover:underline">Contact</a>
-      <a href="#" onclick="showPage('devPage')" class="hover:underline">Développeurs</a>
-      <a href="#" onclick="showPage('apiPage')" class="hover:underline">API</a>
-      <a href="#" onclick="showPage('pressPage')" class="hover:underline">Presse</a>
-    </footer>
-  </section>
-
-  <!-- PAGE RESULTATS -->
-  <section id="resultsPage" class="page px-0">
-    <!-- BARRE RECHERCHE RESULTATS -->
-    <div class="px-4 md:px-6 py-3 border-b border-[#DADCE0] dark:border-[#303134]">
-      <form onsubmit="search(event)" class="w-full max-w-3xl h-12 bg-[#FFFFFF] dark:bg-[#303134] rounded-full flex items-center px-2 border-[#DADCE0] dark:border-[#5F6368]">
-        <input id="searchInputResults" type="text" class="bg-transparent outline-none w-full px-3 text-[#202124] dark:text-[#FFFFFF]">
-        <button type="submit" class="p-2 text-[#2563EB] dark:text-[#8AB4F8]"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></button>
-      </form>
+  <!-- 2. PAGE RESULTATS -->
+  <main id="results" class="page">
+    <div class="filters">
+      <button onclick="filter('all')" class="active">Tout</button>
+      <button onclick="filter('images')">Images</button>
+      <button onclick="filter('videos')">Vidéos</button>
+      <button onclick="filter('news')">Actualités</button>
+      <button onclick="filter('docs')">Documents</button>
     </div>
+    <div id="resultsList" class="results"></div>
+  </main>
 
-    <!-- ONGLETS -->
-    <div class="px-4 md:px-6 border-b border-[#DADCE0] dark:border-[#303134]">
-      <div class="flex gap-6 overflow-x-auto max-w-4xl">
-        <button onclick="switchTab('all')" id="tab-all" class="tab-btn active">Tout</button>
-        <button onclick="switchTab('images')" id="tab-images" class="tab-btn">Images</button>
-        <button onclick="switchTab('videos')" id="tab-videos" class="tab-btn">Vidéos</button>
-        <button onclick="switchTab('news')" id="tab-news" class="tab-btn">Actualités</button>
-        <button onclick="switchTab('maps')" id="tab-maps" class="tab-btn">Maps</button>
-        <button onclick="switchTab('shopping')" id="tab-shopping" class="tab-btn">Shopping</button>
-        <button onclick="switchTab('books')" id="tab-books" class="tab-btn">Livres</button>
-        <button onclick="switchTab('ai')" id="tab-ai" class="tab-btn">IA</button>
-      </div>
+  <!-- 3. MENU PARAMETRES -->
+  <main id="settings" class="page">
+    <h2>Paramètres</h2>
+    <div class="setting">
+      <span>🌙 Mode sombre / clair</span>
+      <button onclick="toggleTheme()">Changer</button>
     </div>
+    <div class="setting"><span>🌍 Langue</span> <select><option>Français</option><option>English</option></select></div>
+    <div class="setting"><span>🔒 Confidentialité</span></div>
+    <div class="setting"><span>🕒 Historique de recherche</span> <button onclick="clearHistory()">Effacer</button></div>
+    <div class="setting"><span>ℹ️ À propos de Baobab Search</span> <p>Version 0.1</p></div>
+    <button class="back" onclick="goHome()">← Retour</button>
+  </main>
 
-    <!-- CONTENU RESULTATS -->
-    <div class="px-4 md:px-6 py-6 max-w-4xl mx-auto">
-      <div id="aiBox" class="hidden bg-[#F1F3F4] dark:bg-[#303134] rounded-lg p-4 mb-6">
-        <h3 class="font-semibold mb-2">Baobab AI</h3>
-        <p id="aiAnswer"></p>
-      </div>
-      <div id="resultsList" class="space-y-6"></div>
-    </div>
-  </section>
-
-  <!-- PAGES SPECIALISEES -->
-  <section id="aiPage" class="page px-4 py-6 max-w-3xl mx-auto"><h2 class="text-2xl font-bold mb-4">Baobab AI</h2><p>Assistant IA pour résumer, traduire, expliquer.</p></section>
-  <section id="imagesPage" class="page px-4 py-6"><h2 class="text-2xl font-bold mb-4">Images</h2><div id="imagesGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div></section>
-  <section id="videosPage" class="page px-4 py-6"><h2 class="text-2xl font-bold mb-4">Vidéos</h2></section>
-  <section id="newsPage" class="page px-4 py-6"><h2 class="text-2xl font-bold mb-4">Actualités</h2></section>
-  <section id="mapsPage" class="page px-4 py-6"><h2 class="text-2xl font-bold mb-4">Maps</h2><div class="w-full h-96 bg-[#F1F3F4] dark:bg-[#303134] rounded-lg">Carte interactive</div></section>
-  <section id="shoppingPage" class="page px-4 py-6"><h2 class="text-2xl font-bold mb-4">Shopping</h2></section>
-  <section id="historyPage" class="page px-4 py-6"><h2 class="text-2xl font-bold mb-4">Historique</h2></section>
-  <section id="favoritesPage" class="page px-4 py-6"><h2 class="text-2xl font-bold mb-4">Favoris</h2></section>
-  <section id="profilePage" class="page px-4 py-6"><h2 class="text-2xl font-bold mb-4">Profil</h2></section>
-
-  <!-- PARAMETRES -->
-  <section id="settingsPage" class="page px-4 py-6 max-w-3xl mx-auto">
-    <h2 class="text-2xl font-bold mb-6">Paramètres</h2>
-    <div class="space-y-6">
-      <div><h3 class="font-semibold mb-3">Apparence</h3>
-        <select id="themeSelect" onchange="setTheme(this.value)" class="w-full p-2 border rounded-lg bg-[#FFFFFF] dark:bg-[#303134] border-[#DADCE0] dark:border-[#5F6368]">
-          <option value="system">Automatique</option><option value="light">Clair</option><option value="dark">Sombre</option>
-        </select>
-      </div>
-      <div><h3 class="font-semibold mb-3">Recherche</h3>
-        <label class="flex justify-between py-2">Langue <select><option>Français</option><option>English</option></select></label>
-        <label class="flex justify-between py-2">Région <select><option>Sénégal</option></select></label>
-        <label class="flex justify-between py-2">SafeSearch <input type="checkbox" class="accent-[#2563EB]"></label>
-      </div>
-      <div><h3 class="font-semibold mb-3">Confidentialité</h3>
-        <button onclick="clearData()" class="btn-secondary w-full">Supprimer les données</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- PAGES LEGALES -->
-  <section id="aboutPage" class="page px-4 py-6 max-w-3xl mx-auto"><h2 class="text-2xl font-bold mb-4">À propos</h2></section>
-  <section id="privacyPage" class="page px-4 py-6 max-w-3xl mx-auto"><h2 class="text-2xl font-bold mb-4">Confidentialité</h2></section>
-  <section id="termsPage" class="page px-4 py-6 max-w-3xl mx-auto"><h2 class="text-2xl font-bold mb-4">Conditions d'utilisation</h2></section>
-  <section id="contactPage" class="page px-4 py-6 max-w-3xl mx-auto"><h2 class="text-2xl font-bold mb-4">Contact</h2></section>
-  <section id="devPage" class="page px-4 py-6 max-w-3xl mx-auto"><h2 class="text-2xl font-bold mb-4">Développeurs</h2></section>
-  <section id="apiPage" class="page px-4 py-6 max-w-3xl mx-auto"><h2 class="text-2xl font-bold mb-4">API</h2></section>
-  <section id="pressPage" class="page px-4 py-6 max-w-3xl mx-auto"><h2 class="text-2xl font-bold mb-4">Presse</h2></section>
-
-  <input type="file" id="fileInput" class="hidden">
   <script src="script.js"></script>
 </body>
           </html>
