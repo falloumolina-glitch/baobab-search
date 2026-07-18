@@ -9,101 +9,71 @@
 </head>
 <body>
 
-  <!-- 1. ACCUEIL -->
-  <main id="home" class="page active">
-    <header class="top-nav">
-      <div class="logo" onclick="goHome()">BS</div>
-      <button onclick="showPage('settings')">Paramètres</button>
-    </header>
+  <!-- HEADER -->
+  <header class="top-nav">
+    <div></div>
+    <div class="right-icons">
+      <svg class="icon-grid" viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z" fill="#5F6368"/></svg>
+      <div class="avatar">B</div>
+    </div>
+  </header>
 
+  <!-- ACCUEIL -->
+  <main id="home" class="page active">
     <div class="home-center">
-      <h1>Baobab <span>Search</span></h1>
+      <h1 class="logo-text">Baobab</h1>
       
       <!-- BARRE DE RECHERCHE -->
       <div class="search-bar" id="searchBar">
-        <input id="searchInput" type="text" placeholder="Recher sur Baobab..." onfocus="showSuggestions()" oninput="liveSuggest()">
-        <button onclick="search()">Recher</button>
+        <input id="searchInput" type="text" placeholder="Recher sur Baobab..." onfocus="showSuggestions()">
+        
+        <!-- MICRO SVG -->
+        <svg class="icon-btn" onclick="alert('Recherche vocale bientôt')" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+
+        <!-- APPAREIL PHOTO SVG -->
+        <svg class="icon-btn" onclick="alert('Recherche visuelle bientôt')" viewBox="0 0 24 24"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+
+        <!-- BOUTON LOUPE BLEU -->
+        <button class="search-btn-icon" onclick="search()">
+          <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="white"/></svg>
+        </button>
       </div>
 
-      <!-- ECRAN DE SAISIE -->
+      <!-- BOUTON RECHER EN DESSOUS -->
+      <button class="main-search-btn" onclick="search()">Recher</button>
+
+      <!-- SUGGESTIONS -->
       <div id="suggestions" class="suggestions hidden">
-        <div class="section-title">Historique récent</div>
         <div class="item">baobab dakar</div>
         <div class="item">météo louga</div>
-        <div class="section-title">Suggestions</div>
-        <div class="item">baobab arbre</div>
         <div class="item">baobab fruit bienfaits</div>
-        <div class="shortcuts">
-          <button>Images</button><button>Vidéos</button><button>Actualités</button>
-        </div>
       </div>
     </div>
+
+    <footer>
+      <span>Guédiawaye, SN</span>
+      <div>
+        <a href="#">À propos</a>
+        <a href="#">Confidentialité</a>
+      </div>
+    </footer>
   </main>
 
-  <!-- 2. RESULTATS -->
+  <!-- RESULTATS -->
   <main id="results" class="page">
     <header class="results-header">
-      <div class="logo" onclick="goHome()">BS</div>
+      <h1 class="logo-text-small">Baobab</h1>
       <div class="search-bar small">
         <input id="searchInput2" type="text">
-        <button onclick="search()">Recher</button>
+        <button class="search-btn-icon" onclick="search()"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="white"/></svg></button>
       </div>
     </header>
-
     <div class="filter-bar">
-      <button class="active">Tous</button>
-      <button>Images</button>
-      <button>Vidéos</button>
-      <button>Actualités</button>
-      <button>Maps</button>
+      <button class="active">Tous</button><button>Images</button><button>Photos</button><button>Vidéos</button><button>Actualités</button><button>Documents</button><button>Maps</button>
     </div>
-
     <div id="resultsList" class="results"></div>
-  </main>
-
-  <!-- 3. PARAMETRES -->
-  <main id="settings" class="page">
-    <h2>Paramètres</h2>
-    
-    <div class="setting-group">
-      <h3>Général</h3>
-      <label>Langue de recherche: <select><option>Français</option><option>English</option><option>Wolof</option></select></label>
-      <label>Région: <select><option>Sénégal</option><option>France</option></select></label>
-      <label><input type="checkbox"> SafeSearch</label>
-    </div>
-
-    <div class="setting-group">
-      <h3>Vie privée & Historique</h3>
-      <label><input type="checkbox" checked> Enregistrer l'activité</label>
-      <button onclick="clearHistory()">Effacer l'historique récent</button>
-    </div>
-
-    <div class="setting-group">
-      <h3>Apparence</h3>
-      <label>Thème: 
-        <select onchange="setTheme(this.value)">
-          <option value="system">Système</option>
-          <option value="light">Clair</option>
-          <option value="dark">Sombre</option>
-        </select>
-      </label>
-      <label>Taille du texte: 
-        <select onchange="setFontSize(this.value)">
-          <option value="14px">Petit</option>
-          <option value="16px">Moyen</option>
-          <option value="18px">Grand</option>
-        </select>
-      </label>
-    </div>
-
-    <div class="setting-group">
-      <h3>Confidentialité & Compte</h3>
-      <label><input type="checkbox"> Résultats personnels</label>
-      <button>Se déconnecter</button>
-    </div>
-    <button class="back" onclick="goHome()">Retour</button>
   </main>
 
 <script src="script.js"></script>
 </body>
-  </html>
+          </html>
