@@ -46,13 +46,17 @@ function startVoice() {
     alert("La reconnaissance vocale n'est pas supportée. Utilise Chrome sur Android.");
     return;
   }
+
+  // Recharge la langue au cas où elle a changé
+  currentLang = localStorage.getItem('baobabLang') || 'fr-FR';
+
   recognition = new SpeechRecognition();
   recognition.lang = currentLang; // Utilise la langue choisie
   recognition.interimResults = false;
   recognition.maxAlternatives = 1;
 
   recognition.onstart = function() {
-    $('#searchInput').placeholder = "Parlez maintenant...";
+    $('#searchInput').placeholder = "Parlez maintenant... " + currentLang;
   };
   recognition.onresult = function(event) {
     const speechResult = event.results[0][0].transcript;
@@ -61,7 +65,7 @@ function startVoice() {
     search();
   };
   recognition.onerror = function(event) {
-    alert('Erreur micro: ' + event.error);
+    alert('Erreur micro: ' + event.error + ' Langue: ' + currentLang);
     $('#searchInput').placeholder = "Recher sur Baobab...";
   };
   recognition.onend = function() {
@@ -88,9 +92,13 @@ function startImageSearch() {
 // ===== SAUVEGARDE LANGUE =====
 document.addEventListener('DOMContentLoaded', () => {
   if($('#langSelect')){
+    // Met la bonne langue au chargement
+    $('#langSelect').value = currentLang;
+
     $('#langSelect').addEventListener('change', (e) => {
       currentLang = e.target.value;
       localStorage.setItem('baobabLang', currentLang);
+      alert("Langue changée: " + e.target.options[e.target.selectedIndex].text);
     });
   }
 });
