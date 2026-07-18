@@ -3,7 +3,7 @@ let currentLang = localStorage.getItem('baobabLang') || 'fr-FR';
 let currentSecurity = localStorage.getItem('baobabSecurity') || 'standard';
 
 // RÈGLE D'OR : METS TA VRAIE CLÉ ICI ENTRE LES ""
-const GEMINI_API_KEY = "AQ.Ab8RN6L6XnRBAiaSRhJd3UTg0-iep0d1I93rUQVgeLSgqSlipA";
+const GEMINI_API_KEY = "AIzaSyD6aTPeBpKTBFNNT6LOaXbfmpMG7XWl2V4";
 
 const translations = {
   'fr-FR': {searchPlaceholder: "Recher sur Baobab...", settings: "Paramètres", langSearch: "Langue de recherche:", saveActivity: "Enregistrer l'activité", clearHistory: "Effacer l'historique récent", security: "Sécurité", back: "Retour", speakNow: "Parlez maintenant..."},
