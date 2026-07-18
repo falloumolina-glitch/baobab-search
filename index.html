@@ -5,56 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Baobab Search</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <header class="header">
-    <div class="logo" onclick="goHome()">BS</div>
-    <div class="header-actions">
-      <button onclick="toggleTheme()" class="icon-btn">🌙</button>
-      <button onclick="showPage('settings')" class="icon-btn">⚙️</button>
-    </div>
+  <!-- HEADER -->
+  <header>
+    <div class="logo-header" onclick="goHome()">BS</div>
+    <nav>
+      <a onclick="goHome()">Recherche</a>
+      <a onclick="alert('À propos de Baobab')">À propos</a>
+      <a onclick="showPage('settings')">⚙️ Paramètres</a>
+    </nav>
   </header>
 
+  <!-- ACCUEIL -->
   <main id="home" class="page active">
-    <div class="home-wrapper">
-      <div class="logo-home">BS</div>
-      <h1>Baobab <span>Search</span></h1>
-      <form onsubmit="search(event)" class="search-bar">
+    <div class="center">
+      <div class="logo-main">BS</div>
+      <p class="slogan">Baobab Search — L'arbre de la connaissance</p>
+      
+      <form onsubmit="search(event)" class="search-form">
         <span>🔍</span>
-        <input id="searchInput" type="text" placeholder="Recher sur Baobab ou saisir une URL">
+        <input id="searchInput" type="text" placeholder="Recher sur Baobab...">
         <button type="submit">Q</button>
       </form>
-      <div class="shortcuts">
-        <a onclick="quickSearch('actualités')">📰 Actualités</a>
-        <a onclick="quickSearch('images')">🖼️ Images</a>
-        <a onclick="quickSearch('vidéos')">▶️ Vidéos</a>
-        <a onclick="quickSearch('baobab ai')">✨ Baobab AI</a>
+
+      <div class="sub-links">
+        <a onclick="quickSearch('web')">Recherche Web</a>
+        <a onclick="quickSearch('images')">Images</a>
+        <a onclick="quickSearch('vidéos')">Vidéos</a>
+        <a onclick="quickSearch('actualités')">Actualités</a>
       </div>
     </div>
+
+    <footer>
+      <div>
+        <a href="#">Confidentialité</a>
+        <a href="#">Conditions d'utilisation</a>
+        <a href="#">Contact</a>
+      </div>
+      <span>Version : Baobab Search v0.1</span>
+    </footer>
   </main>
 
+  <!-- RESULTATS -->
   <main id="results" class="page">
     <div class="results-header">
-      <div class="filters">
-        <button class="active">Tout</button><button>Images</button><button>Vidéos</button><button>Actu</button><button>Docs</button>
-      </div>
+      <div class="logo-header" onclick="goHome()">BS</div>
+      <form onsubmit="search(event)" class="search-small">
+        <input id="searchInput2" type="text">
+        <button>Q</button>
+      </form>
     </div>
-    <div id="resultsList" class="results-container"></div>
+    <div class="filters">
+      <button class="active">Tout</button><button>Images</button><button>Vidéos</button><button>Actualités</button><button>Documents</button>
+    </div>
+    <div id="resultsList" class="results"></div>
   </main>
 
+  <!-- PARAMETRES -->
   <main id="settings" class="page">
-    <h2>Paramètres</h2>
-    <div class="settings-list">
-      <div class="setting-item"><span>🌙 Apparence</span><select onchange="setTheme(this.value)"><option value="light">Clair</option><option value="dark">Sombre</option></select></div>
-      <div class="setting-item"><span>🌍 Langue</span><select><option>Français</option><option>Wolof</option><option>English</option></select></div>
-      <div class="setting-item"><span>🔒 Confidentialité</span><p>Baobab ne vend pas vos données</p></div>
-      <div class="setting-item"><span>🕒 Historique</span><button onclick="clearHistory()">Effacer</button></div>
-      <div class="setting-item"><span>ℹ️ À propos</span><p>Baobab Search v0.1 Pro</p></div>
+    <h2>⚙️ Paramètres Baobab Search</h2>
+    <div class="setting">
+      <h3>Général</h3>
+      <label>Langue : 
+        <select>
+          <option>Français</option>
+          <option>English</option>
+          <option>Wolof</option>
+        </select>
+      </label>
+      <label>Mode : 
+        <select onchange="setTheme(this.value)">
+          <option value="light">Clair</option>
+          <option value="dark">Sombre</option>
+        </select>
+      </label>
     </div>
+    <button onclick="goHome()">Retour</button>
   </main>
 
 <script src="script.js"></script>
 </body>
-          </html>
+        </html>
