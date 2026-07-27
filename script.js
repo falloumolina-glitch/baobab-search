@@ -1,206 +1,243 @@
-// ========================================
-// BAOBAB SEARCH - SCRIPT.JS V3 COMPLET
-// ========================================
+const $ = s => document.querySelector(s);
+let currentLang = localStorage.getItem('baobabLang') || 'fr-FR';
 
-const GEMINI_API_KEY = "TA_CLE_ICI";
-
-let currentLang = 'fr';
-let currentSecurity = 'balanced';
-let currentTheme = 'light';
-let recognition = null;
-
-const $ = (id) => document.getElementById(id);
-
-// TRADUCTIONS
+// ===== DICTIONNAIRE DE TRADUCTION COMPLET =====
 const translations = {
-  fr: {
-    title: "Baobab Search", tagline: "La recherche africaine, intelligente et respectueuse.",
-    placeholder: "Pose ta question à Baobab...", searching: "Recherche en cours...", listening: "J'écoute...",
-    processingImage: "Analyse de l'image...", processingDoc: "Lecture du document...",
-    aiTitle: "Baobab IA", aiThink: "Réflexion de Baobab IA...", aiBtn: "Demander à Baobab IA", aiSources: "Sources",
-    footer: "Fait avec ❤️ pour l'Afrique. Powered by Google Gemini.", noResults: 'Aucun résultat trouvé pour'
+  'fr-FR': {
+    searchPlaceholder: "Recher sur Baobab...",
+    settings: "Paramètres", general: "Général", langSearch: "Langue de recherche:",
+    region: "Région:", safeSearch: "SafeSearch", privacy: "Vie privée & Historique",
+    saveActivity: "Enregistrer l'activité", clearHistory: "Effacer l'historique récent",
+    appearance: "Apparence", theme: "Thème:", light: "Clair", dark: "Sombre", system: "Système",
+    fontSize: "Taille du texte:", small: "Petit", medium: "Moyen", large: "Grand",
+    account: "Compte", personalResults: "Résultats personnels", logout: "Se déconnecter",
+    back: "Retour", recent: "Historique récent", suggestions: "Suggestions",
+    all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", maps: "Maps",
+    speakNow: "Parlez maintenant...", legal: "Légal", privacyPolicy: "Politique de confidentialité",
+    termsOfService: "Conditions d'utilisation", about: "À propos",
+    aboutBaobab: "À propos de Baobab Search", ourMission: "Notre mission",
+    ourValues: "Nos valeurs", ourCommitment: "Notre engagement", contact: "Contact"
   },
-  wo: {
-    title: "Baobab Seet", tagline: "Seetug Afrik bi, xel te jàmm.",
-    placeholder: "Laj Baobab...", searching: "Dii seet...", listening: "Dii dégglu...",
-    processingImage: "Dii xel image bi...", processingDoc: "Dii jàng dossié bi...",
-    aiTitle: "Baobab AI", aiThink: "Xalaat bi...", aiBtn: "Laj Baobab AI", aiSources: "Lëndëm yi",
-    footer: "Def nañ ko ak bégg. Baobab, garab xam-xam.", noResults: 'Benna njit menul a fekk ci'
+  'en-US': {
+    searchPlaceholder: "Search on Baobab...", settings: "Settings", general: "General",
+    langSearch: "Search language:", region: "Region:", safeSearch: "SafeSearch",
+    privacy: "Privacy & History", saveActivity: "Save activity",
+    clearHistory: "Clear recent history", appearance: "Appearance", theme: "Theme:",
+    light: "Light", dark: "Dark", system: "System", fontSize: "Text size:",
+    small: "Small", medium: "Medium", large: "Large", account: "Account",
+    personalResults: "Personal results", logout: "Sign out", back: "Back",
+    recent: "Recent history", suggestions: "Suggestions", all: "All", images: "Images",
+    videos: "Videos", news: "News", maps: "Maps", speakNow: "Speak now...",
+    legal: "Legal", privacyPolicy: "Privacy Policy", termsOfService: "Terms of Service",
+    about: "About", aboutBaobab: "About Baobab Search", ourMission: "Our Mission",
+    ourValues: "Our Values", ourCommitment: "Our Commitment", contact: "Contact"
+  },
+  'es-ES': {
+    searchPlaceholder: "Buscar en Baobab...", settings: "Configuración", general: "General",
+    langSearch: "Idioma de búsqueda:", region: "Región:", safeSearch: "Búsqueda segura",
+    privacy: "Privacidad e Historial", saveActivity: "Guardar actividad",
+    clearHistory: "Borrar historial reciente", appearance: "Apariencia", theme: "Tema:",
+    light: "Claro", dark: "Oscuro", system: "Sistema", fontSize: "Tamaño del texto:",
+    small: "Pequeño", medium: "Mediano", large: "Grande", account: "Cuenta",
+    personalResults: "Resultados personales", logout: "Cerrar sesión", back: "Atrás",
+    recent: "Historial reciente", suggestions: "Sugerencias", all: "Todo", images: "Imágenes",
+    videos: "Vídeos", news: "Noticias", maps: "Mapas", speakNow: "Hable ahora...",
+    legal: "Legal", privacyPolicy: "Política de privacidad", termsOfService: "Términos de uso",
+    about: "Acerca de", aboutBaobab: "Acerca de Baobab Search", ourMission: "Nuestra misión",
+    ourValues: "Nuestros valores", ourCommitment: "Nuestro compromiso", contact: "Contacto"
+  },
+  'pt-PT': {
+    searchPlaceholder: "Pesquisar no Baobab...", settings: "Definições", general: "Geral",
+    langSearch: "Idioma de pesquisa:", region: "Região:", safeSearch: "Pesquisa segura",
+    privacy: "Privacidade e Histórico", saveActivity: "Guardar atividade",
+    clearHistory: "Limpar histórico recente", appearance: "Aparência", theme: "Tema:",
+    light: "Claro", dark: "Escuro", system: "Sistema", fontSize: "Tamanho do texto:",
+    small: "Pequeno", medium: "Médio", large: "Grande", account: "Conta",
+    personalResults: "Resultados pessoais", logout: "Terminar sessão", back: "Voltar",
+    recent: "Histórico recente", suggestions: "Sugestões", all: "Tudo", images: "Imagens",
+    videos: "Vídeos", news: "Notícias", maps: "Mapas", speakNow: "Fale agora...",
+    legal: "Legal", privacyPolicy: "Política de Privacidade", termsOfService: "Termos de Serviço",
+    about: "Sobre", aboutBaobab: "Sobre o Baobab Search", ourMission: "A nossa missão",
+    ourValues: "Os nossos valores", ourCommitment: "O nosso compromisso", contact: "Contacto"
+  },
+  'it-IT': {
+    searchPlaceholder: "Cerca su Baobab...", settings: "Impostazioni", general: "Generale",
+    langSearch: "Lingua di ricerca:", region: "Regione:", safeSearch: "SafeSearch",
+    privacy: "Privacy e Cronologia", saveActivity: "Salva attività",
+    clearHistory: "Cancella cronologia recente", appearance: "Aspetto", theme: "Tema:",
+    light: "Chiaro", dark: "Scuro", system: "Sistema", fontSize: "Dimensione testo:",
+    small: "Piccolo", medium: "Medio", large: "Grande", account: "Account",
+    personalResults: "Risultati personali", logout: "Esci", back: "Indietro",
+    recent: "Cronologia recente", suggestions: "Suggerimenti", all: "Tutto", images: "Immagini",
+    videos: "Video", news: "Notizie", maps: "Mappe", speakNow: "Parla ora...",
+    legal: "Legale", privacyPolicy: "Informativa sulla privacy", termsOfService: "Termini di servizio",
+    about: "Informazioni", aboutBaobab: "Informazioni su Baobab Search", ourMission: "La nostra missione",
+    ourValues: "I nostri valori", ourCommitment: "Il nostro impegno", contact: "Contatto"
+  },
+  'de-DE': {
+    searchPlaceholder: "Suche auf Baobab...", settings: "Einstellungen", general: "Allgemein",
+    langSearch: "Suchsprache:", region: "Region:", safeSearch: "SafeSearch",
+    privacy: "Datenschutz & Verlauf", saveActivity: "Aktivität speichern",
+    clearHistory: "Letzten Verlauf löschen", appearance: "Aussehen", theme: "Thema:",
+    light: "Hell", dark: "Dunkel", system: "System", fontSize: "Textgröße:",
+    small: "Klein", medium: "Mittel", large: "Groß", account: "Konto",
+    personalResults: "Persönliche Ergebnisse", logout: "Abmelden", back: "Zurück",
+    recent: "Letzter Verlauf", suggestions: "Vorschläge", all: "Alle", images: "Bilder",
+    videos: "Videos", news: "Nachrichten", maps: "Karten", speakNow: "Jetzt sprechen...",
+    legal: "Rechtliches", privacyPolicy: "Datenschutzrichtlinie", termsOfService: "Nutzungsbedingungen",
+    about: "Über", aboutBaobab: "Über Baobab Search", ourMission: "Unsere Mission",
+    ourValues: "Unsere Werte", ourCommitment: "Unser Engagement", contact: "Kontakt"
+  },
+  'ar-SA': {
+    searchPlaceholder: "البحث في باوباب...", settings: "الإعدادات", general: "عام",
+    langSearch: "لغة البحث:", region: "المنطقة:", safeSearch: "البحث الآمن",
+    privacy: "الخصوصية والسجل", saveActivity: "حفظ النشاط",
+    clearHistory: "مسح السجل الأخير", appearance: "المظهر", theme: "السمة:",
+    light: "فاتح", dark: "داكن", system: "النظام", fontSize: "حجم الخط:",
+    small: "صغير", medium: "متوسط", large: "كبير", account: "الحساب",
+    personalResults: "نتائج شخصية", logout: "تسجيل الخروج", back: "رجوع",
+    recent: "السجل الأخير", suggestions: "الاقتراحات", all: "الكل", images: "الصور",
+    videos: "الفيديوهات", news: "الأخبار", maps: "الخرائط", speakNow: "تحدث الآن...",
+    legal: "قانوني", privacyPolicy: "سياسة الخصوصية", termsOfService: "شروط الاستخدام",
+    about: "حول", aboutBaobab: "حول باوباب سيرش", ourMission: "مهمتنا",
+    ourValues: "قيمنا", ourCommitment: "التزامنا", contact: "اتصل بنا"
   }
 };
-
-// THÈMES
-const themes = {
-  light: { '--bg': '#F8F5F0', '--text': '#2D241F', '--accent': '#A0522D', '--card': '#FFFFFF', '--border': '#E0DAD1' },
-  dark: { '--bg': '#1A1612', '--text': '#F8F5F0', '--accent': '#D4A373', '--card': '#2D241F', '--border': '#4A3F35' }
-};
-
-// AU DÉMARRAGE
-document.addEventListener('DOMContentLoaded', () => {
-  applyTheme();
-  applyTranslations();
-  initSpeechRecognition();
-  bindAllEvents();
-});
-
-function bindAllEvents() {
-  // RECHERCHE
-  ['#searchBtn', '#loupeBtn', '#searchIcon'].map(s => $(s)).filter(Boolean).forEach(btn => btn.addEventListener('click', performSearch));
-  if($('#searchInput')) $('#searchInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') performSearch(); });
-
-  // IA
-  if($('#aiBtn')) $('#aiBtn').addEventListener('click', () => runBaobabAI($('#searchInput').value));
-
-  // PARAMETRES
-  if($('#langSelect')) $('#langSelect').addEventListener('change', (e) => { currentLang = e.target.value; applyTranslations(); });
-  if($('#securitySelect')) $('#securitySelect').addEventListener('change', (e) => { currentSecurity = e.target.value; });
-  if($('#themeToggle')) $('#themeToggle').addEventListener('click', toggleTheme);
-
-  // MICRO
-  if($('#micBtn')) $('#micBtn').addEventListener('click', startListening);
-
-  // CAMERA
-  if($('#cameraBtn')) $('#cameraBtn').addEventListener('click', () => $('#cameraInput').click());
-  if($('#cameraInput')) $('#cameraInput').addEventListener('change', handleImageUpload);
-
-  // DOCUMENTS
-  if($('#docBtn')) $('#docBtn').addEventListener('click', () => $('#docInput').click());
-  if($('#docInput')) $('#docInput').addEventListener('change', handleDocUpload);
-}
 
 function applyTranslations() {
-  const t = translations[currentLang];
-  if($('#logoTitle')) $('#logoTitle').innerText = t.title;
-  if($('#tagline')) $('#tagline').innerText = t.tagline;
-  if($('#searchInput')) $('#searchInput').placeholder = t.placeholder;
-  if($('#aiTitle')) $('#aiTitle').innerText = t.aiTitle;
-  if($('#aiBtn')) $('#aiBtn').innerText = t.aiBtn;
-  if($('#aiSourcesLabel')) $('#aiSourcesLabel').innerText = t.aiSources + ":";
-  if($('#footerText')) $('#footerText').innerText = t.footer;
+  const t = translations[currentLang] || translations['fr-FR'];
+  document.documentElement.lang = currentLang.split('-')[0];
+  document.documentElement.dir = currentLang === 'ar-SA'? 'rtl' : 'ltr';
+
+  if($('#searchInput')) $('#searchInput').placeholder = t.searchPlaceholder;
+  if($('#searchInput2')) $('#searchInput2').placeholder = t.searchPlaceholder;
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if(t[key]) el.textContent = t[key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if(t[key]) el.placeholder = t[key];
+  });
 }
 
-function applyTheme() {
-  const theme = themes[currentTheme];
-  for(const key in theme) { document.documentElement.style.setProperty(key, theme[key]); }
-  if($('#themeToggle')) $('#themeToggle').innerText = currentTheme === 'light'? '🌙' : '☀️';
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  $(`#${id}`).classList.add('active');
+  applyTranslations();
 }
 
-function toggleTheme() {
-  currentTheme = currentTheme === 'light'? 'dark' : 'light';
-  applyTheme();
+function goHome() {
+  showPage('home');
+  loadHistory();
+  if($('#langSelect')) $('#langSelect').value = currentLang;
 }
 
-// ========== MICRO ==========
-function initSpeechRecognition() {
+function showSuggestions() {
+  $('#suggestions').classList.remove('hidden');
+  loadHistory();
+}
+
+function liveSuggest() {}
+
+function selectSuggest(text) {
+  $('#searchInput').value = text;
+  search();
+}
+
+function search() {
+  let q = $('#searchInput')?.value || $('#searchInput2')?.value;
+  if(!q) return;
+  $('#searchInput2').value = q;
+  saveHistory(q);
+  showPage('results');
+  $('#resultsList').innerHTML = `
+  <div class="result-card">
+    <div class="url">baobabsearch.com/search?q=${q}</div>
+    <a class="title">Résultats pour <b>${q}</b></a>
+    <div class="desc">Langue actuelle: ${currentLang}</div>
+  </div>`;
+}
+
+// ===== MICRO MULTILINGUE =====
+let recognition;
+function startVoice() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) { if($('#micBtn')) $('#micBtn').style.display = 'none'; return; }
-  recognition = new SpeechRecognition();
-  recognition.lang = 'fr-FR';
-  recognition.onstart = () => { if($('#searchInput')) $('#searchInput').placeholder = translations[currentLang].listening; };
-  recognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript;
-    if($('#searchInput')) $('#searchInput').value = transcript;
-    performSearch();
-  };
-  recognition.onend = () => { applyTranslations(); };
-}
-function startListening() { if(!recognition) return alert("Micro non supporté"); recognition.start(); }
-
-// ========== CAMERA ==========
-async function handleImageUpload(e) {
-  const file = e.target.files[0];
-  if(!file) return;
-  $('#results').innerHTML = `<p>${translations[currentLang].processingImage}</p>`;
-
-  const reader = new FileReader();
-  reader.onload = async () => {
-    const base64 = reader.result.split(',')[1];
-    await runBaobabAI(`Décris cette image et dis-moi ce que c'est: data:image/jpeg;base64,${base64}`);
-  };
-  reader.readAsDataURL(file);
-}
-
-// ========== DOCUMENTS ==========
-async function handleDocUpload(e) {
-  const file = e.target.files[0];
-  if(!file) return;
-  $('#results').innerHTML = `<p>${translations[currentLang].processingDoc}</p>`;
-
-  const text = await file.text(); // marche pour.txt.md.csv
-  if($('#searchInput')) $('#searchInput').value = `Résume ce document: ` + text.slice(0, 2000);
-  performSearch();
-}
-
-// ========== RECHERCHE ==========
-async function performSearch() {
-  const query = $('#searchInput').value.trim();
-  if(!query) return;
-
-  $('#results').innerHTML = `<p>${translations[currentLang].searching}</p>`;
-  $('#aiBlock').classList.add('hidden');
-  $('#aiBtn').classList.remove('hidden');
-
-  const wikiResults = await searchWikipedia(query);
-  displayResults(wikiResults, query);
-
-  if(currentSecurity!== 'strong' && GEMINI_API_KEY!== "TA_CLE_ICI") {
-    runBaobabAI(query);
-  }
-}
-
-async function searchWikipedia(query) {
-  const langCode = currentLang === 'wo'? 'fr' : currentLang;
-  const url = `https://${langCode}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*`;
-  try {
-    const res = await fetch(url);
-    const data = await res.json();
-    return data.query.search.slice(0, 5);
-  } catch(e) { return []; }
-}
-
-function displayResults(results, query) {
+  if (!SpeechRecognition) { alert("Micro non supporté. Utilise Chrome."); return; }
+  currentLang = localStorage.getItem('baobabLang') || 'fr-FR';
   const t = translations[currentLang];
-  if(results.length === 0) {
-    $('#results').innerHTML = `<p>${t.noResults} "${query}"</p>`;
-    return;
-  }
-  const langCode = currentLang === 'wo'? 'fr' : currentLang;
-  $('#results').innerHTML = results.map(r => `
-    <div class="result-card">
-      <h3><a href="https://${langCode}.wikipedia.org/?curid=${r.pageid}" target="_blank">${r.title}</a></h3>
-      <p>${r.snippet.replace(/<[^>]*>/g, '')}...</p>
-    </div>
-  `).join('');
+
+  recognition = new SpeechRecognition();
+  recognition.lang = currentLang;
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  recognition.onstart = () => { $('#searchInput').placeholder = t.speakNow; };
+  recognition.onresult = (event) => {
+    $('#searchInput').value = event.results[0][0].transcript;
+    $('#searchInput').placeholder = t.searchPlaceholder;
+    search();
+  };
+  recognition.onerror = () => { $('#searchInput').placeholder = t.searchPlaceholder; };
+  recognition.onend = () => { $('#searchInput').placeholder = t.searchPlaceholder; };
+  recognition.start();
 }
 
-// ========== BAOBAB IA ==========
-async function runBaobabAI(query) {
-  if(!GEMINI_API_KEY || GEMINI_API_KEY === "TA_CLE_ICI") {
-    $('#aiText').innerText = "Erreur: Colle ta clé Gemini dans GEMINI_API_KEY";
-    $('#aiBlock').classList.remove('hidden');
-    return;
-  }
+function startImageSearch() {
+  let input = document.createElement('input');
+  input.type = 'file'; input.accept = 'image/*'; input.capture = 'environment';
+  input.onchange = e => {
+    let file = e.target.files[0]; if (!file) return;
+    $('#searchInput').value = "recherche par image: " + file.name;
+    search();
+  };
+  input.click();
+}
 
-  const aiBlock = $('#aiBlock');
-  if(currentSecurity === 'strong') { aiBlock.classList.add('hidden'); return; }
-  aiBlock.classList.remove('hidden');
-  $('#aiText').innerText = translations[currentLang].aiThink;
-  $('#aiBtn').classList.add('hidden');
-
-  try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{text: `Tu es Baobab IA, assistant de recherche pour l'Afrique. Réponds en ${currentLang}. Sois utile et chaleureux. Question: ${query}`}] }]
-      })
+document.addEventListener('DOMContentLoaded', () => {
+  if($('#langSelect')){
+    $('#langSelect').value = currentLang;
+    applyTranslations();
+    $('#langSelect').addEventListener('change', (e) => {
+      currentLang = e.target.value;
+      localStorage.setItem('baobabLang', currentLang);
+      applyTranslations();
     });
-    const data = await response.json();
-    $('#aiText').innerText = data.candidates[0].content.parts[0].text;
-    $('#aiSources').innerText = "Google Gemini";
-    $('#aiBtn').classList.remove('hidden');
-  } catch (error) {
-    $('#aiText').innerText = "Erreur: Vérifie ta clé Google et que l'API Gemini est activée.";
-    $('#aiBtn').classList.remove('hidden');
   }
-      }
+});
+
+function saveHistory(q) {
+  if(!$('#saveActivity')?.checked) return;
+  let h = JSON.parse(localStorage.getItem('hist') || '[]');
+  localStorage.setItem('hist', JSON.stringify([q,...h.filter(x => x!== q)].slice(0,5)));
+  loadHistory();
+}
+
+function loadHistory() {
+  let h = JSON.parse(localStorage.getItem('hist') || '[]');
+  $('#historyList').innerHTML = h.map(i => `<div class="item" onclick="selectSuggest('${i}')">${i}</div>`).join('');
+}
+
+function clearHistory() {
+  localStorage.removeItem('hist');
+  loadHistory();
+  alert('Historique effacé');
+}
+
+function setTheme(t) {
+  if(t === 'system') t = window.matchMedia('(prefers-color-scheme: dark)').matches? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', t);
+}
+
+function setFontSize(s) {
+  document.body.style.fontSize = s;
+}
+
+document.addEventListener('click', (e) => {
+  if(!e.target.closest('.search-bar') &&!e.target.closest('.suggestions')) {
+    $('#suggestions').classList.add('hidden');
+  }
+})
+
+goHome();
