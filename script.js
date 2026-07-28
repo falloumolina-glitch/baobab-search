@@ -20,7 +20,6 @@ function applyTranslations() {
   if($('#searchInput')) $('#searchInput').placeholder = t.searchPlaceholder;
   if($('#searchInput2')) $('#searchInput2').placeholder = t.searchPlaceholder;
   document.querySelectorAll('[data-i18n]').forEach(el => { const key = el.getAttribute('data-i18n'); if(t[key]) el.textContent = t[key]; });
-  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { const key = el.getAttribute('data-i18n-placeholder'); if(t[key]) el.placeholder = t[key]; });
 }
 
 function applyTheme() {
@@ -54,22 +53,32 @@ function setFilter(e, filter) {
   searchSERP(currentQuery, filter);
 }
 
+// VERSION QUI PASSE PARTOUT
 async function searchSERP(query, filter = 'all') {
   const t = translations[currentLang] || translations['fr-FR'];
   $('#resultsList').innerHTML = `<p style="padding:20px">Recherche en cours sur Google...</p>`;
 
-  let params = `q=${encodeURIComponent(query)}&api_key=${SERPAPI_KEY}&hl=${currentLang.split('-')[0]}&gl=sn`;
-  if(safeSearch === 'on') params += `&safe=active`;
-  if(filter === 'news') params += `&tbm=nws`;
-  if(filter === 'images') params += `&tbm=isch`;
-  if(filter === 'videos') params += `&tbm=vid`;
+  let params = new URLSearchParams({
+    engine: 'google',
+    q: query,
+    api_key: SERPAPI_KEY,
+    num: '10',
+    hl: currentLang.split('-')[0],
+    gl: 'sn'
+  });
+  if(safeSearch === 'on') params.append('safe', 'active');
+  if(filter === 'news') params.append('tbm', 'nws');
+  if(filter === 'images') params.append('tbm', 'isch');
+  if(filter === 'videos') params.append('tbm', 'vid');
+
+  const serpUrl = `https://serpapi.com/search.json?${params.toString()}`;
+  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(serpUrl)}`;
 
   try {
-    // ON PASSE PAR LE PROXY PHP MAINTENANT
-    const url = `proxy.php?${params}`;
-    const res = await fetch(url);
+    const res = await fetch(proxyUrl);
     if(!res.ok) throw new Error(`Erreur Serveur ${res.status}`);
-    const data = await res.json();
+    const wrapper = await res.json();
+    const data = JSON.parse(wrapper.contents);
     if(data.error) throw new Error(data.error);
 
     let html = ``;
@@ -100,7 +109,7 @@ async function searchSERP(query, filter = 'all') {
 
   } catch(e) {
     console.error("Erreur SERPAPI:", e);
-    $('#resultsList').innerHTML = `<p style="padding:20px;color:red"><b>ERREUR:</b> ${e.message}</p>`;
+    $('#resultsList').innerHTML = `<p style="padding:20px;color:red"><b>ERREUR:</b> ${e.message}. Vérifie ta clé et internet.</p>`;
   }
 }
 
