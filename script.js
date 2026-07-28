@@ -80,7 +80,42 @@ async function searchWikimediaImages(query) {
   } catch(e) { $('#resultsList').innerHTML = `<p style="padding:20px">Erreur images</p>`; }
 }
 function searchVideos(query) { $('#resultsList').innerHTML = `<iframe width="100%" height="600" src="https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(query)}" frameborder="0" allowfullscreen style="padding:0 24px"></iframe>`; }
-function searchNews(query) { const hl = currentLang.startsWith('fr')? 'fr' : 'en'; $('#resultsList').innerHTML = `<div style="padding:20px"><h3>Actualités pour "${query}"</h3><iframe src="https://news.google.com/search?q=${encodeURIComponent(query)}&hl=${hl}" width="100%" height="600" frameborder="0"></iframe></div>`; }
+
+// NOUVELLE FONCTION : ACTU TEMPS REEL 100% TRANSPARENT
+async function searchNews(query) {
+  const t = translations[currentLang] || translations['fr-FR'];
+  $('#resultsList').innerHTML = `<p style="padding:20px">Chargement des actualités...</p>`;
+  const hl = currentLang.startsWith('fr')? 'fr' : 'en';
+  const gl = currentLang.startsWith('fr')? 'FR' : 'US';
+  const newsURL = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=${hl}&gl=${gl}&ceid=${gl}:${hl}`;
+
+  try {
+    // On utilise rss2json pour lire le flux sans CORS
+    const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(newsURL)}`);
+    const data = await response.json();
+
+    if(data.status === 'ok' && data.items && data.items.length > 0){
+        let html = `<h3 style="padding:20px 24px 0 24px">📰 ${t.news} pour "${query}"</h3>`;
+        data.items.slice(0, 10).forEach(item => { // 10 derniers articles
+            const pubDate = new Date(item.pubDate).toLocaleDateString(currentLang);
+            html += `
+            <div style="padding:12px 24px;border-bottom:1px solid var(--border)">
+                <div style="font-size:12px; color:var(--muted)">${item.author || 'Source'} • ${pubDate}</div>
+                <a href="${item.link}" target="_blank" style="font-size:18px; font-weight:500; text-decoration:none; color:var(--link)">${item.title}</a>
+                <p style="font-size:14px; color:var(--muted); margin:4px 0">${item.description.replace(/<[^>]*>/g, '').substring(0,180)}...</p>
+            </div>
+            `;
+        });
+        $('#resultsList').innerHTML = html;
+    } else {
+        $('#resultsList').innerHTML = `<p style="padding:20px">${t.noResults} "${query}"</p>`;
+    }
+  } catch(e) {
+    console.log("Erreur News:", e);
+    $('#resultsList').innerHTML = `<p style="padding:20px">Erreur lors du chargement des actualités.</p>`;
+  }
+}
+
 function searchMaps(query) { $('#resultsList').innerHTML = `<iframe width="100%" height="600" src="https://www.google.com/maps?q=${encodeURIComponent(query)}&output=embed" frameborder="0" style="padding:0 24px"></iframe>`; }
 
 async function search() {
@@ -95,6 +130,9 @@ async function search() {
   $('#resultsList').innerHTML = `<p style="padding:20px">Recherche en cours...</p>`;
   $('#aiBlock').classList.remove('hidden');
   $('#aiText').innerHTML = `Recherche de la réponse...`;
+
+  // LIGNE AJOUTEE : ON LANCE L'ACTU EN MEME TEMPS QUE WIKI
+  searchNews(q);
   getAIAnswer(q);
   await searchWikipedia(q, 0);
 }
@@ -107,7 +145,7 @@ async function getAIAnswer(query) {
     if(results.length === 0) { $('#aiText').innerHTML = `Je n'ai rien trouvé sur "${query}".`; return; }
     let summary = results.map(r => r.snippet.replace(/<[^>]*>/g, '')).join(' ');
     summary = summary.substring(0, 450) + '...';
-    $('#aiText').innerHTML = `${summary}<div style="margin-top:8px;font-size:12px;color:#5f6368">Source: Wikipedia</div>`;
+    $('#aiText').innerHTML = `${summary}<div style="margin-top:8px;font-size:12px;color:var(--muted)">Source: Wikipedia</div>`;
   } catch(e) { $('#aiText').innerHTML = `Impossible de générer un aperçu IA.`; }
 }
 
@@ -128,16 +166,16 @@ async function searchWikipedia(query, offset) {
 
 function displayResults(results, pages, query, total, offset, limit) {
   const t = translations[currentLang] || translations['fr-FR'];
-  let html = `<p style="padding:12px 24px;color:#5f6368">${t.resultsFor} <b>${query}</b> - ${total} résultats</p>`;
+  let html = `<p style="padding:12px 24px;color:var(--muted)">${t.resultsFor} <b>${query}</b> - ${total} résultats</p>`;
   html += results.map(r => {
     const page = pages[r.pageid];
     const img = page.thumbnail? `<img src="${page.thumbnail.source}" style="width:120px;height:90px;object-fit:cover;border-radius:8px;margin-right:12px">` : '';
     const url = page.fullurl;
-    return `<div style="display:flex;gap:12px;padding:12px 24px;border-bottom:1px solid #eee">${img}<div style="flex:1"><a href="${url}" target="_blank" style="font-size:18px;color:#1A73E8;text-decoration:none">${r.title}</a><div style="color:#006621;font-size:14px">${url}</div><div style="color:#4d5156;font-size:14px;line-height:1.5">${r.snippet.replace(/<[^>]*>/g, '')}...</div><a href="${url}" target="_blank" style="color:#1A73E8;font-size:13px">${t.readMore} →</a></div></div>`;
+    return `<div style="display:flex;gap:12px;padding:12px 24px;border-bottom:1px solid var(--border)">${img}<div style="flex:1"><a href="${url}" target="_blank" style="font-size:18px;color:var(--link);text-decoration:none">${r.title}</a><div style="color:#006621;font-size:14px">${url}</div><div style="color:var(--text);font-size:14px;line-height:1.5">${r.snippet.replace(/<[^>]*>/g, '')}...</div><a href="${url}" target="_blank" style="color:var(--link);font-size:13px">${t.readMore} →</a></div></div>`;
   }).join('');
   html += `<div style="display:flex;gap:10px;justify-content:center;padding:20px">`;
-  if(offset > 0) html += `<button onclick="changePage(-1)" style="padding:8px 16px;cursor:pointer;border:1px solid #dadce0;border-radius:4px;background:white">${t.prev}</button>`;
-  if(offset + limit < total) html += `<button onclick="changePage(1)" style="padding:8px 16px;cursor:pointer;border:1px solid #dadce0;border-radius:4px;background:white">${t.next}</button>`;
+  if(offset > 0) html += `<button onclick="changePage(-1)" style="padding:8px 16px;cursor:pointer;border:1px solid var(--border);border-radius:4px;background:var(--card);color:var(--text)">${t.prev}</button>`;
+  if(offset + limit < total) html += `<button onclick="changePage(1)" style="padding:8px 16px;cursor:pointer;border:1px solid var(--border);border-radius:4px;background:var(--card);color:var(--text)">${t.next}</button>`;
   html += `</div>`; $('#resultsList').innerHTML = html;
 }
 function changePage(direction) { const limit = 10; currentOffset += direction * limit; if(currentFilter === 'all') searchWikipedia(currentQuery, currentOffset); window.scrollTo(0,0); }
@@ -154,47 +192,4 @@ function startVoice() {
 
 function setSecurityMode(val) { currentSecurity = val; localStorage.setItem('baobabSecurity', val); $('#strongBanner').classList.toggle('hidden', val!== 'strong'); }
 function saveHistory(q) { if($('#saveActivity') &&!$('#saveActivity').checked) return; let h = JSON.parse(localStorage.getItem('hist') || '[]'); localStorage.setItem('hist', JSON.stringify([q,...h.filter(x => x!== q)].slice(0,5))); loadHistory(); }
-function loadHistory() { let h = JSON.parse(localStorage.getItem('hist') || '[]'); $('#historyList').innerHTML = h.map(i => `<div class="item" onclick="selectSuggest('${i.replace(/'/g, "\\'")}')">${i}</div>`).join(''); }
-function clearHistory() { localStorage.removeItem('hist'); loadHistory(); alert('Historique effacé'); }
-
-document.addEventListener('DOMContentLoaded', () => {
-  applyTheme();
-  if($('#langSelect')){
-    $('#langSelect').value = currentLang;
-    applyTranslations();
-    $('#langSelect').addEventListener('change', (e) => {
-      currentLang = e.target.value;
-      localStorage.setItem('baobabLang', currentLang);
-      applyTranslations();
-    });
-  }
-  if($('#themeSelect')){
-    $('#themeSelect').value = currentTheme;
-    $('#themeSelect').addEventListener('change', (e) => {
-      currentTheme = e.target.value;
-      localStorage.setItem('baobabTheme', currentTheme);
-      applyTheme();
-    });
-  }
-  if($('#safeSearch')){
-    $('#safeSearch').value = safeSearch;
-    $('#safeSearch').addEventListener('change', (e) => {
-      safeSearch = e.target.value;
-      localStorage.setItem('baobabSafe', safeSearch);
-    });
-  }
-  if($('#suggestionsToggle')){
-    $('#suggestionsToggle').value = suggestionsOn;
-    $('#suggestionsToggle').addEventListener('change', (e) => {
-      suggestionsOn = e.target.value;
-      localStorage.setItem('baobabSuggestions', suggestionsOn);
-    });
-  }
-  if($('#securityMode')) $('#securityMode').value = currentSecurity;
-
-  document.addEventListener('click', (e) => {
-    if(!e.target.closest('.search-bar') &&!e.target.closest('.suggestions')) $('#suggestions').classList.add('hidden');
-    if(!e.target.closest('#imageMenu') &&!e.target.closest('.icon-btn[title="Recherche par image"]')) $('#imageMenu').classList.add('hidden');
-  })
-  goHome();
-});
+function loadHistory() { let h = JSON.parse(localStorage.getItem('hist') || '[]'); $('#historyList').innerH
