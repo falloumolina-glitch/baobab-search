@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Baobab Search</title>
+  <link rel="manifest" href="manifest.json">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https://*.wikipedia.org https://commons.wikimedia.org; frame-src 'self' https://www.youtube.com https://news.google.com https://www.google.com;">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
@@ -92,7 +93,7 @@
       
       <div style="position:relative; width:100%; max-width:600px; margin:20px auto">
         <div class="search-bar" id="searchBar">
-          <input id="searchInput" type="text" autocomplete="off" data-i18n-placeholder="searchPlaceholder" placeholder="Rechercher sur Baobab..." onfocus="showSuggestions()">
+          <input id="searchInput" type="text" autocomplete="off" data-i18n-placeholder="searchPlaceholder" placeholder="Recher sur Baobab..." onfocus="showSuggestions()">
           <div class="search-icons">
             <button class="icon-btn" onclick="startVoice()" title="Recherche vocale"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zm5 8a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2z"/></svg></button>
             <div style="position:relative">
@@ -173,15 +174,20 @@
     <button class="back" onclick="goHome()" data-i18n="back">Retour</button>
   </main>
 
-  <div id="aboutPopup" class="popup hidden"><div class="popup-content"><button class="close" onclick="closePopup('aboutPopup')">&times;</button><h2>À propos de Baobab Search</h2><p>Bienvenue sur Baobab Search.</p><p>Baobab Search est un moteur de recherche conçu pour offrir un accès simple, rapide et efficace aux informations disponibles sur Internet.</p><h4>Contact</h4><p>E-mail : faluzodiop@gmail.com</p><p>© 2026 Baobab Search. Tous droits réservés.</p></div></div>
+  <div id="aboutPopup" class="popup hidden"><div class="popup-content"><button class="close" onclick="closePopup('aboutPopup')">&times;</button><h2>À propos de Baobab Search</h2><p>Bienvenue sur Baobab Search.</p><h4>Contact</h4><p>E-mail : faluzodiop@gmail.com</p><p>© 2026 Baobab Search. Tous droits réservés.</p></div></div>
 
-  <div id="termsPopup" class="popup hidden"><div class="popup-content"><button class="close" onclick="closePopup('termsPopup')">&times;</button><h2>Conditions d'utilisation</h2><p><b>Dernière mise à jour : 18 juillet 2026</b></p><p>En utilisant Baobab Search, vous acceptez les présentes Conditions d'utilisation.</p></div></div>
+  <div id="termsPopup" class="popup hidden"><div class="popup-content"><button class="close" onclick="closePopup('termsPopup')">&times;</button><h2>Conditions d'utilisation</h2><p><b>Dernière mise à jour : 18 juillet 2026</b></p></div></div>
 
-  <div id="privacyPopup" class="popup hidden"><div class="popup-content"><button class="close" onclick="closePopup('privacyPopup')">&times;</button><h2>Politique de confidentialité</h2><p><b>Dernière mise à jour : 18 juillet 2026</b></p><p>Bienvenue sur Baobab Search. Votre vie privée est importante pour nous.</p></div></div>
+  <div id="privacyPopup" class="popup hidden"><div class="popup-content"><button class="close" onclick="closePopup('privacyPopup')">&times;</button><h2>Politique de confidentialité</h2><p><b>Dernière mise à jour : 18 juillet 2026</b></p></div></div>
 
 <script src="script.js"></script>
 <script>
 function openPopup(id){document.getElementById(id).classList.remove('hidden')}
 function closePopup(id){document.getElementById(id).classList.add('hidden')}
+
+// Enregistrer le Service Worker - NE CACHE RIEN
+if('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./service-worker.js');
+}
 </script>
 </body></html>
