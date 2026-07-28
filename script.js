@@ -26,16 +26,33 @@ function showSuggestions() { $('#suggestions').classList.remove('hidden'); loadH
 function liveSuggest() {}
 function selectSuggest(text) { $('#searchInput').value = text; search(); }
 
-// FIX : LES 5 ONGLETS AFFICHENT DES RESULTATS
+// MENU IMAGE
+function toggleImageMenu() {
+  $('#imageMenu').classList.toggle('hidden');
+}
+
+function startImageSearch(type) {
+  $('#imageMenu').classList.add('hidden');
+  let input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  if(type === 'camera') input.capture = 'environment';
+  input.onchange = e => {
+    let file = e.target.files[0];
+    if (!file) return;
+    $('#searchInput').value = file.name.replace(/\.[^/.]+$/, "");
+    search();
+  };
+  input.click();
+}
+
 function setFilter(e, filter) {
   e.preventDefault();
   currentFilter = filter;
   currentOffset = 0;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   e.target.classList.add('active');
-
   if(!currentQuery) return;
-
   if(filter === 'all') searchWikipedia(currentQuery, 0);
   if(filter === 'images') searchWikimediaImages(currentQuery);
   if(filter === 'videos') searchVideos(currentQuery);
@@ -43,7 +60,6 @@ function setFilter(e, filter) {
   if(filter === 'maps') searchMaps(currentQuery);
 }
 
-// IMAGES WIKIMEDIA
 async function searchWikimediaImages(query) {
   $('#resultsList').innerHTML = `<p style="padding:20px">Recherche d'images...</p>`;
   const url = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(query)}&gsrlimit=20&prop=imageinfo&iiprop=url&iiurlwidth=300&format=json&origin=*`;
@@ -56,33 +72,21 @@ async function searchWikimediaImages(query) {
   } catch(e) { $('#resultsList').innerHTML = `<p style="padding:20px">Erreur images</p>`; }
 }
 
-// VIDEOS YOUTUBE
 function searchVideos(query) {
   $('#resultsList').innerHTML = `<iframe width="100%" height="600" src="https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(query)}" frameborder="0" allowfullscreen style="padding:0 24px"></iframe>`;
 }
 
-// ACTUALITES GOOGLE NEWS
 function searchNews(query) {
-  $('#resultsList').innerHTML = `
-  <div style="padding:20px">
-    <h3>Actualités pour "${query}"</h3>
-    <iframe src="https://news.google.com/search?q=${encodeURIComponent(query)}&hl=fr&gl=FR&ceid=FR:fr" width="100%" height="600" frameborder="0"></iframe>
-  </div>`;
+  $('#resultsList').innerHTML = `<div style="padding:20px"><h3>Actualités pour "${query}"</h3><iframe src="https://news.google.com/search?q=${encodeURIComponent(query)}&hl=fr&gl=FR&ceid=FR:fr" width="100%" height="600" frameborder="0"></iframe></div>`;
 }
 
-// MAPS GOOGLE
 function searchMaps(query) {
   $('#resultsList').innerHTML = `<iframe width="100%" height="600" src="https://www.google.com/maps?q=${encodeURIComponent(query)}&output=embed" frameborder="0" style="padding:0 24px"></iframe>`;
 }
 
-// RECHERCHE PRINCIPALE
 async function search() {
   let q = "";
-  if($('#results').classList.contains('active')){
-    q = $('#searchInput2').value;
-  } else {
-    q = $('#searchInput').value;
-  }
+  if($('#results').classList.contains('active')){ q = $('#searchInput2').value; } else { q = $('#searchInput').value; }
   q = q.trim(); if(!q) return;
   currentQuery = q; currentOffset = 0; currentFilter = 'all';
   if($('#searchInput')) $('#searchInput').value = q;
@@ -137,7 +141,6 @@ function startVoice() {
   recognition.onend = () => { $('#searchInput').placeholder = t.searchPlaceholder; }; recognition.start();
 }
 
-function startImageSearch() { let input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*'; input.capture = 'environment'; input.onchange = e => { let file = e.target.files[0]; if (!file) return; $('#searchInput').value = file.name.replace(/\.[^/.]+$/, ""); search(); }; input.click(); }
 function setSecurityMode(val) { currentSecurity = val; localStorage.setItem('baobabSecurity', val); $('#strongBanner').classList.toggle('hidden', val!== 'strong'); }
 function setTheme(t) { if(t === 'system') t = window.matchMedia('(prefers-color-scheme: dark)').matches? 'dark' : 'light'; document.documentElement.setAttribute('data-theme', t); }
 function setFontSize(s) { document.body.style.fontSize = s; }
@@ -148,6 +151,9 @@ function clearHistory() { localStorage.removeItem('hist'); loadHistory(); alert(
 document.addEventListener('DOMContentLoaded', () => {
   if($('#langSelect')){ $('#langSelect').value = currentLang; applyTranslations(); $('#langSelect').addEventListener('change', (e) => { currentLang = e.target.value; localStorage.setItem('baobabLang', currentLang); applyTranslations(); }); }
   if($('#securityMode')) $('#securityMode').value = currentSecurity;
-  document.addEventListener('click', (e) => { if(!e.target.closest('.search-bar') &&!e.target.closest('.suggestions')) $('#suggestions').classList.add('hidden'); })
+  document.addEventListener('click', (e) => {
+    if(!e.target.closest('.search-bar') &&!e.target.closest('.suggestions')) $('#suggestions').classList.add('hidden');
+    if(!e.target.closest('#imageMenu') &&!e.target.closest('.icon-btn[title="Recherche par image"]')) $('#imageMenu').classList.add('hidden');
+  })
   goHome();
 });
