@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baobab Search</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https://*.wikipedia.org https://commons.wikimedia.org; frame-src 'self' https://www.youtube.com https://news.google.com https://www.google.com;">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+  :root {
+    --bg: #fff;
+    --text: #202124;
+    --border: #dfe1e5;
+    --card: #F8F9FA;
+    --muted: #5f6368;
+    --link: #1A73E8;
+  }
+  [data-theme="dark"] {
+    --bg: #202124;
+    --text: #e8eaed;
+    --border: #5f6368;
+    --card: #303134;
+    --muted: #9aa0a6;
+    --link: #8ab4f8;
+  }
+
+  body{font-family:Inter;background:var(--bg);color:var(--text);margin:0;line-height:1.6;min-height:100vh}
+  .page{display:none;background:var(--bg)}.page.active{display:block;min-height:100vh}
+  
+  .top-nav,.results-header{display:flex;align-items:center;padding:12px 24px;gap:16px;background:var(--bg)}
+  .top-nav button{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:6px 12px;font-size:14px;cursor:pointer;font-family:Inter}
+  .top-nav button:hover{background:var(--border)}
+  
+  .logo{font-weight:700;font-size:22px;color:var(--link);cursor:pointer}
+  
+  .search-bar{display:flex;align-items:center;border:1px solid var(--border);border-radius:24px;padding:5px 8px;width:100%;max-width:600px;background:var(--bg)}
+  .search-bar.small{max-width:700px;margin:0}
+  .search-bar input{border:none;outline:none;flex:1;font-size:16px;padding:8px;background:transparent;color:var(--text)}
+  .search-icons{display:flex;gap:8px;position:relative}
+  .icon-btn{background:none;border:none;cursor:pointer;padding:8px;border-radius:50%}
+  .icon-btn svg{stroke:var(--link); fill:var(--link)}
+  .icon-btn.primary{background:var(--link);border-radius:50%}
+  .icon-btn.primary svg{stroke:#fff; fill:#fff}
+  
+  .suggestions{position:absolute;background:var(--card);border:1px solid var(--border);border-radius:8px;width:100%;left:0;top:100%;margin-top:4px;box-shadow:0 2px 8px rgba(0,0,0,.2);z-index:1000}
+  .suggestions.hidden{display:none}
+  .item{padding:10px 16px;cursor:pointer;color:var(--text)}.item:hover{background:var(--border)}
+  .section-title{padding:8px 16px;font-size:12px;color:var(--muted);font-weight:500}
+  
+  .strong-banner{background:#D93025;color:white;text-align:center;padding:8px;font-size:13px;font-weight:500;position:sticky;top:0;z-index:999}
+  .strong-banner.hidden{display:none}
+  
+  .ai-card{border:1px solid var(--border);border-radius:12px;padding:16px;margin:16px 24px;background:var(--card)}
+  .ai-header{font-size:14px;font-weight:600;color:var(--link);margin-bottom:8px}
+  
+  .setting-group{padding:20px 24px;border-bottom:1px solid var(--border);background:var(--bg)}
+  .setting-group h3{margin:0 0 12px 0;color:var(--text)}
+  .setting-group label{display:flex;justify-content:space-between;align-items:center;margin:10px 0;color:var(--text)}
+  .setting-group select{padding:6px;border-radius:4px;border:1px solid var(--border);background:var(--card);color:var(--text)}
+  .setting-group button{padding:8px 16px;border:1px solid var(--border);border-radius:4px;background:var(--card);color:var(--text);cursor:pointer}
+  .setting-link{display:block;padding:10px 0;color:var(--link);text-decoration:none;cursor:pointer}
+  .setting-link:hover{text-decoration:underline}
+  .back{margin:20px 24px;padding:10px 20px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:4px;cursor:pointer}
+
+  /* POPUP */
+  .popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:2000}
+  .popup.hidden{display:none}
+  .popup-content{background:var(--card);color:var(--text);border-radius:12px;padding:24px;max-width:700px;width:90%;max-height:80vh;overflow-y:auto}
+  .popup-content h2{margin-top:0}
+  .popup-content h4{margin:16px 0 8px 0}
+  .popup-content .close{float:right;font-size:24px;cursor:pointer;border:none;background:none;color:var(--text)}
+
+  /* FILTRES */
+  .filter-bar{display:flex;gap:24px;padding:12px 24px;border-bottom:1px solid var(--border);overflow-x:auto;background:var(--bg)}
+  .filter-btn{background:none;border:none;padding:8px 0;cursor:pointer;color:var(--muted);font-size:14px;font-family:Inter;white-space:nowrap}
+  .filter-btn.active{color:var(--link);border-bottom:2px solid var(--link);font-weight:500}
+  
+  .results a{color:var(--link)}
+  .results{color:var(--text)}
+  </style>
+</head>
+<body>
+  <div id="strongBanner" class="strong-banner hidden">🔒 MODE RENFORCÉ ACTIF - Aucune donnée n'est enregistrée</div>
+
+  <main id="home" class="page active">
+    <header class="top-nav">
+      <div class="logo" onclick="goHome()">BS</div>
+      <div style="margin-left:auto">
+        <button data-i18n="settings" onclick="showPage('settings')">Paramètres</button>
+      </div>
+    </header>
+    <div class="home-center" style="text-align:center;margin-top:80px">
+      <h1 style="font-size:48px">Baobab <span style="color:var(--link)">Search</span></h1>
+      
+      <div style="position:relative; width:100%; max-width:600px; margin:20px auto">
+        <div class="search-bar" id="searchBar">
+          <input id="searchInput" type="text" autocomplete="off" data-i18n-placeholder="searchPlaceholder" placeholder="Recher sur Baobab..." onfocus="showSuggestions()">
+          <div class="search-icons">
+            <button class="icon-btn" onclick="startVoice()" title="Recherche vocale"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zm5 8a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2z"/></svg></button>
+            <div style="position:relative">
+              <button class="icon-btn" onclick="toggleImageMenu()" title="Recherche par image"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></button>
+              <div id="imageMenu" class="suggestions hidden" style="width:180px;left:auto;right:0;transform:none;margin-top:8px">
+                <div class="item" onclick="startImageSearch('file')">Document</div>
+                <div class="item" onclick="startImageSearch('camera')">Caméra</div>
+              </div>
+            </div>
+            <button class="icon-btn primary" onclick="search()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button>
+          </div>
+        </div>
+
+        <div id="suggestions" class="suggestions hidden">
+          <div class="section-title" data-i18n="recent">Historique récent</div>
+          <div id="historyList"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <main id="results" class="page">
+    <header class="results-header"><div class="logo" onclick="goHome()">BS</div>
+      <div class="search-bar small">
+        <input id="searchInput2" type="text" autocomplete="off" data-i18n-placeholder="searchPlaceholder" onkeydown="if(event.key==='Enter') search()">
+        <div class="search-icons"><button class="icon-btn primary" onclick="search()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button></div>
+      </div>
+    </header>
+
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="setFilter(event, 'all')" data-i18n="all">Tous</button>
+      <button class="filter-btn" onclick="setFilter(event, 'images')" data-i18n="images">Images</button>
+      <button class="filter-btn" onclick="setFilter(event, 'videos')" data-i18n="videos">Vidéos</button>
+      <button class="filter-btn" onclick="setFilter(event, 'news')" data-i18n="news">Actualités</button>
+      <button class="filter-btn" onclick="setFilter(event, 'maps')" data-i18n="maps">Maps</button>
+    </div>
+
+    <div id="aiBlock" class="ai-card hidden"><div class="ai-header">✨ Aperçu Baobab IA</div><div id="aiText" class="ai-text">Recherche de la réponse...</div></div>
+    <div id="resultsList" class="results"></div>
+  </main>
+
+  <main id="settings" class="page"><h2 style="padding:20px 24px" data-i18n="settings">Paramètres</h2>
+    
+    <div class="setting-group"><h3 data-i18n="general">Général</h3>
+      <label><span data-i18n="langSearch">Langue de recherche:</span>
+        <select id="langSelect">
+          <option value="fr-FR">Français</option><option value="en-US">English</option><option value="es-ES">Español</option>
+          <option value="pt-BR">Português</option><option value="ar-SA">العربية</option><option value="zh-CN">中文</option>
+          <option value="hi-IN">हिन्दी</option><option value="de-DE">Deutsch</option><option value="it-IT">Italiano</option>
+          <option value="ru-RU">Русский</option><option value="ja-JP">日本語</option><option value="ko-KR">한국어</option>
+          <option value="tr-TR">Türkçe</option><option value="wo-SN">Wolof</option><option value="sw-KE">Swahili</option>
+        </select>
+      </label>
+      <label><span>Thème:</span>
+        <select id="themeSelect"><option value="light">Clair</option><option value="dark">Sombre</option><option value="system">Système</option></select>
+      </label>
+    </div>
+
+    <div class="setting-group"><h3>Recherche</h3>
+      <label><span>Recherche sécurisée:</span><select id="safeSearch"><option value="on">Activé</option><option value="off">Désactivé</option></select></label>
+      <label><span>Suggestions automatiques:</span><select id="suggestionsToggle"><option value="on">Activé</option><option value="off">Désactivé</option></select></label>
+    </div>
+
+    <div class="setting-group"><h3 data-i18n="security">Sécurité / Confidentialité</h3>
+      <label><span data-i18n="protectionMode">Mode de protection:</span><select id="securityMode" onchange="setSecurityMode(this.value)"><option value="standard">Standard</option><option value="strong">Renforcé</option></select></label>
+      <label><input type="checkbox" id="saveActivity" checked> <span data-i18n="saveActivity">Enregistrer l'activité</span></label>
+      <button onclick="clearHistory()" data-i18n="clearHistory">Effacer l'historique récent</button>
+    </div>
+
+    <div class="setting-group"><h3>À propos & Légal</h3>
+      <a class="setting-link" onclick="openPopup('aboutPopup')">À propos de Baobab Search</a>
+      <a class="setting-link" onclick="openPopup('termsPopup')">Conditions d'utilisation</a>
+      <a class="setting-link" onclick="openPopup('privacyPopup')">Politique de confidentialité</a>
+      <a class="setting-link" href="mailto:faluzodiop@gmail.com?subject=Commentaire%20Baobab%20Search">Envoyer des commentaires</a>
+      <p style="font-size:12px;color:var(--muted);margin-top:12px">Version: Baobab Search v1.0</p>
+    </div>
+
+    <button class="back" onclick="goHome()" data-i18n="back">Retour</button>
+  </main>
+
+  <!-- POPUP A PROPOS -->
+  <div id="aboutPopup" class="popup hidden">
+    <div class="popup-content">
+      <button class="close" onclick="closePopup('aboutPopup')">&times;</button>
+      <h2>À propos de Baobab Search</h2>
+      <p>Bienvenue sur Baobab Search.</p>
+      <p>Baobab Search est un moteur de recherche conçu pour offrir un accès simple, rapide et efficace aux informations disponibles sur Internet. Notre objectif est de permettre à chacun de trouver facilement les contenus qu'il recherche grâce à une interface claire, moderne et facile à utiliser.</p>
+      <p>Inspiré par la force et la longévité du baobab, symbole de connaissance et de partage, Baobab Search a pour mission de rendre l'information accessible à tous.</p>
+      <h4>Notre mission</h4>
+      <ul><li>Fournir des résultats de recherche rapides et pertinents.</li><li>Offrir une expérience simple, sans complexité inutile.</li><li>Respecter la vie privée et la sécurité des utilisateurs.</li><li>Améliorer continuellement nos technologies afin de proposer un service toujours plus performant.</li></ul>
+      <h4>Nos valeurs</h4>
+      <ul><li>Simplicité</li><li>Fiabilité</li><li>Innovation</li><li>Respect de la vie privée</li><li>Accessibilité</li></ul>
+      <h4>Notre engagement</h4>
+      <p>Nous nous engageons à développer Baobab Search de manière responsable, en privilégiant la qualité des résultats, la sécurité des utilisateurs et une expérience de recherche agréable.</p>
+      <h4>Contact</h4>
+      <p>Pour toute question, suggestion ou demande d'assistance, vous pouvez nous contacter à :<br>E-mail : faluzodiop@gmail.com</p>
+      <p>© 2026 Baobab Search. Tous droits réservés.</p>
+    </div>
+  </div>
+
+  <!-- POPUP CONDITIONS -->
+  <div id="termsPopup" class="popup hidden">
+    <div class="popup-content">
+      <button class="close" onclick="closePopup('termsPopup')">&times;</button>
+      <h2>Conditions d'utilisation – Baobab Search</h2>
+      <p><b>Dernière mise à jour : 18 juillet 2026</b></p>
+      <p>En utilisant Baobab Search, vous acceptez les présentes Conditions d'utilisation.</p>
+      <h4>1. Utilisation du service</h4><p>Baobab Search est un moteur de recherche destiné à aider les utilisateurs à accéder aux informations disponibles sur Internet. Vous vous engagez à utiliser le service conformément aux lois applicables.</p>
+      <h4>2. Comportements interdits</h4><p>Il est interdit de : utiliser le service à des fins illégales ; tenter de perturber ou d'endommager les systèmes de Baobab Search ; diffuser des logiciels malveillants, virus ou contenus nuisibles ; contourner les mesures de sécurité du service.</p>
+      <h4>3. Résultats de recherche</h4><p>Les résultats affichés peuvent provenir de sites web tiers. Baobab Search ne garantit pas l'exactitude, l'exhaustivité ou la disponibilité des contenus publiés par ces sites.</p>
+      <h4>4. Propriété intellectuelle</h4><p>Le nom Baobab Search, son logo, son interface, ses éléments graphiques et ses contenus sont protégés par les lois applicables sur la propriété intellectuelle. Toute reproduction ou utilisation non autorisée est interdite.</p>
+      <h4>5. Disponibilité du service</h4><p>Nous faisons notre possible pour assurer un service fiable, mais nous ne garantissons pas un fonctionnement continu ou sans interruption. Le service peut être modifié, suspendu ou interrompu à tout moment pour des raisons techniques, de maintenance ou de sécurité.</p>
+      <h4>6. Limitation de responsabilité</h4><p>Baobab Search ne peut être tenu responsable : des contenus publiés par des sites tiers ; des dommages résultant de l'utilisation du service ; des interruptions temporaires ou des erreurs techniques.</p>
+      <h4>7. Modifications des conditions</h4><p>Nous pouvons modifier les présentes Conditions d'utilisation à tout moment. Les nouvelles versions prennent effet dès leur publication.</p>
+      <h4>8. Droit applicable</h4><p>Les présentes Conditions sont régies par les lois applicables dans le pays où Baobab Search est exploité, sauf disposition légale contraire.</p>
+      <h4>9. Contact</h4><p>Pour toute question concernant les présentes Conditions d'utilisation, contactez-nous à : E-mail : faluzodiop@gmail.com</p>
+    </div>
+  </div>
+
+  <!-- POPUP POLITIQUE -->
+  <div id="privacyPopup" class="popup hidden">
+    <div class="popup-content">
+      <button class="close" onclick="closePopup('privacyPopup')">&times;</button>
+      <h2>Politique de confidentialité – Baobab Search</h2>
+      <p><b>Dernière mise à jour : 18 juillet 2026</b></p>
+      <p>Bienvenue sur Baobab Search. Votre vie privée est importante pour nous. Cette Politique de confidentialité explique quelles informations nous collectons, comment nous les utilisons, comment nous les protégeons et quels sont vos droits lorsque vous utilisez Baobab Search.</p>
+      <h4>1. Informations collectées</h4><p>Lorsque vous utilisez Baobab Search, nous pouvons collecter : Les termes de recherche que vous saisissez. Des informations techniques telles que le type d'appareil, le navigateur, le système d'exploitation et l'adresse IP. Des données d'utilisation permettant d'améliorer les performances, la sécurité et la qualité du service. Nous ne collectons que les informations nécessaires au fonctionnement de l'application.</p>
+      <h4>2. Utilisation des informations</h4><p>Les informations collectées servent à : Fournir des résultats de recherche pertinents. Améliorer les performances et les fonctionnalités de Baobab Search. Prévenir les abus, le spam et les activités frauduleuses. Garantir la sécurité de nos utilisateurs et de nos services.</p>
+      <h4>3. Partage des informations</h4><p>Nous ne vendons jamais vos données personnelles. Vos informations peuvent être partagées uniquement : lorsque la loi l'exige ; pour protéger les droits, la sécurité ou les utilisateurs de Baobab Search ; avec des prestataires techniques participant au fonctionnement du service, sous des obligations strictes de confidentialité.</p>
+      <h4>4. Conservation des données</h4><p>Les données sont conservées uniquement pendant la durée nécessaire au fonctionnement du service, à la sécurité ou au respect des obligations légales.</p>
+      <h4>5. Sécurité</h4><p>Nous mettons en œuvre des mesures techniques et organisationnelles afin de protéger vos informations contre tout accès non autorisé, toute perte, toute modification ou toute divulgation.</p>
+      <h4>6. Vos droits</h4><p>Selon la législation applicable, vous pouvez : demander l'accès à vos données ; demander leur correction ; demander leur suppression ; vous opposer à certains traitements de données.</p>
+      <h4>7. Services tiers</h4><p>Baobab Search peut contenir des liens vers des sites ou services externes. Nous ne sommes pas responsables de leurs politiques de confidentialité ou de leurs contenus.</p>
+      <h4>8. Modifications</h4><p>Cette Politique de confidentialité peut être modifiée à tout moment. Les changements importants seront publiés dans l'application ou sur le site officiel de Baobab Search.</p>
+      <h4>9. Contact</h4><p>Pour toute question concernant cette Politique de confidentialité ou pour exercer vos droits, contactez-nous à : E-mail : faluzodiop@gmail.com</p>
+    </div>
+  </div>
+
+<script src="script.js"></script>
+<script>
+function openPopup(id){document.getElementById(id).classList.remove('hidden')}
+function closePopup(id){document.getElementById(id).classList.add('hidden')}
+</script>
+</body></html>
