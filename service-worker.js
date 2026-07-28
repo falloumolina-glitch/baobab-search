@@ -1,11 +1,16 @@
-<script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/service-worker.js")
-    .then(() => {
-      console.log("Baobab Search installé avec succès");
-    })
-    .catch((error) => {
-      console.log("Erreur d'installation :", error);
-    });
-}
-</script>
+// Service Worker Baobab Search - VERSION SANS CACHE
+
+self.addEventListener('install', (event) => {
+  // Installation immédiate
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  // Activation immédiate
+  event.waitUntil(self.clients.claim());
+});
+
+// Aucun cache : toutes les requêtes passent normalement
+self.addEventListener('fetch', (event) => {
+  return;
+});
