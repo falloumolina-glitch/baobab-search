@@ -83,7 +83,6 @@ function searchVideos(query) { $('#resultsList').innerHTML = `<iframe width="100
 function searchNews(query) { const hl = currentLang.startsWith('fr')? 'fr' : 'en'; $('#resultsList').innerHTML = `<div style="padding:20px"><h3>Actualités pour "${query}"</h3><iframe src="https://news.google.com/search?q=${encodeURIComponent(query)}&hl=${hl}" width="100%" height="600" frameborder="0"></iframe></div>`; }
 function searchMaps(query) { $('#resultsList').innerHTML = `<iframe width="100%" height="600" src="https://www.google.com/maps?q=${encodeURIComponent(query)}&output=embed" frameborder="0" style="padding:0 24px"></iframe>`; }
 
-// RECHERCHE PRINCIPALE AVEC IA
 async function search() {
   let q = $('#results').classList.contains('active')? $('#searchInput2').value : $('#searchInput').value;
   q = q.trim(); if(!q) return;
@@ -94,16 +93,14 @@ async function search() {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   document.querySelector('.filter-btn').classList.add('active');
   $('#resultsList').innerHTML = `<p style="padding:20px">Recherche en cours...</p>`;
-
   $('#aiBlock').classList.remove('hidden');
   $('#aiText').innerHTML = `Recherche de la réponse...`;
   getAIAnswer(q);
   await searchWikipedia(q, 0);
 }
 
-// IA QUI RESUME WIKIPEDIA
 async function getAIAnswer(query) {
-  const langCode = currentLang.startsWith('fr')? 'fr' : currentLang.startsWith('en')? 'en' : 'en';
+  const langCode = currentLang.startsWith('fr')? 'fr' : 'en';
   const url = `https://${langCode}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&srlimit=3&format=json&origin=*`;
   try {
     const res = await fetch(url); const data = await res.json(); const results = data.query.search;
@@ -116,7 +113,7 @@ async function getAIAnswer(query) {
 
 async function searchWikipedia(query, offset) {
   const t = translations[currentLang] || translations['fr-FR'];
-  const langCode = currentLang.startsWith('fr')? 'fr' : currentLang.startsWith('en')? 'en' : 'en';
+  const langCode = currentLang.startsWith('fr')? 'fr' : 'en';
   const limit = 10;
   const url = `https://${langCode}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&srlimit=${limit}&sroffset=${offset}&format=json&origin=*`;
   try {
@@ -157,7 +154,7 @@ function startVoice() {
 
 function setSecurityMode(val) { currentSecurity = val; localStorage.setItem('baobabSecurity', val); $('#strongBanner').classList.toggle('hidden', val!== 'strong'); }
 function saveHistory(q) { if($('#saveActivity') &&!$('#saveActivity').checked) return; let h = JSON.parse(localStorage.getItem('hist') || '[]'); localStorage.setItem('hist', JSON.stringify([q,...h.filter(x => x!== q)].slice(0,5))); loadHistory(); }
-function loadHistory() { let h = JSON.parse(localStorage.getItem('hist') || '[]'); $('#historyList').innerHTML = h.map(i => `<div class="item" onclick="selectSuggest('${i}')">${i}</div>`).join(''); }
+function loadHistory() { let h = JSON.parse(localStorage.getItem('hist') || '[]'); $('#historyList').innerHTML = h.map(i => `<div class="item" onclick="selectSuggest('${i.replace(/'/g, "\\'")}')">${i}</div>`).join(''); }
 function clearHistory() { localStorage.removeItem('hist'); loadHistory(); alert('Historique effacé'); }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -197,4 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.addEventListener('click', (e) => {
     if(!e.target.closest('.search-bar') &&!e.target.closest('.suggestions')) $('#suggestions').classList.add('hidden');
-    if(!e.target.closest('#imageMenu') &&!e.target.closest('.icon-btn[title="Recherche par image
+    if(!e.target.closest('#imageMenu') &&!e.target.closest('.icon-btn[title="Recherche par image"]')) $('#imageMenu').classList.add('hidden');
+  })
+  goHome();
+});
