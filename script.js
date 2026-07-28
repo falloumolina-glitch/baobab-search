@@ -54,7 +54,7 @@ function setFilter(e, filter) {
   searchSERP(currentQuery, filter);
 }
 
-// FONCTION SERPAPI POUR TA CLE - SEULE CHOSE MODIFIEE
+// FONCTION SERPAPI - SEULE CHOSE MODIFIEE
 async function searchSERP(query, filter = 'all') {
   const t = translations[currentLang] || translations['fr-FR'];
   $('#resultsList').innerHTML = `<p style="padding:20px">Recherche en cours sur Google...</p>`;
