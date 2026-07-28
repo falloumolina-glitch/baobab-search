@@ -4,10 +4,10 @@ let currentSecurity = localStorage.getItem('baobabSecurity') || 'standard';
 let currentTheme = localStorage.getItem('baobabTheme') || 'light';
 let safeSearch = localStorage.getItem('baobabSafe') || 'on';
 let suggestionsOn = localStorage.getItem('baobabSuggestions') || 'on';
-let currentQuery = ""; let currentOffset = 0; let currentFilter = 'all';
+let currentQuery = "e0e0bc717b3670623bb222ef04013d314944985fbad36a5eac3e396ea132cc19"; let currentOffset = 0; let currentFilter = 'all';
 
-// COLLE TA CLE SERPAPI ICI - ELLE COMMENCE PAR e
-const SERPAPI_KEY = "e0e0bc717b3670623bb222ef04013d314944985fbad36a5eac3e396ea132cc19";
+// COLLE TA CLE SERPAPI ICI AUSSI
+const SERPAPI_KEY = "";
 
 const translations = {
   'fr-FR': { searchPlaceholder: "Recher sur Baobab...", settings: "Paramètres", general: "Général", langSearch: "Langue de recherche:", security: "Sécurité", protectionMode: "Mode de protection:", saveActivity: "Enregistrer l'activité", clearHistory: "Effacer l'historique récent", back: "Retour", recent: "Historique récent", speakNow: "Parlez maintenant...", noResults: "Aucun résultat trouvé pour", resultsFor: "Résultats pour", next: "Suivant", prev: "Précédent", readMore: "Lire l'article complet", all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", maps: "Maps" },
@@ -53,16 +53,13 @@ function setFilter(e, filter) {
   searchSERP(currentQuery, filter);
 }
 
-// VERSION FINALE AVEC PROXY CODETABS
 async function searchSERP(query, filter = 'all') {
   const t = translations[currentLang] || translations['fr-FR'];
   $('#resultsList').innerHTML = `<p style="padding:20px">Recherche en cours sur Google...</p>`;
 
   let params = new URLSearchParams({
-    engine: 'google',
     q: query,
     api_key: SERPAPI_KEY,
-    num: '10',
     hl: currentLang.split('-')[0],
     gl: 'sn'
   });
@@ -71,13 +68,13 @@ async function searchSERP(query, filter = 'all') {
   if(filter === 'images') params.append('tbm', 'isch');
   if(filter === 'videos') params.append('tbm', 'vid');
 
-  const serpUrl = `https://serpapi.com/search.json?${params.toString()}`;
-  const proxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(serpUrl)}`;
+  // ON PASSE PAR NOTRE PROXY PHP
+  const url = `proxy.php?${params.toString()}`;
 
   try {
-    const res = await fetch(proxyUrl);
+    const res = await fetch(url);
     if(!res.ok) throw new Error(`Erreur Serveur ${res.status}`);
-    const data = await res.json(); 
+    const data = await res.json();
     if(data.error) throw new Error(data.error);
 
     let html = ``;
@@ -108,7 +105,7 @@ async function searchSERP(query, filter = 'all') {
 
   } catch(e) {
     console.error("Erreur SERPAPI:", e);
-    $('#resultsList').innerHTML = `<p style="padding:20px;color:red"><b>ERREUR:</b> ${e.message}. Vérifie ta clé.</p>`;
+    $('#resultsList').innerHTML = `<p style="padding:20px;color:red"><b>ERREUR:</b> ${e.message}</p>`;
   }
 }
 
