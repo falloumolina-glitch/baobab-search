@@ -7,7 +7,7 @@ let suggestionsOn = localStorage.getItem('baobabSuggestions') || 'on';
 let currentQuery = ""; let currentOffset = 0; let currentFilter = 'all';
 
 // 1. COLLE TA CLE SERPAPI ICI SEULEMENT
-const SERPAPI_KEY = "TA_CLE_ICI";
+const SERPAPI_KEY = "e0e0bc717b3670623bb222ef04013d314944985fbad36a5eac3e396ea132cc19";
 
 const translations = {
   'fr-FR': { searchPlaceholder: "Recher sur Baobab...", settings: "Paramètres", general: "Général", langSearch: "Langue de recherche:", security: "Sécurité", protectionMode: "Mode de protection:", saveActivity: "Enregistrer l'activité", clearHistory: "Effacer l'historique récent", back: "Retour", recent: "Historique récent", speakNow: "Parlez maintenant...", noResults: "Aucun résultat trouvé pour", resultsFor: "Résultats pour", next: "Suivant", prev: "Précédent", readMore: "Lire l'article complet", all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", maps: "Maps", aiAnswer: "Réponse IA" },
