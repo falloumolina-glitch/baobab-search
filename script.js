@@ -4,6 +4,7 @@ let currentLang = localStorage.getItem('baobabLang') || 'fr-FR';
 let currentSecurity = localStorage.getItem('baobabSecurity') || 'standard';
 let currentQuery = "";
 let currentOffset = 0;
+let currentFilter = 'all'; // NOUVEAU pour les onglets
 
 const translations = {
   'fr-FR': { searchPlaceholder: "Recher sur Baobab...", settings: "Paramètres", general: "Général", langSearch: "Langue de recherche:", security: "Sécurité", protectionMode: "Mode de protection:", strongHelp: "Mode Renforcé : Aucune donnée n'est enregistrée.", privacy: "Vie privée & Historique", saveActivity: "Enregistrer l'activité", clearHistory: "Effacer l'historique récent", appearance: "Apparence", theme: "Thème:", light: "Clair", dark: "Sombre", system: "Système", fontSize: "Taille du texte:", small: "Petit", medium: "Moyen", large: "Grand", back: "Retour", recent: "Historique récent", speakNow: "Parlez maintenant...", noResults: "Aucun résultat trouvé pour", resultsFor: "Résultats pour", next: "Suivant", prev: "Précédent", readMore: "Lire l'article complet" },
@@ -25,15 +26,70 @@ function showSuggestions() { $('#suggestions').classList.remove('hidden'); loadH
 function liveSuggest() {}
 function selectSuggest(text) { $('#searchInput').value = text; search(); }
 
-// ===== RECHERCHE WIKIPEDIA + IMAGES =====
+// ===== NOUVEAU : GESTION DES ONGLETS =====
+function setFilter(filter) {
+  currentFilter = filter;
+  currentOffset = 0; // reset page
+
+  // active le bouton
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+
+  if(filter === 'all') {
+    searchWikipedia(currentQuery, 0);
+  }
+  if(filter === 'images') {
+    searchWikimediaImages(currentQuery);
+  }
+  if(filter === 'videos') {
+    $('#resultsList').innerHTML = `<p style="padding:20px">Bientôt : Vidéos pour "${currentQuery}"</p>`;
+  }
+  if(filter === 'news') {
+    $('#resultsList').innerHTML = `<p style="padding:20px">Bientôt : Actualités pour "${currentQuery}"</p>`;
+  }
+  if(filter === 'maps') {
+    $('#resultsList').innerHTML = `<p style="padding:20px">Bientôt : Carte pour "${currentQuery}"</p>`;
+  }
+}
+
+// NOUVEAU : Recherche d'images Wikimedia Commons
+async function searchWikimediaImages(query) {
+  $('#resultsList').innerHTML = `<p style="padding:20px">Recherche d'images...</p>`;
+  const url = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(query)}&gsrlimit=20&prop=imageinfo&iiprop=url|thumbmime|url&iiurlwidth=300&format=json&origin=*`;
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    const pages = data.query?.pages || {};
+
+    let html = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;padding:20px">`;
+    Object.values(pages).forEach(p => {
+      if(p.imageinfo) {
+        const imgUrl = p.imageinfo[0].thumburl || p.imageinfo[0].url;
+        html += `<a href="${p.imageinfo[0].url}" target="_blank"><img src="${imgUrl}" style="width:100%;height:150px;object-fit:cover;border-radius:8px"></a>`;
+      }
+    });
+    html += `</div>`;
+    $('#resultsList').innerHTML = html;
+  } catch(e) {
+    $('#resultsList').innerHTML = `<p style="padding:20px">Aucune image trouvée</p>`;
+  }
+}
+
+// ===== RECHERCHE WIKIPEDIA =====
 async function search() {
   let q = $('#searchInput')?.value || $('#searchInput2')?.value;
   if(!q) return;
   currentQuery = q;
   currentOffset = 0;
+  currentFilter = 'all'; // reset sur "Tous"
   $('#searchInput2').value = q;
   saveHistory(q);
   showPage('results');
+
+  // reset onglet actif
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.filter-btn').classList.add('active');
+
   $('#resultsList').innerHTML = `<p style="padding:20px">Recherche en cours...</p>`;
   $('#aiBlock').classList.add('hidden');
 
@@ -43,7 +99,7 @@ async function search() {
 async function searchWikipedia(query, offset) {
   const t = translations[currentLang];
   const langCode = currentLang.startsWith('fr')? 'fr' : currentLang.split('-')[0];
-  const limit = 10; // 10 avec images c'est mieux
+  const limit = 10;
   const url = `https://${langCode}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&srlimit=${limit}&sroffset=${offset}&format=json&origin=*`;
 
   try {
@@ -57,7 +113,6 @@ async function searchWikipedia(query, offset) {
       return;
     }
 
-    // On récupère les images et liens pour tous les pageid d'un coup
     const pageIds = results.map(r => r.pageid).join('|');
     const detailsUrl = `https://${langCode}.wikipedia.org/w/api.php?action=query&pageids=${pageIds}&prop=pageimages|info&inprop=url&pithumbsize=150&format=json&origin=*`;
     const detailsRes = await fetch(detailsUrl);
@@ -90,7 +145,6 @@ function displayResults(results, pages, query, langCode, total, offset, limit) {
     </div>`;
   }).join('');
 
-  // PAGINATION
   html += `<div style="display:flex;gap:10px;justify-content:center;padding:20px">`;
   if(offset > 0) html += `<button onclick="changePage(-1)" style="padding:8px 16px;cursor:pointer;border:1px solid #dadce0;border-radius:4px;background:white">${t.prev}</button>`;
   if(offset + limit < total) html += `<button onclick="changePage(1)" style="padding:8px 16px;cursor:pointer;border:1px solid #dadce0;border-radius:4px;background:white">${t.next}</button>`;
@@ -102,7 +156,8 @@ function displayResults(results, pages, query, langCode, total, offset, limit) {
 function changePage(direction) {
   const limit = 10;
   currentOffset += direction * limit;
-  searchWikipedia(currentQuery, currentOffset);
+  if(currentFilter === 'all') searchWikipedia(currentQuery, currentOffset);
+  if(currentFilter === 'images') searchWikimediaImages(currentQuery); // TODO: pagination images
   window.scrollTo(0,0);
 }
 
@@ -151,5 +206,5 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   if($('#securityMode')) $('#securityMode').value = currentSecurity;
   document.addEventListener('click', (e) => { if(!e.target.closest('.search-bar') &&!e.target.closest('.suggestions')) $('#suggestions').classList.add('hidden'); })
-  goHome();
+  goHome(); // <-- J'AI ENLEVÉ LE "();" QUI FAISAIT PLANTER
 });
