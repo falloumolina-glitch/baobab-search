@@ -8,86 +8,71 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
   body{font-family:Inter;background:#fff;color:#202124;margin:0}
-  .page{display:none}.page.active{display:block}
-  .top-nav,.results-header{display:flex;align-items:center;padding:12px 24px;gap:16px}
-  .logo{font-weight:700;font-size:22px;color:#1A73E8;cursor:pointer}
-  .search-bar{display:flex;align-items:center;border:1px solid #dfe1e5;border-radius:24px;padding:5px 8px;width:100%;max-width:600px;margin:20px auto}
-  .search-bar.small{max-width:700px;margin:0}
-  .search-bar input{border:none;outline:none;flex:1;font-size:16px;padding:8px;background:transparent}
-  .search-icons{display:flex;gap:8px}
-  .icon-btn{background:none;border:none;cursor:pointer;padding:8px;border-radius:50%}
-  .icon-btn.primary{background:#1A73E8;border-radius:50%}
-  .suggestions{position:absolute;background:white;border:1px solid #ddd;border-radius:8px;width:calc(100% - 48px);max-width:600px;left:50%;transform:translateX(-50%);margin-top:5px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
-  .suggestions.hidden{display:none}
-  .item{padding:10px 16px;cursor:pointer}.item:hover{background:#f1f3f4}
-  .section-title{padding:8px 16px;font-size:12px;color:#5f6368;font-weight:500}
-  .help-text{font-size:12px;color:#5f6368;margin-top:5px}
-  .strong-banner{background:#D93025;color:white;text-align:center;padding:8px;font-size:13px;font-weight:500;position:sticky;top:0;z-index:999}
-  .strong-banner.hidden{display:none}
-  .ai-card{border:1px solid #dadce0;border-radius:12px;padding:16px;margin:16px 24px;background:#F8F9FA}
-  .ai-header{font-size:14px;font-weight:600;color:#1A73E8;margin-bottom:8px}
-  .setting-group{padding:20px 24px;border-bottom:1px solid #eee}
-  .setting-group h3{margin:0 0 12px 0}
-  .setting-group label{display:flex;justify-content:space-between;align-items:center;margin:10px 0}
-  .back{margin:20px 24px;padding:10px 20px}
-  .legal-page{padding:20px 24px}
+ .page{display:none}.page.active{display:block}
+ .top-nav,.results-header{display:flex;align-items:center;padding:12px 24px;gap:16px}
+ .logo{font-weight:700;font-size:22px;color:#1A73E8;cursor:pointer}
+ .search-bar{display:flex;align-items:center;border:1px solid #dfe1e5;border-radius:24px;padding:5px 8px;width:100%;max-width:600px;margin:20px auto}
+ .search-bar.small{max-width:700px;margin:0}
+ .search-bar input{border:none;outline:none;flex:1;font-size:16px;padding:8px;background:transparent}
+ .search-icons{display:flex;gap:8px}
+ .icon-btn{background:none;border:none;cursor:pointer;padding:8px;border-radius:50%}
+ .icon-btn.primary{background:#1A73E8;border-radius:50%}
+ .suggestions{position:absolute;background:white;border:1px solid #ddd;border-radius:8px;width:calc(100% - 48px);max-width:600px;left:50%;transform:translateX(-50%);margin-top:5px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+ .suggestions.hidden{display:none}
+ .item{padding:10px 16px;cursor:pointer}.item:hover{background:#f1f3f4}
+ .section-title{padding:8px 16px;font-size:12px;color:#5f6368;font-weight:500}
+ .help-text{font-size:12px;color:#5f6368;margin-top:5px}
+ .strong-banner{background:#D93025;color:white;text-align:center;padding:8px;font-size:13px;font-weight:500;position:sticky;top:0;z-index:999}
+ .strong-banner.hidden{display:none}
+ .ai-card{border:1px solid #dadce0;border-radius:12px;padding:16px;margin:16px 24px;background:#F8F9FA}
+ .ai-header{font-size:14px;font-weight:600;color:#1A73E8;margin-bottom:8px}
+ .setting-group{padding:20px 24px;border-bottom:1px solid #eee}
+ .setting-group h3{margin:0 0 12px 0}
+ .setting-group label{display:flex;justify-content:space-between;align-items:center;margin:10px 0}
+ .back{margin:20px 24px;padding:10px 20px}
+ .legal-page{padding:20px 24px}
 
   /* FILTRES */
-  .filter-bar{display:flex;gap:24px;padding:12px 24px;border-bottom:1px solid #dadce0}
-  .filter-btn{background:none;border:none;padding:8px 0;cursor:pointer;color:#5f6368;font-size:14px;font-family:Inter}
-  .filter-btn.active{color:#1A73E8;border-bottom:2px solid #1A73E8;font-weight:500}
-  .filter-btn:hover{color:#1A73E8}
+ .filter-bar{display:flex;gap:24px;padding:12px 24px;border-bottom:1px solid #dadce0}
+ .filter-btn{background:none;border:none;padding:8px 0;cursor:pointer;color:#5f6368;font-size:14px;font-family:Inter}
+ .filter-btn.active{color:#1A73E8;border-bottom:2px solid #1A73E8;font-weight:500}
+ .filter-btn:hover{color:#1A73E8}
   [data-theme="dark"]{background:#202124;color:#e8eaed}
-  [data-theme="dark"] .search-bar{border-color:#5f6368}
-  [data-theme="dark"] .suggestions{background:#303134;border-color:#5f6368}
+  [data-theme="dark"].search-bar{border-color:#5f6368}
+  [data-theme="dark"].suggestions{background:#303134;border-color:#5f6368}
   </style>
 </head>
 <body>
   <div id="strongBanner" class="strong-banner hidden">🔒 MODE RENFORCÉ ACTIF - Aucune donnée n'est enregistrée</div>
 
-  <!-- PAGE ACCUEIL -->
   <main id="home" class="page active">
-    <header class="top-nav">
-      <div class="logo" onclick="goHome()">BS</div>
-      <button data-i18n="settings" onclick="showPage('settings')">Paramètres</button>
-    </header>
+    <header class="top-nav"><div class="logo" onclick="goHome()">BS</div><button data-i18n="settings" onclick="showPage('settings')">Paramètres</button></header>
     <div class="home-center" style="text-align:center;margin-top:80px">
       <h1 style="font-size:48px">Baobab <span style="color:#1A73E8">Search</span></h1>
       <div class="search-bar" id="searchBar" style="position:relative">
-        <input id="searchInput" type="text" data-i18n-placeholder="searchPlaceholder" placeholder="Recher sur Baobab..." onfocus="showSuggestions()" oninput="liveSuggest()">
+        <!-- FIX: autocomplete=off -->
+        <input id="searchInput" type="text" autocomplete="off" data-i18n-placeholder="searchPlaceholder" placeholder="Recher sur Baobab..." onfocus="showSuggestions()" oninput="liveSuggest()">
         <div class="search-icons">
           <button class="icon-btn" onclick="startVoice()"><svg width="22" height="22" viewBox="0 0 24 24" fill="#1A73E8"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zm5 8a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2z"/></svg></button>
           <button class="icon-btn" onclick="startImageSearch()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A73E8" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></button>
           <button class="icon-btn primary" onclick="search()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button>
         </div>
-        <div id="suggestions" class="suggestions hidden">
-          <div class="section-title" data-i18n="recent">Historique récent</div>
-          <div id="historyList"></div>
-        </div>
+        <div id="suggestions" class="suggestions hidden"><div class="section-title" data-i18n="recent">Historique récent</div><div id="historyList"></div></div>
       </div>
     </div>
   </main>
 
-  <!-- PAGE RESULTATS -->
   <main id="results" class="page">
-    <header class="results-header">
-      <div class="logo" onclick="goHome()">BS</div>
+    <header class="results-header"><div class="logo" onclick="goHome()">BS</div>
       <div class="search-bar small">
-        <!-- FIX ICI : oninput pour synchroniser currentQuery -->
-        <input id="searchInput2" type="text" data-i18n-placeholder="searchPlaceholder" 
-               onkeydown="if(event.key==='Enter') search()" 
+        <!-- FIX: autocomplete=off -->
+        <input id="searchInput2" type="text" autocomplete="off" data-i18n-placeholder="searchPlaceholder"
+               onkeydown="if(event.key==='Enter') search()"
                oninput="currentQuery = this.value">
-        <div class="search-icons">
-          <button class="icon-btn primary" onclick="search()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5">
-              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-            </svg>
-          </button>
-        </div>
+        <div class="search-icons"><button class="icon-btn primary" onclick="search()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button></div>
       </div>
     </header>
-    
-    <!-- ONGLETS CLICABLES -->
+
     <div class="filter-bar">
       <button class="filter-btn active" onclick="setFilter('all')" data-i18n="all">Tous</button>
       <button class="filter-btn" onclick="setFilter('images')" data-i18n="images">Images</button>
@@ -96,48 +81,18 @@
       <button class="filter-btn" onclick="setFilter('maps')" data-i18n="maps">Maps</button>
     </div>
 
-    <div id="aiBlock" class="ai-card hidden">
-      <div class="ai-header">✨ Aperçu Baobab IA</div>
-      <div id="aiText" class="ai-text">Recherche de la réponse...</div>
-    </div>
-
+    <div id="aiBlock" class="ai-card hidden"><div class="ai-header">✨ Aperçu Baobab IA</div><div id="aiText" class="ai-text">Recherche de la réponse...</div></div>
     <div id="resultsList" class="results"></div>
   </main>
 
-  <!-- PAGE PARAMETRES -->
-  <main id="settings" class="page">
-    <h2 style="padding:20px 24px" data-i18n="settings">Paramètres</h2>
-    <div class="setting-group">
-      <h3 data-i18n="general">Général</h3>
-      <label>
-        <span data-i18n="langSearch">Langue de recherche:</span>
-        <select id="langSelect">
-          <option value="fr-FR">Français</option>
-          <option value="en-US">English</option>
-        </select>
-      </label>
+  <main id="settings" class="page"><h2 style="padding:20px 24px" data-i18n="settings">Paramètres</h2>
+    <div class="setting-group"><h3 data-i18n="general">Général</h3>
+      <label><span data-i18n="langSearch">Langue de recherche:</span><select id="langSelect"><option value="fr-FR">Français</option><option value="en-US">English</option></select></label>
     </div>
-    <div class="setting-group">
-      <h3 data-i18n="security">Sécurité et Confidentialité</h3>
-      <label>
-        <span data-i18n="protectionMode">Mode de protection:</span>
-        <select id="securityMode" onchange="setSecurityMode(this.value)">
-          <option value="standard">Standard</option>
-          <option value="strong">Renforcé</option>
-        </select>
-      </label>
-      <p class="help-text" data-i18n="strongHelp">Mode Renforcé : Aucune donnée n'est enregistrée.</p>
-      <h4 data-i18n="privacy">Vie privée & Historique</h4>
+    <div class="setting-group"><h3 data-i18n="security">Sécurité</h3>
+      <label><span data-i18n="protectionMode">Mode de protection:</span><select id="securityMode" onchange="setSecurityMode(this.value)"><option value="standard">Standard</option><option value="strong">Renforcé</option></select></label>
       <label><input type="checkbox" id="saveActivity" checked> <span data-i18n="saveActivity">Enregistrer l'activité</span></label>
       <button onclick="clearHistory()" data-i18n="clearHistory">Effacer l'historique récent</button>
-    </div>
-    <div class="setting-group">
-      <h3 data-i18n="appearance">Apparence</h3>
-      <label><span data-i18n="theme">Thème:</span>
-        <select onchange="setTheme(this.value)">
-          <option value="light">Clair</option><option value="dark">Sombre</option><option value="system">Système</option>
-        </select>
-      </label>
     </div>
     <button class="back" onclick="goHome()" data-i18n="back">Retour</button>
   </main>
