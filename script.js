@@ -6,12 +6,12 @@ let safeSearch = localStorage.getItem('baobabSafe') || 'on';
 let suggestionsOn = localStorage.getItem('baobabSuggestions') || 'on';
 let currentQuery = ""; let currentOffset = 0; let currentFilter = 'all';
 
-// 1. COLLE TA CLE SERPAPI ICI SEULEMENT
+// COLLE TA CLE QUI COMMENCE PAR e ICI
 const SERPAPI_KEY = "e0e0bc717b3670623bb222ef04013d314944985fbad36a5eac3e396ea132cc19";
 
 const translations = {
-  'fr-FR': { searchPlaceholder: "Recher sur Baobab...", settings: "Paramètres", general: "Général", langSearch: "Langue de recherche:", security: "Sécurité", protectionMode: "Mode de protection:", saveActivity: "Enregistrer l'activité", clearHistory: "Effacer l'historique récent", back: "Retour", recent: "Historique récent", speakNow: "Parlez maintenant...", noResults: "Aucun résultat trouvé pour", resultsFor: "Résultats pour", next: "Suivant", prev: "Précédent", readMore: "Lire l'article complet", all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", maps: "Maps", aiAnswer: "Réponse IA" },
-  'en-US': { searchPlaceholder: "Search on Baobab...", settings: "Settings", general: "General", langSearch: "Search language:", security: "Security", protectionMode: "Protection mode:", saveActivity: "Save activity", clearHistory: "Clear recent history", back: "Back", recent: "Recent", speakNow: "Speak now...", noResults: "No results found for", resultsFor: "Results for", next: "Next", prev: "Previous", readMore: "Read full article", all: "All", images: "Images", videos: "Videos", news: "News", maps: "Maps", aiAnswer: "AI Answer" }
+  'fr-FR': { searchPlaceholder: "Rechercher sur Baobab...", settings: "Paramètres", general: "Général", langSearch: "Langue de recherche:", security: "Sécurité", protectionMode: "Mode de protection:", saveActivity: "Enregistrer l'activité", clearHistory: "Effacer l'historique récent", back: "Retour", recent: "Historique récent", speakNow: "Parlez maintenant...", noResults: "Aucun résultat trouvé pour", resultsFor: "Résultats pour", next: "Suivant", prev: "Précédent", readMore: "Lire l'article complet", all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", maps: "Maps" },
+  'en-US': { searchPlaceholder: "Search on Baobab...", settings: "Settings", general: "General", langSearch: "Search language:", security: "Security", protectionMode: "Protection mode:", saveActivity: "Save activity", clearHistory: "Clear recent history", back: "Back", recent: "Recent", speakNow: "Speak now...", noResults: "No results found for", resultsFor: "Results for", next: "Next", prev: "Previous", readMore: "Read full article", all: "All", images: "Images", videos: "Videos", news: "News", maps: "Maps" }
 };
 
 function applyTranslations() {
@@ -54,48 +54,37 @@ function setFilter(e, filter) {
   searchSERP(currentQuery, filter);
 }
 
-// 2. NOUVELLE FONCTION SERPAPI - REMPLACE TOUT LE RESTE
+// FONCTION SEARXNG POUR TA CLE
 async function searchSERP(query, filter = 'all') {
   const t = translations[currentLang] || translations['fr-FR'];
-  $('#resultsList').innerHTML = `<p style="padding:20px">Recherche en cours sur Google...</p>`;
+  $('#resultsList').innerHTML = `<p style="padding:20px">Recherche en cours...</p>`;
 
-  let params = `q=${encodeURIComponent(query)}&api_key=${SERPAPI_KEY}&engine=google&num=20&hl=${currentLang.split('-')[0]}&gl=sn`;
-  if(safeSearch === 'on') params += `&safe=active`;
-
-  if(filter === 'news') params += `&tbm=nws`;
-  if(filter === 'images') params += `&tbm=isch`;
-  if(filter === 'videos') params += `&tbm=vid`;
+  let url = `https://baresearch.org/search?format=json&q=${encodeURIComponent(query)}&key=${SERPAPI_KEY}&language=${currentLang.split('-')[0]}`;
+  if(safeSearch === 'on') url += `&safesearch=1`;
+  if(filter === 'news') url += `&category=news`;
+  if(filter === 'images') url += `&category=images`;
+  if(filter === 'videos') url += `&category=videos`;
 
   try {
-    const res = await fetch(`https://serpapi.com/search.json?${params}`);
+    const res = await fetch(url);
     const data = await res.json();
     let html = ``;
 
-    // BLOC REPONSE IA EN HAUT
-    if(data.answer_box && filter === 'all') {
-      html += `<div id="aiBlock" style="margin:20px 24px; padding:16px; background:var(--card); border:1px solid var(--border); border-radius:12px">
-        <h3 style="margin:0 0 8px 0">🤖 ${t.aiAnswer}</h3>
-        <p style="margin:0">${data.answer_box.answer || data.answer_box.snippet}</p>
-        <a href="${data.answer_box.link}" target="_blank" style="font-size:12px;color:var(--muted)">Source</a>
-      </div>`;
-    }
-
-    // BLOC RESULTATS
-    let results = data.organic_results || data.news_results || data.video_results || data.images_results || [];
-
-    if(results.length > 0) {
-      if(filter === 'all') html += `<p style="padding:12px 24px;color:var(--muted)">${t.resultsFor} <b>${query}</b> • ${data.search_information?.total_results} résultats</p>`;
+    if(data.results && data.results.length > 0) {
+      html += `<p style="padding:12px 24px;color:var(--muted)">${t.resultsFor} <b>${query}</b> • ${data.number_of_results} résultats</p>`;
 
       if(filter === 'images') {
         html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;padding:20px">`;
-        results.forEach(item => { html += `<a href="${item.original}" target="_blank"><img src="${item.thumbnail}" style="width:100%;height:150px;object-fit:cover;border-radius:8px"></a>`; });
+        data.results.forEach(item => {
+          if(item.thumbnail) html += `<a href="${item.url}" target="_blank"><img src="${item.thumbnail}" style="width:100%;height:150px;object-fit:cover;border-radius:8px"></a>`;
+        });
         html += `</div>`;
       } else {
-        results.forEach(item => {
+        data.results.forEach(item => {
           html += `<div style="padding:12px 24px;border-bottom:1px solid var(--border)">
-            <a href="${item.link || item.url}" target="_blank" rel="noopener" style="font-size:18px;color:var(--link);text-decoration:none">${item.title}</a>
-            <div style="color:#006621;font-size:14px">${item.displayed_link || item.link}</div>
-            <div style="color:var(--text);font-size:14px;line-height:1.5">${item.snippet || item.description}</div>
+            <a href="${item.url}" target="_blank" rel="noopener" style="font-size:18px;color:var(--link);text-decoration:none">${item.title}</a>
+            <div style="color:#006621;font-size:14px">${item.url}</div>
+            <div style="color:var(--text);font-size:14px;line-height:1.5">${item.content}</div>
           </div>`;
         });
       }
@@ -105,8 +94,8 @@ async function searchSERP(query, filter = 'all') {
     $('#resultsList').innerHTML = html;
 
   } catch(e) {
-    console.error("Erreur SERPAPI:", e);
-    $('#resultsList').innerHTML = `<p style="padding:20px">Erreur API. Vérifie ta clé et tes crédits.</p>`;
+    console.error("Erreur Searxng:", e);
+    $('#resultsList').innerHTML = `<p style="padding:20px">Erreur API. Vérifie ta clé.</p>`;
   }
 }
 
@@ -119,7 +108,6 @@ async function search() {
   saveHistory(q); showPage('results');
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   document.querySelector('.filter-btn').classList.add('active');
-
   searchSERP(q, 'all');
 }
 
