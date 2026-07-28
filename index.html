@@ -4,184 +4,63 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Baobab Search</title>
+  
+  <!-- POUR L'INSTALLATION -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1A73E8">
+  
+  <!-- EMPECHER LE CACHE NAVIGATEUR -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https://*.wikipedia.org https://commons.wikimedia.org; frame-src 'self' https://www.youtube.com https://news.google.com https://www.google.com;">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  
   <style>
-  :root {
-    --bg: #fff;
-    --text: #202124;
-    --border: #dfe1e5;
-    --card: #F8F9FA;
-    --muted: #5f6368;
-    --link: #1A73E8;
-  }
-  [data-theme="dark"] {
-    --bg: #202124;
-    --text: #e8eaed;
-    --border: #5f6368;
-    --card: #303134;
-    --muted: #9aa0a6;
-    --link: #8ab4f8;
-  }
-
+  :root { --bg: #fff; --text: #202124; --border: #dfe1e5; --card: #F8F9FA; --muted: #5f6368; --link: #1A73E8; }
+  [data-theme="dark"] { --bg: #202124; --text: #e8eaed; --border: #5f6368; --card: #303134; --muted: #9aa0a6; --link: #8ab4f8; }
   body{font-family:Inter;background:var(--bg);color:var(--text);margin:0;line-height:1.6;min-height:100vh}
   .page{display:none;background:var(--bg)}.page.active{display:block;min-height:100vh}
-  
   .top-nav,.results-header{display:flex;align-items:center;padding:12px 24px;gap:16px;background:var(--bg)}
   .top-nav button{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:6px 12px;font-size:14px;cursor:pointer;font-family:Inter}
-  .top-nav button:hover{background:var(--border)}
-  
   .logo{font-weight:700;font-size:22px;color:var(--link);cursor:pointer}
-  
   .search-bar{display:flex;align-items:center;border:1px solid var(--border);border-radius:24px;padding:5px 8px;width:100%;max-width:600px;background:var(--bg)}
-  .search-bar.small{max-width:700px;margin:0}
   .search-bar input{border:none;outline:none;flex:1;font-size:16px;padding:8px;background:transparent;color:var(--text)}
-  .search-icons{display:flex;gap:8px;position:relative}
   .icon-btn{background:none;border:none;cursor:pointer;padding:8px;border-radius:50%}
-  .icon-btn svg{stroke:var(--link); fill:var(--link)}
   .icon-btn.primary{background:var(--link);border-radius:50%}
   .icon-btn.primary svg{stroke:#fff; fill:#fff}
-  
-  .suggestions{position:absolute;background:var(--card);border:1px solid var(--border);border-radius:8px;width:100%;left:0;top:100%;margin-top:4px;box-shadow:0 2px 8px rgba(0,0,0,.2);z-index:1000}
-  .suggestions.hidden{display:none}
-  .item{padding:10px 16px;cursor:pointer;color:var(--text)}.item:hover{background:var(--border)}
-  .section-title{padding:8px 16px;font-size:12px;color:var(--muted);font-weight:500}
-  
   .strong-banner{background:#D93025;color:white;text-align:center;padding:8px;font-size:13px;font-weight:500;position:sticky;top:0;z-index:999}
   .strong-banner.hidden{display:none}
-  
-  .ai-card{border:1px solid var(--border);border-radius:12px;padding:16px;margin:16px 24px;background:var(--card)}
-  .ai-header{font-size:14px;font-weight:600;color:var(--link);margin-bottom:8px}
-  
-  .setting-group{padding:20px 24px;border-bottom:1px solid var(--border);background:var(--bg)}
-  .setting-group h3{margin:0 0 12px 0;color:var(--text)}
-  .setting-group label{display:flex;justify-content:space-between;align-items:center;margin:10px 0;color:var(--text)}
-  .setting-group select{padding:6px;border-radius:4px;border:1px solid var(--border);background:var(--card);color:var(--text)}
-  .setting-group button{padding:8px 16px;border:1px solid var(--border);border-radius:4px;background:var(--card);color:var(--text);cursor:pointer}
-  .setting-link{display:block;padding:10px 0;color:var(--link);text-decoration:none;cursor:pointer}
-  .setting-link:hover{text-decoration:underline}
-  .back{margin:20px 24px;padding:10px 20px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:4px;cursor:pointer}
-
-  .popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:2000}
-  .popup.hidden{display:none}
-  .popup-content{background:var(--card);color:var(--text);border-radius:12px;padding:24px;max-width:700px;width:90%;max-height:80vh;overflow-y:auto}
-  .popup-content h2{margin-top:0}
-  .popup-content h4{margin:16px 0 8px 0}
-  .popup-content .close{float:right;font-size:24px;cursor:pointer;border:none;background:none;color:var(--text)}
-
-  .filter-bar{display:flex;gap:24px;padding:12px 24px;border-bottom:1px solid var(--border);overflow-x:auto;background:var(--bg)}
-  .filter-btn{background:none;border:none;padding:8px 0;cursor:pointer;color:var(--muted);font-size:14px;font-family:Inter;white-space:nowrap}
-  .filter-btn.active{color:var(--link);border-bottom:2px solid var(--link);font-weight:500}
-  
-  .results a{color:var(--link)}
-  .results{color:var(--text)}
   </style>
 </head>
 <body>
   <div id="strongBanner" class="strong-banner hidden">🔒 MODE RENFORCÉ ACTIF - Aucune donnée n'est enregistrée</div>
 
   <main id="home" class="page active">
-    <header class="top-nav">
-      <div class="logo" onclick="goHome()">BS</div>
-      <div style="margin-left:auto">
-        <button data-i18n="settings" onclick="showPage('settings')">Paramètres</button>
-      </div>
-    </header>
-    <div class="home-center" style="text-align:center;margin-top:80px">
+    <header class="top-nav"><div class="logo" onclick="goHome()">BS</div></header>
+    <div style="text-align:center;margin-top:80px">
       <h1 style="font-size:48px">Baobab <span style="color:var(--link)">Search</span></h1>
-      
       <div style="position:relative; width:100%; max-width:600px; margin:20px auto">
-        <div class="search-bar" id="searchBar">
-          <input id="searchInput" type="text" autocomplete="off" data-i18n-placeholder="searchPlaceholder" placeholder="Rechercher sur Baobab..." onfocus="showSuggestions()">
-          <div class="search-icons">
-            <button class="icon-btn" onclick="startVoice()" title="Recherche vocale"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zm5 8a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2z"/></svg></button>
-            <div style="position:relative">
-              <button class="icon-btn" onclick="toggleImageMenu()" title="Recherche par image"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></button>
-              <div id="imageMenu" class="suggestions hidden" style="width:180px;left:auto;right:0;transform:none;margin-top:8px">
-                <div class="item" onclick="startImageSearch('file')">Document</div>
-                <div class="item" onclick="startImageSearch('camera')">Caméra</div>
-              </div>
-            </div>
-            <button class="icon-btn primary" onclick="search()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button>
-          </div>
-        </div>
-
-        <div id="suggestions" class="suggestions hidden">
-          <div class="section-title" data-i18n="recent">Historique récent</div>
-          <div id="historyList"></div>
+        <div class="search-bar">
+          <input id="searchInput" type="text" placeholder="Rechercher sur Baobab...">
+          <button class="icon-btn primary" onclick="search()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button>
         </div>
       </div>
     </div>
   </main>
-
-  <main id="results" class="page">
-    <header class="results-header"><div class="logo" onclick="goHome()">BS</div>
-      <div class="search-bar small">
-        <input id="searchInput2" type="text" autocomplete="off" data-i18n-placeholder="searchPlaceholder" onkeydown="if(event.key==='Enter') search()">
-        <div class="search-icons"><button class="icon-btn primary" onclick="search()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button></div>
-      </div>
-    </header>
-
-    <div class="filter-bar">
-      <button class="filter-btn active" onclick="setFilter(event, 'all')" data-i18n="all">Tous</button>
-      <button class="filter-btn" onclick="setFilter(event, 'images')" data-i18n="images">Images</button>
-      <button class="filter-btn" onclick="setFilter(event, 'videos')" data-i18n="videos">Vidéos</button>
-      <button class="filter-btn" onclick="setFilter(event, 'news')" data-i18n="news">Actualités</button>
-      <button class="filter-btn" onclick="setFilter(event, 'maps')" data-i18n="maps">Maps</button>
-    </div>
-
-    <div id="aiBlock" class="ai-card hidden"><div class="ai-header">✨ Aperçu Baobab IA</div><div id="aiText" class="ai-text">Recherche de la réponse...</div></div>
-    <div id="resultsList" class="results"></div>
-  </main>
-
-  <main id="settings" class="page"><h2 style="padding:20px 24px" data-i18n="settings">Paramètres</h2>
-    
-    <div class="setting-group"><h3 data-i18n="general">Général</h3>
-      <label><span data-i18n="langSearch">Langue de recherche:</span>
-        <select id="langSelect">
-          <option value="fr-FR">Français</option><option value="en-US">English</option><option value="es-ES">Español</option>
-          <option value="pt-BR">Português</option><option value="ar-SA">العربية</option><option value="zh-CN">中文</option>
-          <option value="hi-IN">हिन्दी</option><option value="de-DE">Deutsch</option><option value="it-IT">Italiano</option>
-          <option value="ru-RU">Русский</option><option value="ja-JP">日本語</option><option value="ko-KR">한국어</option>
-          <option value="tr-TR">Türkçe</option><option value="wo-SN">Wolof</option><option value="sw-KE">Swahili</option>
-        </select>
-      </label>
-      <label><span>Thème:</span>
-        <select id="themeSelect"><option value="light">Clair</option><option value="dark">Sombre</option><option value="system">Système</option></select>
-      </label>
-    </div>
-
-    <div class="setting-group"><h3>Recherche</h3>
-      <label><span>Recherche sécurisée:</span><select id="safeSearch"><option value="on">Activé</option><option value="off">Désactivé</option></select></label>
-      <label><span>Suggestions automatiques:</span><select id="suggestionsToggle"><option value="on">Activé</option><option value="off">Désactivé</option></select></label>
-    </div>
-
-    <div class="setting-group"><h3 data-i18n="security">Sécurité / Confidentialité</h3>
-      <label><span data-i18n="protectionMode">Mode de protection:</span><select id="securityMode" onchange="setSecurityMode(this.value)"><option value="standard">Standard</option><option value="strong">Renforcé</option></select></label>
-      <label><input type="checkbox" id="saveActivity" checked> <span data-i18n="saveActivity">Enregistrer l'activité</span></label>
-      <button onclick="clearHistory()" data-i18n="clearHistory">Effacer l'historique récent</button>
-    </div>
-
-    <div class="setting-group"><h3>À propos & Légal</h3>
-      <a class="setting-link" onclick="openPopup('aboutPopup')">À propos de Baobab Search</a>
-      <a class="setting-link" onclick="openPopup('termsPopup')">Conditions d'utilisation</a>
-      <a class="setting-link" onclick="openPopup('privacyPopup')">Politique de confidentialité</a>
-      <a class="setting-link" href="mailto:faluzodiop@gmail.com?subject=Commentaire%20Baobab%20Search">Envoyer des commentaires</a>
-      <p style="font-size:12px;color:var(--muted);margin-top:12px">Version: Baobab Search v1.0</p>
-    </div>
-
-    <button class="back" onclick="goHome()" data-i18n="back">Retour</button>
-  </main>
-
-  <div id="aboutPopup" class="popup hidden"><div class="popup-content"><button class="close" onclick="closePopup('aboutPopup')">&times;</button><h2>À propos de Baobab Search</h2><p>Bienvenue sur Baobab Search.</p><p>Baobab Search est un moteur de recherche conçu pour offrir un accès simple, rapide et efficace aux informations disponibles sur Internet.</p><h4>Contact</h4><p>E-mail : faluzodiop@gmail.com</p><p>© 2026 Baobab Search. Tous droits réservés.</p></div></div>
-
-  <div id="termsPopup" class="popup hidden"><div class="popup-content"><button class="close" onclick="closePopup('termsPopup')">&times;</button><h2>Conditions d'utilisation</h2><p><b>Dernière mise à jour : 18 juillet 2026</b></p><p>En utilisant Baobab Search, vous acceptez les présentes Conditions d'utilisation.</p></div></div>
-
-  <div id="privacyPopup" class="popup hidden"><div class="popup-content"><button class="close" onclick="closePopup('privacyPopup')">&times;</button><h2>Politique de confidentialité</h2><p><b>Dernière mise à jour : 18 juillet 2026</b></p><p>Bienvenue sur Baobab Search. Votre vie privée est importante pour nous.</p></div></div>
 
 <script src="script.js"></script>
 <script>
-function openPopup(id){document.getElementById(id).classList.remove('hidden')}
-function closePopup(id){document.getElementById(id).classList.add('hidden')}
+function goHome(){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('home').classList.add('active')}
+
+// ENREGISTRER LE SERVICE WORKER
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/service-worker.js")
+      .then((reg) => console.log("Baobab Search installée :", reg.scope))
+      .catch((err) => console.log("Erreur SW:", err));
+  });
+}
 </script>
 </body></html>
