@@ -4,7 +4,7 @@ let currentLang = localStorage.getItem('baobabLang') || 'fr-FR';
 let currentSecurity = localStorage.getItem('baobabSecurity') || 'standard';
 let currentQuery = "";
 let currentOffset = 0;
-let currentFilter = 'all'; // NOUVEAU pour les onglets
+let currentFilter = 'all';
 
 const translations = {
   'fr-FR': { searchPlaceholder: "Recher sur Baobab...", settings: "Paramètres", general: "Général", langSearch: "Langue de recherche:", security: "Sécurité", protectionMode: "Mode de protection:", strongHelp: "Mode Renforcé : Aucune donnée n'est enregistrée.", privacy: "Vie privée & Historique", saveActivity: "Enregistrer l'activité", clearHistory: "Effacer l'historique récent", appearance: "Apparence", theme: "Thème:", light: "Clair", dark: "Sombre", system: "Système", fontSize: "Taille du texte:", small: "Petit", medium: "Moyen", large: "Grand", back: "Retour", recent: "Historique récent", speakNow: "Parlez maintenant...", noResults: "Aucun résultat trouvé pour", resultsFor: "Résultats pour", next: "Suivant", prev: "Précédent", readMore: "Lire l'article complet" },
@@ -26,33 +26,22 @@ function showSuggestions() { $('#suggestions').classList.remove('hidden'); loadH
 function liveSuggest() {}
 function selectSuggest(text) { $('#searchInput').value = text; search(); }
 
-// ===== NOUVEAU : GESTION DES ONGLETS =====
+// ===== GESTION DES ONGLETS =====
 function setFilter(filter) {
   currentFilter = filter;
-  currentOffset = 0; // reset page
+  currentOffset = 0;
 
-  // active le bouton
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   event.target.classList.add('active');
 
-  if(filter === 'all') {
-    searchWikipedia(currentQuery, 0);
-  }
-  if(filter === 'images') {
-    searchWikimediaImages(currentQuery);
-  }
-  if(filter === 'videos') {
-    $('#resultsList').innerHTML = `<p style="padding:20px">Bientôt : Vidéos pour "${currentQuery}"</p>`;
-  }
-  if(filter === 'news') {
-    $('#resultsList').innerHTML = `<p style="padding:20px">Bientôt : Actualités pour "${currentQuery}"</p>`;
-  }
-  if(filter === 'maps') {
-    $('#resultsList').innerHTML = `<p style="padding:20px">Bientôt : Carte pour "${currentQuery}"</p>`;
-  }
+  if(filter === 'all') searchWikipedia(currentQuery, 0);
+  if(filter === 'images') searchWikimediaImages(currentQuery);
+  if(filter === 'videos') $('#resultsList').innerHTML = `<p style="padding:20px">Bientôt : Vidéos pour "${currentQuery}"</p>`;
+  if(filter === 'news') $('#resultsList').innerHTML = `<p style="padding:20px">Bientôt : Actualités pour "${currentQuery}"</p>`;
+  if(filter === 'maps') $('#resultsList').innerHTML = `<p style="padding:20px">Bientôt : Carte pour "${currentQuery}"</p>`;
 }
 
-// NOUVEAU : Recherche d'images Wikimedia Commons
+// ===== RECHERCHE D'IMAGES =====
 async function searchWikimediaImages(query) {
   $('#resultsList').innerHTML = `<p style="padding:20px">Recherche d'images...</p>`;
   const url = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(query)}&gsrlimit=20&prop=imageinfo&iiprop=url|thumbmime|url&iiurlwidth=300&format=json&origin=*`;
@@ -60,7 +49,6 @@ async function searchWikimediaImages(query) {
     const res = await fetch(url);
     const data = await res.json();
     const pages = data.query?.pages || {};
-
     let html = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;padding:20px">`;
     Object.values(pages).forEach(p => {
       if(p.imageinfo) {
@@ -70,23 +58,26 @@ async function searchWikimediaImages(query) {
     });
     html += `</div>`;
     $('#resultsList').innerHTML = html;
-  } catch(e) {
-    $('#resultsList').innerHTML = `<p style="padding:20px">Aucune image trouvée</p>`;
-  }
+  } catch(e) { $('#resultsList').innerHTML = `<p style="padding:20px">Aucune image trouvée</p>`; }
 }
 
-// ===== RECHERCHE WIKIPEDIA =====
+// ===== RECHERCHE PRINCIPALE - FIX ICI =====
 async function search() {
   let q = $('#searchInput')?.value || $('#searchInput2')?.value;
   if(!q) return;
+
+  q = q.trim();
   currentQuery = q;
   currentOffset = 0;
-  currentFilter = 'all'; // reset sur "Tous"
-  $('#searchInput2').value = q;
+  currentFilter = 'all';
+
+  // FIX : On synchronise les 2 inputs pour éviter le bug "La poésie"
+  if($('#searchInput')) $('#searchInput').value = q;
+  if($('#searchInput2')) $('#searchInput2').value = q;
+
   saveHistory(q);
   showPage('results');
 
-  // reset onglet actif
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   document.querySelector('.filter-btn').classList.add('active');
 
@@ -119,9 +110,7 @@ async function searchWikipedia(query, offset) {
     const detailsData = await detailsRes.json();
 
     displayResults(results, detailsData.query.pages, query, langCode, total, offset, limit);
-  } catch(e) {
-    $('#resultsList').innerHTML = `<p style="padding:20px">Erreur réseau.</p>`;
-  }
+  } catch(e) { $('#resultsList').innerHTML = `<p style="padding:20px">Erreur réseau.</p>`; }
 }
 
 function displayResults(results, pages, query, langCode, total, offset, limit) {
@@ -157,11 +146,11 @@ function changePage(direction) {
   const limit = 10;
   currentOffset += direction * limit;
   if(currentFilter === 'all') searchWikipedia(currentQuery, currentOffset);
-  if(currentFilter === 'images') searchWikimediaImages(currentQuery); // TODO: pagination images
+  if(currentFilter === 'images') searchWikimediaImages(currentQuery);
   window.scrollTo(0,0);
 }
 
-// ===== MICRO =====
+// ===== MICRO / CAMERA / PARAMETRES / HISTORIQUE =====
 let recognition;
 function startVoice() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -170,12 +159,11 @@ function startVoice() {
   recognition = new SpeechRecognition();
   recognition.lang = currentLang;
   recognition.onstart = () => { $('#searchInput').placeholder = t.speakNow; };
-  recognition.onresult = (event) => { $('#searchInput').value = event.results[0][0].transcript; $('#searchInput').placeholder = t.searchPlaceholder; search(); };
+  recognition.onresult = (event) => { $('#searchInput').value = event.results[0][0].transcript; search(); };
   recognition.onend = () => { $('#searchInput').placeholder = t.searchPlaceholder; };
   recognition.start();
 }
 
-// ===== CAMERA =====
 function startImageSearch() {
   let input = document.createElement('input');
   input.type = 'file'; input.accept = 'image/*'; input.capture = 'environment';
@@ -183,12 +171,9 @@ function startImageSearch() {
   input.click();
 }
 
-// ===== PARAMETRES =====
 function setSecurityMode(val) { currentSecurity = val; localStorage.setItem('baobabSecurity', val); $('#strongBanner').classList.toggle('hidden', val!== 'strong'); }
 function setTheme(t) { if(t === 'system') t = window.matchMedia('(prefers-color-scheme: dark)').matches? 'dark' : 'light'; document.documentElement.setAttribute('data-theme', t); }
 function setFontSize(s) { document.body.style.fontSize = s; }
-
-// ===== HISTORIQUE =====
 function saveHistory(q) { if(!$('#saveActivity')?.checked) return; let h = JSON.parse(localStorage.getItem('hist') || '[]'); localStorage.setItem('hist', JSON.stringify([q,...h.filter(x => x!== q)].slice(0,5))); loadHistory(); }
 function loadHistory() { let h = JSON.parse(localStorage.getItem('hist') || '[]'); $('#historyList').innerHTML = h.map(i => `<div class="item" onclick="selectSuggest('${i}')">${i}</div>`).join(''); }
 function clearHistory() { localStorage.removeItem('hist'); loadHistory(); alert('Historique effacé'); }
@@ -206,5 +191,5 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   if($('#securityMode')) $('#securityMode').value = currentSecurity;
   document.addEventListener('click', (e) => { if(!e.target.closest('.search-bar') &&!e.target.closest('.suggestions')) $('#suggestions').classList.add('hidden'); })
-  goHome(); // <-- J'AI ENLEVÉ LE "();" QUI FAISAIT PLANTER
+  goHome();
 });
