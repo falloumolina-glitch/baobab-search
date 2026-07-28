@@ -54,37 +54,42 @@ function setFilter(e, filter) {
   searchSERP(currentQuery, filter);
 }
 
-// FONCTION SEARXNG POUR TA CLE
+// FONCTION SERPAPI POUR TA CLE - SEULE CHOSE MODIFIEE
 async function searchSERP(query, filter = 'all') {
   const t = translations[currentLang] || translations['fr-FR'];
-  $('#resultsList').innerHTML = `<p style="padding:20px">Recherche en cours...</p>`;
+  $('#resultsList').innerHTML = `<p style="padding:20px">Recherche en cours sur Google...</p>`;
 
-  let url = `https://baresearch.org/search?format=json&q=${encodeURIComponent(query)}&key=${SERPAPI_KEY}&language=${currentLang.split('-')[0]}`;
-  if(safeSearch === 'on') url += `&safesearch=1`;
-  if(filter === 'news') url += `&category=news`;
-  if(filter === 'images') url += `&category=images`;
-  if(filter === 'videos') url += `&category=videos`;
+  let params = `engine=google&q=${encodeURIComponent(query)}&api_key=${SERPAPI_KEY}&num=10&hl=${currentLang.split('-')[0]}&gl=sn`;
+  if(safeSearch === 'on') params += `&safe=active`;
+  if(filter === 'news') params += `&tbm=nws`;
+  if(filter === 'images') params += `&tbm=isch`;
+  if(filter === 'videos') params += `&tbm=vid`;
 
   try {
+    const url = `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://serpapi.com/search.json?${params}`)}`;
     const res = await fetch(url);
+    if(!res.ok) throw new Error(`Erreur Serveur ${res.status}`);
     const data = await res.json();
+    if(data.error) throw new Error(data.error);
+
     let html = ``;
+    let results = data.organic_results || data.news_results || data.video_results || data.images_results || [];
 
-    if(data.results && data.results.length > 0) {
-      html += `<p style="padding:12px 24px;color:var(--muted)">${t.resultsFor} <b>${query}</b> • ${data.number_of_results} résultats</p>`;
+    if(results.length > 0) {
+      html += `<p style="padding:12px 24px;color:var(--muted)">${t.resultsFor} <b>${query}</b> • ${data.search_information?.total_results} résultats</p>`;
 
-      if(filter === 'images') {
+      if(filter === 'images' && data.images_results) {
         html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;padding:20px">`;
-        data.results.forEach(item => {
-          if(item.thumbnail) html += `<a href="${item.url}" target="_blank"><img src="${item.thumbnail}" style="width:100%;height:150px;object-fit:cover;border-radius:8px"></a>`;
+        data.images_results.forEach(item => {
+          if(item.thumbnail) html += `<a href="${item.link}" target="_blank"><img src="${item.thumbnail}" style="width:100%;height:150px;object-fit:cover;border-radius:8px"></a>`;
         });
         html += `</div>`;
       } else {
-        data.results.forEach(item => {
+        results.forEach(item => {
           html += `<div style="padding:12px 24px;border-bottom:1px solid var(--border)">
-            <a href="${item.url}" target="_blank" rel="noopener" style="font-size:18px;color:var(--link);text-decoration:none">${item.title}</a>
-            <div style="color:#006621;font-size:14px">${item.url}</div>
-            <div style="color:var(--text);font-size:14px;line-height:1.5">${item.content}</div>
+            <a href="${item.link}" target="_blank" rel="noopener" style="font-size:18px;color:var(--link);text-decoration:none">${item.title}</a>
+            <div style="color:#006621;font-size:14px">${item.displayed_link || item.link}</div>
+            <div style="color:var(--text);font-size:14px;line-height:1.5">${item.snippet}</div>
           </div>`;
         });
       }
@@ -94,8 +99,8 @@ async function searchSERP(query, filter = 'all') {
     $('#resultsList').innerHTML = html;
 
   } catch(e) {
-    console.error("Erreur Searxng:", e);
-    $('#resultsList').innerHTML = `<p style="padding:20px">Erreur API. Vérifie ta clé.</p>`;
+    console.error("Erreur SERPAPI:", e);
+    $('#resultsList').innerHTML = `<p style="padding:20px;color:red"><b>ERREUR:</b> ${e.message}</p>`;
   }
 }
 
