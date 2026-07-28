@@ -6,7 +6,7 @@ let safeSearch = localStorage.getItem('baobabSafe') || 'on';
 let suggestionsOn = localStorage.getItem('baobabSuggestions') || 'on';
 let currentQuery = ""; let currentOffset = 0; let currentFilter = 'all';
 
-// COLLE TA CLE QUI COMMENCE PAR e ICI
+// COLLE TA CLE SERPAPI ICI - ELLE COMMENCE PAR e
 const SERPAPI_KEY = "e0e0bc717b3670623bb222ef04013d314944985fbad36a5eac3e396ea132cc19";
 
 const translations = {
@@ -53,7 +53,7 @@ function setFilter(e, filter) {
   searchSERP(currentQuery, filter);
 }
 
-// VERSION QUI PASSE PARTOUT
+// VERSION FINALE AVEC PROXY CODETABS
 async function searchSERP(query, filter = 'all') {
   const t = translations[currentLang] || translations['fr-FR'];
   $('#resultsList').innerHTML = `<p style="padding:20px">Recherche en cours sur Google...</p>`;
@@ -72,13 +72,12 @@ async function searchSERP(query, filter = 'all') {
   if(filter === 'videos') params.append('tbm', 'vid');
 
   const serpUrl = `https://serpapi.com/search.json?${params.toString()}`;
-  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(serpUrl)}`;
+  const proxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(serpUrl)}`;
 
   try {
     const res = await fetch(proxyUrl);
     if(!res.ok) throw new Error(`Erreur Serveur ${res.status}`);
-    const wrapper = await res.json();
-    const data = JSON.parse(wrapper.contents);
+    const data = await res.json(); 
     if(data.error) throw new Error(data.error);
 
     let html = ``;
@@ -90,7 +89,7 @@ async function searchSERP(query, filter = 'all') {
       if(filter === 'images' && data.images_results) {
         html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;padding:20px">`;
         data.images_results.forEach(item => {
-          if(item.thumbnail) html += `<a href="${item.link}" target="_blank"><img src="${item.thumbnail}" style="width:100%;height:150px;object-fit:cover;border-radius:8px"></a>`;
+          if(item.thumbnail) html += `<a href="${item.link}" target="_blank"><img src="${item.thumbnail}" loading="lazy" style="width:100%;height:150px;object-fit:cover;border-radius:8px"></a>`;
         });
         html += `</div>`;
       } else {
@@ -109,7 +108,7 @@ async function searchSERP(query, filter = 'all') {
 
   } catch(e) {
     console.error("Erreur SERPAPI:", e);
-    $('#resultsList').innerHTML = `<p style="padding:20px;color:red"><b>ERREUR:</b> ${e.message}. Vérifie ta clé et internet.</p>`;
+    $('#resultsList').innerHTML = `<p style="padding:20px;color:red"><b>ERREUR:</b> ${e.message}. Vérifie ta clé.</p>`;
   }
 }
 
