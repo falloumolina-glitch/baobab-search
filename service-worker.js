@@ -1,16 +1,3 @@
-// Service Worker Baobab Search - VERSION SANS CACHE
-
-self.addEventListener('install', (event) => {
-  // Installation immédiate
-  self.skipWaiting();
-});
-
-self.addEventListener('activate', (event) => {
-  // Activation immédiate
-  event.waitUntil(self.clients.claim());
-});
-
-// Aucun cache : toutes les requêtes passent normalement
-self.addEventListener('fetch', (event) => {
-  return;
-});
+self.addEventListener('install', e => self.skipWaiting());
+self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
+self.addEventListener('fetch', e => {}); // NE FAIT RIEN = NE CACHE RIEN
