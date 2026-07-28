@@ -10,7 +10,7 @@ let currentQuery = ""; let currentOffset = 0; let currentFilter = 'all';
 const SERPAPI_KEY = "e0e0bc717b3670623bb222ef04013d314944985fbad36a5eac3e396ea132cc19";
 
 const translations = {
-  'fr-FR': { searchPlaceholder: "Rechercher sur Baobab...", settings: "Paramètres", general: "Général", langSearch: "Langue de recherche:", security: "Sécurité", protectionMode: "Mode de protection:", saveActivity: "Enregistrer l'activité", clearHistory: "Effacer l'historique récent", back: "Retour", recent: "Historique récent", speakNow: "Parlez maintenant...", noResults: "Aucun résultat trouvé pour", resultsFor: "Résultats pour", next: "Suivant", prev: "Précédent", readMore: "Lire l'article complet", all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", maps: "Maps" },
+  'fr-FR': { searchPlaceholder: "Recher sur Baobab...", settings: "Paramètres", general: "Général", langSearch: "Langue de recherche:", security: "Sécurité", protectionMode: "Mode de protection:", saveActivity: "Enregistrer l'activité", clearHistory: "Effacer l'historique récent", back: "Retour", recent: "Historique récent", speakNow: "Parlez maintenant...", noResults: "Aucun résultat trouvé pour", resultsFor: "Résultats pour", next: "Suivant", prev: "Précédent", readMore: "Lire l'article complet", all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", maps: "Maps" },
   'en-US': { searchPlaceholder: "Search on Baobab...", settings: "Settings", general: "General", langSearch: "Search language:", security: "Security", protectionMode: "Protection mode:", saveActivity: "Save activity", clearHistory: "Clear recent history", back: "Back", recent: "Recent", speakNow: "Speak now...", noResults: "No results found for", resultsFor: "Results for", next: "Next", prev: "Previous", readMore: "Read full article", all: "All", images: "Images", videos: "Videos", news: "News", maps: "Maps" }
 };
 
@@ -54,19 +54,19 @@ function setFilter(e, filter) {
   searchSERP(currentQuery, filter);
 }
 
-// FONCTION SERPAPI - SEULE CHOSE MODIFIEE
 async function searchSERP(query, filter = 'all') {
   const t = translations[currentLang] || translations['fr-FR'];
   $('#resultsList').innerHTML = `<p style="padding:20px">Recherche en cours sur Google...</p>`;
 
-  let params = `engine=google&q=${encodeURIComponent(query)}&api_key=${SERPAPI_KEY}&num=10&hl=${currentLang.split('-')[0]}&gl=sn`;
+  let params = `q=${encodeURIComponent(query)}&api_key=${SERPAPI_KEY}&hl=${currentLang.split('-')[0]}&gl=sn`;
   if(safeSearch === 'on') params += `&safe=active`;
   if(filter === 'news') params += `&tbm=nws`;
   if(filter === 'images') params += `&tbm=isch`;
   if(filter === 'videos') params += `&tbm=vid`;
 
   try {
-    const url = `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://serpapi.com/search.json?${params}`)}`;
+    // ON PASSE PAR LE PROXY PHP MAINTENANT
+    const url = `proxy.php?${params}`;
     const res = await fetch(url);
     if(!res.ok) throw new Error(`Erreur Serveur ${res.status}`);
     const data = await res.json();
