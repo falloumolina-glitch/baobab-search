@@ -6,9 +6,12 @@ let safeSearch = localStorage.getItem('baobabSafe') || 'on';
 let suggestionsOn = localStorage.getItem('baobabSuggestions') || 'on';
 let currentQuery = ""; let currentOffset = 0; let currentFilter = 'all';
 
+// 1. COLLE TA CLE SERPAPI ICI SEULEMENT
+const SERPAPI_KEY = "TA_CLE_ICI";
+
 const translations = {
-  'fr-FR': { searchPlaceholder: "Rechercher sur Baobab...", settings: "Paramètres", general: "Général", langSearch: "Langue de recherche:", security: "Sécurité", protectionMode: "Mode de protection:", saveActivity: "Enregistrer l'activité", clearHistory: "Effacer l'historique récent", back: "Retour", recent: "Historique récent", speakNow: "Parlez maintenant...", noResults: "Aucun résultat trouvé pour", resultsFor: "Résultats pour", next: "Suivant", prev: "Précédent", readMore: "Lire l'article complet", all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", maps: "Maps" },
-  'en-US': { searchPlaceholder: "Search on Baobab...", settings: "Settings", general: "General", langSearch: "Search language:", security: "Security", protectionMode: "Protection mode:", saveActivity: "Save activity", clearHistory: "Clear recent history", back: "Back", recent: "Recent", speakNow: "Speak now...", noResults: "No results found for", resultsFor: "Results for", next: "Next", prev: "Previous", readMore: "Read full article", all: "All", images: "Images", videos: "Videos", news: "News", maps: "Maps" }
+  'fr-FR': { searchPlaceholder: "Recher sur Baobab...", settings: "Paramètres", general: "Général", langSearch: "Langue de recherche:", security: "Sécurité", protectionMode: "Mode de protection:", saveActivity: "Enregistrer l'activité", clearHistory: "Effacer l'historique récent", back: "Retour", recent: "Historique récent", speakNow: "Parlez maintenant...", noResults: "Aucun résultat trouvé pour", resultsFor: "Résultats pour", next: "Suivant", prev: "Précédent", readMore: "Lire l'article complet", all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", maps: "Maps", aiAnswer: "Réponse IA" },
+  'en-US': { searchPlaceholder: "Search on Baobab...", settings: "Settings", general: "General", langSearch: "Search language:", security: "Security", protectionMode: "Protection mode:", saveActivity: "Save activity", clearHistory: "Clear recent history", back: "Back", recent: "Recent", speakNow: "Speak now...", noResults: "No results found for", resultsFor: "Results for", next: "Next", prev: "Previous", readMore: "Read full article", all: "All", images: "Images", videos: "Videos", news: "News", maps: "Maps", aiAnswer: "AI Answer" }
 };
 
 function applyTranslations() {
@@ -48,72 +51,64 @@ function setFilter(e, filter) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   e.target.classList.add('active');
   if(!currentQuery) return;
-  $('#resultsList').innerHTML = `<p style="padding:20px">Recherche en cours...</p>`;
-  if(filter === 'all') runAllSearch(currentQuery);
-  if(filter === 'images') searchWikimediaImages(currentQuery);
-  if(filter === 'videos') searchVideos(currentQuery);
-  if(filter === 'news') searchNews(currentQuery, true);
-  if(filter === 'maps') searchMaps(currentQuery);
+  searchSERP(currentQuery, filter);
 }
 
-async function runAllSearch(query) {
-  $('#resultsList').innerHTML = ``; // on vide
-  await Promise.all([ // on lance en parallèle
-    searchNews(query, false),
-    searchWikipedia(query, 0)
-  ]);
-}
-
-async function searchWikimediaImages(query) {
-  $('#resultsList').innerHTML = `<p style="padding:20px">Recherche d'images...</p>`;
-  const url = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(query)}&gsrlimit=20&prop=imageinfo&iiprop=url&iiurlwidth=300&format=json&origin=*`;
-  try {
-    const res = await fetch(url); const data = await res.json(); const pages = data.query?.pages || {};
-    if(Object.keys(pages).length === 0) { $('#resultsList').innerHTML = `<p style="padding:20px">Aucune image trouvée</p>`; return; }
-    let html = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;padding:20px">`;
-    Object.values(pages).forEach(p => { if(p.imageinfo) { const imgUrl = p.imageinfo[0].thumburl; html += `<a href="${p.imageinfo[0].url}" target="_blank" rel="noopener"><img src="${imgUrl}" style="width:100%;height:150px;object-fit:cover;border-radius:8px"></a>`; } });
-    html += `</div>`; $('#resultsList').innerHTML = html;
-  } catch(e) { $('#resultsList').innerHTML = `<p style="padding:20px">Erreur images</p>`; }
-}
-function searchVideos(query) { $('#resultsList').innerHTML = `<iframe width="100%" height="600" src="https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(query)}" frameborder="0" allowfullscreen style="padding:0 24px"></iframe>`; }
-
-// CORRIGE : Plus d'iframe. On fait des vrais liens cliquables
-async function searchNews(query, onlyNews = false) {
+// 2. NOUVELLE FONCTION SERPAPI - REMPLACE TOUT LE RESTE
+async function searchSERP(query, filter = 'all') {
   const t = translations[currentLang] || translations['fr-FR'];
-  if(onlyNews) $('#resultsList').innerHTML = `<p style="padding:20px">Chargement des actualités...</p>`;
+  $('#resultsList').innerHTML = `<p style="padding:20px">Recherche en cours sur Google...</p>`;
 
-  const hl = currentLang.startsWith('fr')? 'fr' : 'en';
-  const gl = currentLang.startsWith('fr')? 'FR' : 'US';
-  const newsURL = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=${hl}&gl=${gl}&ceid=${gl}:${hl}`;
+  let params = `q=${encodeURIComponent(query)}&api_key=${SERPAPI_KEY}&engine=google&num=20&hl=${currentLang.split('-')[0]}&gl=sn`;
+  if(safeSearch === 'on') params += `&safe=active`;
+
+  if(filter === 'news') params += `&tbm=nws`;
+  if(filter === 'images') params += `&tbm=isch`;
+  if(filter === 'videos') params += `&tbm=vid`;
 
   try {
-    const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(newsURL)}`);
-    const data = await response.json();
+    const res = await fetch(`https://serpapi.com/search.json?${params}`);
+    const data = await res.json();
+    let html = ``;
 
-    if(data.status === 'ok' && data.items && data.items.length > 0){
-        let html = `<h3 style="padding:20px 24px 0 24px">📰 ${t.news} pour "${query}"</h3>`;
-        data.items.slice(0, onlyNews? 20 : 5).forEach(item => {
-            const pubDate = new Date(item.pubDate).toLocaleDateString(currentLang);
-            html += `
-            <div style="padding:12px 24px;border-bottom:1px solid var(--border)">
-                <div style="font-size:12px; color:var(--muted)">${item.author || 'Source'} • ${pubDate}</div>
-                <a href="${item.link}" target="_blank" rel="noopener" style="font-size:18px; font-weight:500; text-decoration:none; color:var(--link)">${item.title}</a>
-                <p style="font-size:14px; color:var(--muted); margin:4px 0">${item.description.replace(/<[^>]*>/g, '').substring(0,180)}...</p>
-            </div>
-            `;
-        });
-        if(onlyNews) $('#resultsList').innerHTML = html;
-        else $('#resultsList').insertAdjacentHTML('afterbegin', html);
-    } else if(onlyNews) {
-        $('#resultsList').innerHTML = `<p style="padding:20px">${t.noResults} "${query}"</p>`;
+    // BLOC REPONSE IA EN HAUT
+    if(data.answer_box && filter === 'all') {
+      html += `<div id="aiBlock" style="margin:20px 24px; padding:16px; background:var(--card); border:1px solid var(--border); border-radius:12px">
+        <h3 style="margin:0 0 8px 0">🤖 ${t.aiAnswer}</h3>
+        <p style="margin:0">${data.answer_box.answer || data.answer_box.snippet}</p>
+        <a href="${data.answer_box.link}" target="_blank" style="font-size:12px;color:var(--muted)">Source</a>
+      </div>`;
     }
+
+    // BLOC RESULTATS
+    let results = data.organic_results || data.news_results || data.video_results || data.images_results || [];
+
+    if(results.length > 0) {
+      if(filter === 'all') html += `<p style="padding:12px 24px;color:var(--muted)">${t.resultsFor} <b>${query}</b> • ${data.search_information?.total_results} résultats</p>`;
+
+      if(filter === 'images') {
+        html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;padding:20px">`;
+        results.forEach(item => { html += `<a href="${item.original}" target="_blank"><img src="${item.thumbnail}" style="width:100%;height:150px;object-fit:cover;border-radius:8px"></a>`; });
+        html += `</div>`;
+      } else {
+        results.forEach(item => {
+          html += `<div style="padding:12px 24px;border-bottom:1px solid var(--border)">
+            <a href="${item.link || item.url}" target="_blank" rel="noopener" style="font-size:18px;color:var(--link);text-decoration:none">${item.title}</a>
+            <div style="color:#006621;font-size:14px">${item.displayed_link || item.link}</div>
+            <div style="color:var(--text);font-size:14px;line-height:1.5">${item.snippet || item.description}</div>
+          </div>`;
+        });
+      }
+    } else {
+      html += `<p style="padding:20px">${t.noResults} "${query}"</p>`;
+    }
+    $('#resultsList').innerHTML = html;
+
   } catch(e) {
-    console.log("Erreur News:", e);
-    if(onlyNews) $('#resultsList').innerHTML = `<p style="padding:20px">Erreur lors du chargement des actualités.</p>`;
+    console.error("Erreur SERPAPI:", e);
+    $('#resultsList').innerHTML = `<p style="padding:20px">Erreur API. Vérifie ta clé et tes crédits.</p>`;
   }
 }
-
-function searchMaps(query) { $('#resultsList').innerHTML = `<iframe width="100%" height="600" src="https://www.google.com/maps?q=${encodeURIComponent(query)}&output=embed" frameborder="0" style="padding:0 24px"></iframe>`; }
 
 async function search() {
   let q = $('#results').classList.contains('active')? $('#searchInput2').value : $('#searchInput').value;
@@ -124,60 +119,9 @@ async function search() {
   saveHistory(q); showPage('results');
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   document.querySelector('.filter-btn').classList.add('active');
-  $('#resultsList').innerHTML = `<p style="padding:20px">Recherche en cours...</p>`;
-  $('#aiBlock').classList.remove('hidden');
-  $('#aiText').innerHTML = `Recherche de la réponse...`;
 
-  runAllSearch(q); // lance Actu + Wiki
-  getAIAnswer(q);
+  searchSERP(q, 'all');
 }
-
-async function getAIAnswer(query) {
-  const langCode = currentLang.startsWith('fr')? 'fr' : 'en';
-  const url = `https://${langCode}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&srlimit=3&format=json&origin=*`;
-  try {
-    const res = await fetch(url); const data = await res.json(); const results = data.query.search;
-    if(results.length === 0) { $('#aiText').innerHTML = `Je n'ai rien trouvé sur "${query}".`; return; }
-    let summary = results.map(r => r.snippet.replace(/<[^>]*>/g, '')).join(' ');
-    summary = summary.substring(0, 450) + '...';
-    $('#aiText').innerHTML = `${summary}<div style="margin-top:8px;font-size:12px;color:var(--muted)">Source: Wikipedia</div>`;
-  } catch(e) { $('#aiText').innerHTML = `Impossible de générer un aperçu IA.`; }
-}
-
-async function searchWikipedia(query, offset) {
-  const t = translations[currentLang] || translations['fr-FR'];
-  const langCode = currentLang.startsWith('fr')? 'fr' : 'en';
-  const limit = 10;
-  const url = `https://${langCode}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&srlimit=${limit}&sroffset=${offset}&format=json&origin=*`;
-  try {
-    const res = await fetch(url); const data = await res.json(); const results = data.query.search; const total = data.query.searchinfo.totalhits;
-    if(results.length === 0 && offset === 0) { $('#resultsList').innerHTML += `<p style="padding:20px">${t.noResults} "${query}"</p>`; return; }
-    const pageIds = results.map(r => r.pageid).join('|');
-    const detailsUrl = `https://${langCode}.wikipedia.org/w/api.php?action=query&pageids=${pageIds}&prop=pageimages|info&inprop=url&pithumbsize=150&format=json&origin=*`;
-    const detailsRes = await fetch(detailsUrl); const detailsData = await detailsRes.json();
-    displayResults(results, detailsData.query.pages, query, total, offset, limit);
-  } catch(e) { $('#resultsList').innerHTML += `<p style="padding:20px">Erreur réseau.</p>`; }
-}
-
-function displayResults(results, pages, query, total, offset, limit) {
-  const t = translations[currentLang] || translations['fr-FR'];
-  let html = ``;
-  if(offset === 0) {
-    html += `<p style="padding:12px 24px;color:var(--muted)">📖 ${t.resultsFor} <b>${query}</b> - ${total} résultats Wikipedia</p>`;
-  }
-  html += results.map(r => {
-    const page = pages[r.pageid];
-    const img = page.thumbnail? `<img src="${page.thumbnail.source}" style="width:120px;height:90px;object-fit:cover;border-radius:8px;margin-right:12px">` : '';
-    const url = page.fullurl;
-    return `<div style="display:flex;gap:12px;padding:12px 24px;border-bottom:1px solid var(--border)">${img}<div style="flex:1"><a href="${url}" target="_blank" rel="noopener" style="font-size:18px;color:var(--link);text-decoration:none">${r.title}</a><div style="color:#006621;font-size:14px">${url}</div><div style="color:var(--text);font-size:14px;line-height:1.5">${r.snippet.replace(/<[^>]*>/g, '')}...</div><a href="${url}" target="_blank" rel="noopener" style="color:var(--link);font-size:13px">${t.readMore} →</a></div></div>`;
-  }).join('');
-  html += `<div style="display:flex;gap:10px;justify-content:center;padding:20px">`;
-  if(offset > 0) html += `<button onclick="changePage(-1)" style="padding:8px 16px;cursor:pointer;border:1px solid var(--border);border-radius:4px;background:var(--card);color:var(--text)">${t.prev}</button>`;
-  if(offset + limit < total) html += `<button onclick="changePage(1)" style="padding:8px 16px;cursor:pointer;border:1px solid var(--border);border-radius:4px;background:var(--card);color:var(--text)">${t.next}</button>`;
-  html += `</div>`;
-  $('#resultsList').insertAdjacentHTML('beforeend', html);
-}
-function changePage(direction) { const limit = 10; currentOffset += direction * limit; if(currentFilter === 'all') searchWikipedia(currentQuery, currentOffset); window.scrollTo(0,0); }
 
 let recognition;
 function startVoice() {
