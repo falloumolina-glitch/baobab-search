@@ -84,7 +84,7 @@ function setFilter(e, filter) {
   searchBaobab(currentQuery);
 }
 
-// VERSION COMPLETE AVEC BING COMME SOURCE
+// VERSION COMPLETE 4 SOURCES
 async function searchBaobab(query) {
   const t = translations[currentLang] || translations['fr-FR'];
   $('#resultsList').innerHTML = `<p style="padding:20px;text-align:center">Recherche de "${query}" sur Baobab...</p>`;
@@ -92,7 +92,7 @@ async function searchBaobab(query) {
   let html = "";
   let allResults = [];
 
-  // 1. APERÇU BAOBAB IA - WIKIPEDIA
+  // 1. APERÇU IA - WIKIPEDIA
   try {
     const wiki = await fetch(`https://fr.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`);
     if(wiki.ok){
@@ -109,25 +109,25 @@ async function searchBaobab(query) {
 
   html += `<p style="padding:12px 24px;color:var(--muted)">${t.resultsFor} <b>${query}</b></p>`;
 
-  // 2. SOURCE BING = DUCKDUCKGO
+  // 2. ACTU DU JOUR - GNEWS
+  try {
+    const news = await fetch(`https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=fr&country=sn&max=5&token=demo`);
+    const n = await news.json();
+    if(n.articles) n.articles.forEach(item => {
+      allResults.push({title: `📰 ${item.title}`, url: item.url, content: item.description, source: 'Actu'});
+    });
+  }catch(e){}
+
+  // 3. WEB - BING VIA DDG
   try {
     const ddg = await fetch(`https://api.duckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`);
     const d = await ddg.json();
-
-    // Résultat principal Bing
-    if(d.AbstractText && d.AbstractURL){
-      allResults.push({title: `⚡ ${d.Heading}`, url: d.AbstractURL, content: d.AbstractText, source: 'Bing'});
-    }
-
-    // 15 autres résultats Bing
-    d.RelatedTopics.slice(0,15).forEach(item => {
-      if(item.FirstURL) allResults.push({title: item.Text.split(' - ')[0], url: item.FirstURL, content: item.Text, source: 'Bing'});
+    d.RelatedTopics.slice(0,12).forEach(item => {
+      if(item.FirstURL) allResults.push({title: item.Text.split(' - ')[0], url: item.FirstURL, content: item.Text, source: 'Web'});
     });
-  }catch(e){
-    console.log("Erreur Bing", e)
-  }
+  }catch(e){}
 
-  // 3. WIKIDATA
+  // 4. WIKIDATA
   try {
     const wd = await fetch(`https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(query)}&language=fr&limit=3&format=json&origin=*`);
     const wdData = await wd.json();
@@ -136,7 +136,7 @@ async function searchBaobab(query) {
     });
   }catch(e){}
 
-  // 4. AFFICHAGE 100% SUR BAOBAB
+  // AFFICHAGE
   if(allResults.length > 0){
     allResults.forEach(item => {
       html += `<div style="padding:14px 24px;border-bottom:1px solid var(--border)">
