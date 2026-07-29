@@ -8,7 +8,7 @@ let currentQuery = "";
 let currentFilter = 'all';
 
 const translations = {
-  'fr-FR': { searchPlaceholder: "Rechercher sur Baobab...", settings: "Paramètres", general: "Général", langSearch: "Langue de recherche:", security: "Sécurité", protectionMode: "Mode de protection:", saveActivity: "Enregistrer l'activité", clearHistory: "Effacer l'historique récent", back: "Retour", recent: "Historique récent", speakNow: "Parlez maintenant...", noResults: "Aucun résultat trouvé pour", resultsFor: "Résultats pour", next: "Suivant", prev: "Précédent", readMore: "Lire l'article complet", all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", maps: "Maps" },
+  'fr-FR': { searchPlaceholder: "Recher sur Baobab...", settings: "Paramètres", general: "Général", langSearch: "Langue de recherche:", security: "Sécurité", protectionMode: "Mode de protection:", saveActivity: "Enregistrer l'activité", clearHistory: "Effacer l'historique récent", back: "Retour", recent: "Historique récent", speakNow: "Parlez maintenant...", noResults: "Aucun résultat trouvé pour", resultsFor: "Résultats pour", next: "Suivant", prev: "Précédent", readMore: "Lire l'article complet", all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", maps: "Maps" },
   'en-US': { searchPlaceholder: "Search on Baobab...", settings: "Settings", general: "General", langSearch: "Search language:", security: "Security", protectionMode: "Protection mode:", saveActivity: "Save activity", clearHistory: "Clear recent history", back: "Back", recent: "Recent", speakNow: "Speak now...", noResults: "No results found for", resultsFor: "Results for", next: "Next", prev: "Previous", readMore: "Read full article", all: "All", images: "Images", videos: "Videos", news: "News", maps: "Maps" }
 };
 
@@ -84,7 +84,7 @@ function setFilter(e, filter) {
   searchBaobab(currentQuery);
 }
 
-// VERSION 100% SUR TON MOTEUR - SANS REDIRECTION
+// VERSION COMPLETE AVEC BING COMME SOURCE
 async function searchBaobab(query) {
   const t = translations[currentLang] || translations['fr-FR'];
   $('#resultsList').innerHTML = `<p style="padding:20px;text-align:center">Recherche de "${query}" sur Baobab...</p>`;
@@ -92,7 +92,7 @@ async function searchBaobab(query) {
   let html = "";
   let allResults = [];
 
-  // 1. APERÇU BAOBAB IA
+  // 1. APERÇU BAOBAB IA - WIKIPEDIA
   try {
     const wiki = await fetch(`https://fr.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`);
     if(wiki.ok){
@@ -109,31 +109,41 @@ async function searchBaobab(query) {
 
   html += `<p style="padding:12px 24px;color:var(--muted)">${t.resultsFor} <b>${query}</b></p>`;
 
-  // 2. WIKIDATA
+  // 2. SOURCE BING = DUCKDUCKGO
+  try {
+    const ddg = await fetch(`https://api.duckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`);
+    const d = await ddg.json();
+
+    // Résultat principal Bing
+    if(d.AbstractText && d.AbstractURL){
+      allResults.push({title: `⚡ ${d.Heading}`, url: d.AbstractURL, content: d.AbstractText, source: 'Bing'});
+    }
+
+    // 15 autres résultats Bing
+    d.RelatedTopics.slice(0,15).forEach(item => {
+      if(item.FirstURL) allResults.push({title: item.Text.split(' - ')[0], url: item.FirstURL, content: item.Text, source: 'Bing'});
+    });
+  }catch(e){
+    console.log("Erreur Bing", e)
+  }
+
+  // 3. WIKIDATA
   try {
     const wd = await fetch(`https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(query)}&language=fr&limit=3&format=json&origin=*`);
     const wdData = await wd.json();
     wdData.search.forEach(item => {
-      allResults.push({title: `🏷️ ${item.label}`, url: `https://www.wikidata.org/wiki/${item.id}`, content: item.description || 'Fiche d\'information'});
+      allResults.push({title: `🏷️ ${item.label}`, url: `https://www.wikidata.org/wiki/${item.id}`, content: item.description || 'Fiche d\'information', source: 'Wikidata'});
     });
   }catch(e){}
 
-  // 3. DUCKDUCKGO = 15 RESULTATS COMME GOOGLE
-  try {
-    const ddg = await fetch(`https://api.duckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`);
-    const d = await ddg.json();
-    d.RelatedTopics.slice(0,15).forEach(item => {
-      if(item.FirstURL) allResults.push({title: item.Text.split(' - ')[0], url: item.FirstURL, content: item.Text});
-    });
-  }catch(e){}
-
-  // 4. AFFICHAGE ICI MEME
+  // 4. AFFICHAGE 100% SUR BAOBAB
   if(allResults.length > 0){
     allResults.forEach(item => {
       html += `<div style="padding:14px 24px;border-bottom:1px solid var(--border)">
         <a href="${item.url}" target="_blank" style="font-size:20px;color:#8b5cf6;text-decoration:none;line-height:1.3;font-weight:500">${item.title}</a>
         <div style="color:#4ade80;font-size:14px;margin:2px 0;word-break:break-all">${item.url}</div>
         <div style="color:var(--text);font-size:14px;line-height:1.58">${item.content}</div>
+        <div style="color:#70757a;font-size:12px;margin-top:4px">Source: ${item.source}</div>
       </div>`;
     });
   } else {
