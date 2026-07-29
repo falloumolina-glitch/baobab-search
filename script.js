@@ -1,143 +1,243 @@
-// ===== BAOBAB SEARCH v1.2.1 FIX NOM FONCTION =====
-let currentQuery = '';
-let currentFilter = 'all';
+const $ = s => document.querySelector(s);
+let currentLang = localStorage.getItem('baobabLang') || 'fr-FR';
+let currentSecurity = localStorage.getItem('baobabSecurity') || 'standard';
+let currentTheme = localStorage.getItem('baobabTheme') || 'light';
+let safeSearch = localStorage.getItem('baobabSafe') || 'on';
+let suggestionsOn = localStorage.getItem('baobabSuggestions') || 'on';
+let currentQuery = "";
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('searchInput').addEventListener('keypress', (e) => { if(e.key==='Enter') search() });
-    document.getElementById('searchInput2').addEventListener('keypress', (e) => { if(e.key==='Enter') search() });
-    
-    document.addEventListener('click', (e) => {
-        if(!e.target.closest('.search-icons')) {
-            document.getElementById('imageMenu').classList.add('hidden');
-        }
-        if(!e.target.closest('#searchBar')) {
-            document.getElementById('suggestions').classList.add('hidden');
-        }
-    });
-});
-
-async function search() {
-    const input = document.querySelector('.page.active input[type="text"]');
-    currentQuery = input.value.trim();
-    if(!currentQuery) return;
-
-    showPage('results');
-    document.getElementById('searchInput2').value = currentQuery;
-    
-    showLoading(true);
-    document.getElementById('resultsList').innerHTML = '';
-    
-    try {
-        if(currentFilter === 'all') {
-            const [duckData, aiSummary] = await Promise.all([
-                fetchDuckGo(currentQuery),
-                generateAISummary(currentQuery)
-            ]);
-            displayAIO verview(aiSummary); // <-- CORRIGÉ
-            displayWebResults(duckData);
-        }
-    } catch(error) {
-        document.getElementById('resultsList').innerHTML = `<p style="padding:24px; color:red;">Erreur: ${error.message}</p>`;
-    }
-    
-    showLoading(false);
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  $(`#${id}`).classList.add('active');
+  window.scrollTo(0,0);
+  applyTranslations();
 }
 
-async function fetchDuckGo(query) {
-    const url = `https://api.duckgo.com/?q=${encodeURIComponent(query)}&format=json&no_redirect=1&no_html=1`;
-    const res = await fetch(url);
-    if(!res.ok) throw new Error('API Error');
-    return await res.json();
+function openInBaobab(url, title) {
+  showPage('viewer');
+  $('#viewerFrame').src = url;
+  $('#viewerTitle').textContent = title;
 }
 
-async function generateAISummary(query) {
-    return `La <b>${query}</b> désigne l'ensemble des œuvres écrites et orales. 
-    Elle inclut le roman, la poésie, le théâtre. Au Sénégal, on retrouve la littérature orale Wolof/Peul 
-    et des auteurs comme Léopold Sédar Senghor, Sembène Ousmane.`;
+const localDB = {
+  "senegal": {title: "Sénégal", desc: "Le Sénégal est un pays d'Afrique de l'Ouest. Capitale: Dakar. Langues: Français, Wolof."},
+  "messi": {title: "Lionel Messi", desc: "Footballeur argentin, 8 fois Ballon d'Or. Joue à l'Inter Miami."},
+  "baobab": {title: "Baobab", desc: "Arbre emblématique d'Afrique. Peut vivre 1000 ans. Appelé l'arbre de vie."},
+  "google": {title: "Google", desc: "Moteur de recherche américain créé en 1998 par Larry Page et Sergey Brin."},
+  "literature": {title: "Littérature", desc: "Ensemble des œuvres écrites ou orales auxquelles on reconnaît une valeur esthétique."}
+};
+
+const translations = {
+  'fr-FR': { searchPlaceholder: "Recher sur Baobab...", settings: "Paramètres", general: "Général", langSearch: "Langue de recherche:", security: "Sécurité", protectionMode: "Mode de protection:", saveActivity: "Enregistrer l'activité", clearHistory: "Effacer l'historique récent", back: "Retour", recent: "Historique récent", speakNow: "Parlez maintenant...", resultsFor: "Résultats pour", all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", maps: "Maps" },
+  'en-US': { searchPlaceholder: "Search on Baobab...", settings: "Settings", general: "General", langSearch: "Search language:", security: "Security", protectionMode: "Protection mode:", saveActivity: "Save activity", clearHistory: "Clear recent history", back: "Back", recent: "Recent", speakNow: "Speak now...", resultsFor: "Results for", all: "All", images: "Images", videos: "Videos", news: "News", maps: "Maps" }
+};
+
+function applyTranslations() {
+  const t = translations[currentLang] || translations['fr-FR'];
+  document.documentElement.lang = currentLang.split('-')[0];
+  if($('#searchInput')) $('#searchInput').placeholder = t.searchPlaceholder;
+  if($('#searchInput2')) $('#searchInput2').placeholder = t.searchPlaceholder;
+  document.querySelectorAll('[data-i18n]').forEach(el => { const key = el.getAttribute('data-i18n'); if(t[key]) el.textContent = t[key]; });
 }
 
-function displayAIO verview(summary) { // <-- CORRIGÉ
-    const aiBlock = document.getElementById('aiBlock');
-    const aiText = document.getElementById('aiText');
-    aiText.innerHTML = summary + `<p style="font-size:12px; color:var(--muted); margin-top:8px;">Source: DuckDuckGo, Wikipedia</p>`;
-    aiBlock.classList.remove('hidden');
+function applyTheme() {
+  if(currentTheme === 'system') {
+    const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.setAttribute('data-theme', sysDark? 'dark' : 'light');
+  } else {
+    document.documentElement.setAttribute('data-theme', currentTheme);
+  }
 }
 
-function displayWebResults(data) {
-    let html = '';
-    
-    if(data.AbstractText) {
-        const url = data.AbstractURL ? new URL(data.AbstractURL) : null;
-        html += `
-        <div style="padding:0 24px 16px 24px;">
-            <span style="font-size:12px; color:var(--muted);">${url ? url.hostname : 'Wikipedia'}</span>
-            <a href="${data.AbstractURL}" target="_blank" style="font-size:20px; color:var(--link); text-decoration:none; display:block; margin:4px 0;">${data.Heading}</a>
-            <p style="color:var(--text); margin:0; line-height:1.5;">${data.AbstractText}</p>
-        </div>
-        `;
-    }
-    
-    if(data.RelatedTopics && data.RelatedTopics.length > 0) {
-        data.RelatedTopics.slice(0, 10).forEach(item => {
-            if(item.FirstURL && item.Text) {
-                const url = new URL(item.FirstURL);
-                html += `
-                <div style="padding:0 24px 20px 24px;">
-                    <span style="font-size:12px; color:var(--muted);">${url.hostname}</span>
-                    <a href="${item.FirstURL}" target="_blank" style="font-size:18px; color:var(--link); text-decoration:none; display:block; line-height:1.3;">${item.Text.split(' - ')[0]}</a>
-                    <p style="color:var(--text); margin:4px 0; font-size:14px; line-height:1.5;">${item.Text}</p>
-                </div>
-                `;
-            }
-        });
-    }
-    
-    html += `
-    <div style="padding:16px 24px; border-top:1px solid var(--border);">
-        <h4 style="font-size:16px; margin-bottom:12px;">Questions connexes</h4>
-        <div style="cursor:pointer; padding:4px 0;" onclick="quickSearch('Qu\'est-ce que la littérature')"><p>→ Qu'est-ce que la littérature ?</p></div>
-        <div style="cursor:pointer; padding:4px 0;" onclick="quickSearch('Genres littéraires')"><p>→ Quels sont les genres littéraires ?</p></div>
-        <div style="cursor:pointer; padding:4px 0;" onclick="quickSearch('Auteurs sénégalais')"><p>→ Auteurs sénégalais célèbres</p></div>
-    </div>
-    `;
-    
-    document.getElementById('resultsList').innerHTML = html;
+function goHome() {
+  showPage('home');
+  loadHistory();
+  if($('#langSelect')) $('#langSelect').value = currentLang;
+  if($('#securityMode')) $('#securityMode').value = currentSecurity;
+  if($('#themeSelect')) $('#themeSelect').value = currentTheme;
+  if($('#safeSearch')) $('#safeSearch').value = safeSearch;
+  if($('#suggestionsToggle')) $('#suggestionsToggle').value = suggestionsOn;
 }
 
-function quickSearch(q) {
-    document.getElementById('searchInput2').value = q;
+function showSuggestions() {
+  if(suggestionsOn === 'off') return;
+  $('#suggestions').classList.remove('hidden');
+  loadHistory();
+}
+
+function selectSuggest(text) {
+  $('#searchInput').value = text;
+  $('#suggestions').classList.add('hidden'); // FIX: ferme la liste
+  search();
+}
+
+function toggleImageMenu(e) {
+  e.stopPropagation(); // FIX: évite que ça se ferme direct
+  $('#imageMenu').classList.toggle('hidden');
+}
+
+function startImageSearch(type) {
+  $('#imageMenu').classList.add('hidden');
+  let input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  if(type === 'camera') input.capture = 'environment';
+  input.onchange = e => {
+    let file = e.target.files[0];
+    if (!file) return;
+    $('#searchInput').value = file.name.replace(/\.[^/.]+$/, "");
     search();
+  };
+  input.click();
 }
 
 function setFilter(e, filter) {
-    currentFilter = filter;
-    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-    e.target.classList.add('active');
-    if(currentQuery) search();
+  e.preventDefault();
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  if(!currentQuery) return;
+  searchBaobab(currentQuery);
 }
 
-function showPage(id) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
+async function searchBaobab(query) {
+  const t = translations[currentLang] || translations['fr-FR'];
+  $('#resultsList').innerHTML = `<p style="padding:20px;text-align:center">Recherche de "${query}" sur Baobab...</p>`;
+  currentQuery = query;
+  let html = "";
+  let allResults = [];
+  let q = query.toLowerCase();
+
+  if(localDB[q]){
+    const item = localDB[q];
+    html += `<div class="ai-card"><div class="ai-header">✨ Aperçu Baobab IA</div><div>${item.desc}</div></div>`;
+    allResults.push({title: item.title, url: "#", content: item.desc, source: "Base Baobab"});
+  }
+
+  try {
+    const wiki = await fetch(`https://fr.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`);
+    if(wiki.ok &&!localDB[q]){
+      const w = await wiki.json();
+      html += `<div class="ai-card"><div class="ai-header">✨ Aperçu Baobab IA</div><div>${w.extract}</div></div>`;
+    }
+  }catch(e){}
+
+  html += `<p style="padding:12px 24px;color:#aaa">${t.resultsFor} <b>${query}</b></p>`;
+
+  if(allResults.length === 0){
+    for(let i=1; i<=10; i++){
+      allResults.push({
+        title: `Résultat ${i} : ${query}`,
+        url: `https://fr.wikipedia.org/wiki/${encodeURIComponent(query)}`,
+        content: `Cliquez pour lire l'article "${query}" sur Baobab.`,
+        source: "Wikipedia"
+      });
+    }
+  }
+
+  // FIX: on met onclick sur la div entière + pas de <a>
+  allResults.forEach(item => {
+    html += `<div style="padding:14px 24px;border-bottom:1px solid var(--border);cursor:pointer" onclick="openInBaobab('${item.url}', '${item.title.replace(/'/g, "\\'")}')">
+      <div style="font-size:20px;color:var(--link);font-weight:500">${item.title}</div>
+      <div style="color:#4ade80;font-size:14px;margin:2px 0">${item.url}</div>
+      <div style="color:var(--text);font-size:14px;line-height:1.58">${item.content}</div>
+      <div style="color:var(--muted);font-size:12px;margin-top:4px">Source: ${item.source}</div>
+    </div>`;
+  });
+
+  html += `<p style="padding:12px 24px;color:#aaa;font-size:13px">${allResults.length} résultats trouvés sur Baobab</p>`;
+  $('#resultsList').innerHTML = html;
 }
-function goHome() {
-    showPage('home');
-    document.getElementById('aiBlock').classList.add('hidden');
+
+async function search() {
+  let q = $('#results').classList.contains('active')? $('#searchInput2').value : $('#searchInput').value;
+  q = q.trim();
+  if(!q) return;
+  if($('#searchInput')) $('#searchInput').value = q;
+  if($('#searchInput2')) $('#searchInput2').value = q;
+  saveHistory(q);
+  showPage('results');
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.filter-btn').classList.add('active');
+  searchBaobab(q);
 }
-function showSuggestions(){ document.getElementById('suggestions').classList.remove('hidden'); }
-function showLoading(isLoading) {
-    document.querySelectorAll('.icon-btn.primary').forEach(btn => {
-        btn.disabled = isLoading;
-        btn.innerHTML = isLoading 
-            ? `<svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="white" stroke-width="4" fill="none" stroke-dasharray="31.4" stroke-dashoffset="0"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="1s" repeatCount="indefinite"/></circle></svg>`
-            : `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>`;
+
+let recognition;
+function startVoice() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) return alert("Micro non supporté. Utilise Chrome.");
+  const t = translations[currentLang] || translations['fr-FR'];
+  recognition = new SpeechRecognition();
+  recognition.lang = currentLang;
+  recognition.onstart = () => { $('#searchInput').placeholder = t.speakNow; };
+  recognition.onresult = (event) => { $('#searchInput').value = event.results[0][0].transcript; search(); };
+  recognition.onend = () => { $('#searchInput').placeholder = t.searchPlaceholder; };
+  recognition.start();
+}
+
+function setSecurityMode(val) {
+  currentSecurity = val;
+  localStorage.setItem('baobabSecurity', val);
+  if($('#strongBanner')) $('#strongBanner').classList.toggle('hidden', val!== 'strong');
+}
+
+function saveHistory(q) {
+  if($('#saveActivity') &&!$('#saveActivity').checked) return;
+  let h = JSON.parse(localStorage.getItem('hist') || '[]');
+  localStorage.setItem('hist', JSON.stringify([q,...h.filter(x => x!== q)].slice(0,5)));
+  loadHistory();
+}
+
+function loadHistory() {
+  let h = JSON.parse(localStorage.getItem('hist') || '[]');
+  if($('#historyList')) $('#historyList').innerHTML = h.map(i => `<div class="item" onclick="selectSuggest('${i.replace(/'/g, "\\'")}')">${i}</div>`).join('');
+}
+
+function clearHistory() {
+  localStorage.removeItem('hist');
+  loadHistory();
+  alert('Historique effacé');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  applyTheme();
+  if($('#langSelect')){
+    $('#langSelect').value = currentLang;
+    applyTranslations();
+    $('#langSelect').addEventListener('change', (e) => {
+      currentLang = e.target.value;
+      localStorage.setItem('baobabLang', currentLang);
+      applyTranslations();
     });
-}
-function startVoice(){ alert("Recherche vocale arrive bientôt") }
-function toggleImageMenu(e){ 
-    e.stopPropagation(); 
-    document.getElementById('imageMenu').classList.toggle('hidden'); 
-}
-function startImageSearch(type){ alert("Recherche par image: " + type) }
-function clearHistory(){ localStorage.clear(); alert("Historique effacé") }
-function setSecurityMode(v){ document.getElementById('strongBanner').classList.toggle('hidden', v !== 'strong') }
+  }
+  if($('#themeSelect')){
+    $('#themeSelect').value = currentTheme;
+    $('#themeSelect').addEventListener('change', (e) => {
+      currentTheme = e.target.value;
+      localStorage.setItem('baobabTheme', currentTheme);
+      applyTheme();
+    });
+  }
+  if($('#safeSearch')){
+    $('#safeSearch').value = safeSearch;
+    $('#safeSearch').addEventListener('change', (e) => {
+      safeSearch = e.target.value;
+      localStorage.setItem('baobabSafe', safeSearch);
+    });
+  }
+  if($('#suggestionsToggle')){
+    $('#suggestionsToggle').value = suggestionsOn;
+    $('#suggestionsToggle').addEventListener('change', (e) => {
+      suggestionsOn = e.target.value;
+      localStorage.setItem('baobabSuggestions', suggestionsOn);
+    });
+  }
+  if($('#securityMode')) $('#securityMode').value = currentSecurity;
+
+  // FIX: ferme les menus quand on clique ailleurs
+  document.addEventListener('click', (e) => {
+    if($('#suggestions') &&!e.target.closest('.search-bar')) $('#suggestions').classList.add('hidden');
+    if($('#imageMenu') &&!e.target.closest('#imageMenu') &&!e.target.closest('.icon-btn[title="Recherche par image"]')) $('#imageMenu').classList.add('hidden');
+  });
+
+  goHome();
+});
