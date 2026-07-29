@@ -1,51 +1,49 @@
-// ===== BAOBAB SEARCH v1.1 PRO =====
-const CONFIG = {
-    appName: "Baobab Search",
-    version: "1.1 Pro",
-    source: "DuckGo"
-};
+// ===== BAOBAB SEARCH v1.2 FIX CLICS =====
+let currentQuery = '';
+let currentFilter = 'all';
 
-// ÉLÉMENTS DOM
-const searchInput = document.getElementById('searchInput');
-const searchBtn = document.getElementById('searchBtn');
-const resultsContainer = document.getElementById('results');
-const aiOverview = document.getElementById('ai-overview');
-const loader = document.getElementById('loader');
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('searchInput').addEventListener('keypress', (e) => { if(e.key==='Enter') search() });
+    document.getElementById('searchInput2').addEventListener('keypress', (e) => { if(e.key==='Enter') search() });
+    
+    // FIX: Fermer les menus quand on clique ailleurs
+    document.addEventListener('click', (e) => {
+        if(!e.target.closest('.search-icons')) {
+            document.getElementById('imageMenu').classList.add('hidden');
+        }
+        if(!e.target.closest('#searchBar')) {
+            document.getElementById('suggestions').classList.add('hidden');
+        }
+    });
+});
 
-// ÉVÉNEMENTS
-searchBtn.addEventListener('click', () => handleSearch());
-searchInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') handleSearch() });
+async function search() {
+    const input = document.querySelector('.page.active input[type="text"]');
+    currentQuery = input.value.trim();
+    if(!currentQuery) return;
 
-function handleSearch() {
-    const query = searchInput.value.trim();
-    if(!query) return;
-    search(query);
-}
-
-// FONCTION PRINCIPALE
-async function search(query) {
+    showPage('results');
+    document.getElementById('searchInput2').value = currentQuery;
+    
     showLoading(true);
-    resultsContainer.innerHTML = '';
-    aiOverview.innerHTML = '';
+    document.getElementById('resultsList').innerHTML = '';
     
     try {
-        const [duckData, aiSummary] = await Promise.all([
-            fetchDuckGo(query),
-            generateAISummary(query)
-        ]);
-        
-        displayAIO verview(aiSummary, query);
-        displayWebResults(duckData, query);
-        
+        if(currentFilter === 'all') {
+            const [duckData, aiSummary] = await Promise.all([
+                fetchDuckGo(currentQuery),
+                generateAISummary(currentQuery)
+            ]);
+            displayAIO verview(aiSummary);
+            displayWebResults(duckData);
+        }
     } catch(error) {
-        resultsContainer.innerHTML = `<p style="color:red; text-align:center; padding:20px;">Erreur de connexion. Vérifie internet.</p>`;
-        console.error(error);
+        document.getElementById('resultsList').innerHTML = `<p style="padding:24px; color:red;">Erreur: ${error.message}</p>`;
     }
     
     showLoading(false);
 }
 
-// APPEL API DUCKDUCKGO
 async function fetchDuckGo(query) {
     const url = `https://api.duckgo.com/?q=${encodeURIComponent(query)}&format=json&no_redirect=1&no_html=1`;
     const res = await fetch(url);
@@ -53,76 +51,94 @@ async function fetchDuckGo(query) {
     return await res.json();
 }
 
-// APERÇU IA - VERSION SIMPLE POUR L'INSTANT
 async function generateAISummary(query) {
-    // Plus tard on branche Gemini. Là on fait un résumé de base transparent
     return `La <b>${query}</b> désigne l'ensemble des œuvres écrites et orales. 
-    Elle inclut roman, poésie, théâtre. Au Sénégal, on retrouve la littérature orale Wolof/Peul 
-    et des auteurs comme Senghor, Sembène Ousmane.`;
+    Elle inclut le roman, la poésie, le théâtre. Au Sénégal, on retrouve la littérature orale Wolof/Peul 
+    et des auteurs comme Léopold Sédar Senghor, Sembène Ousmane.`;
 }
 
-// AFFICHAGE APERÇU IA
-function displayAIO verview(summary, query) {
-    aiOverview.innerHTML = `
-        <div style="background:#F0F4FF; border-left:4px solid #4285F4; padding:16px; border-radius:12px; margin-bottom:24px;">
-            <p style="font-size:12px; color:#5F6368; margin:0 0 8px 0;">
-                ✨ Aperçu Baobab IA · Source: ${CONFIG.source}, Wikipedia
-            </p>
-            <h3 style="margin:0 0 8px 0; font-size:20px;">À propos de "${query}"</h3>
-            <p style="margin:0; line-height:1.6; color:#3c4043;">${summary}</p>
-        </div>
-    `;
+function displayAIO verview(summary) {
+    const aiBlock = document.getElementById('aiBlock');
+    const aiText = document.getElementById('aiText');
+    aiText.innerHTML = summary + `<p style="font-size:12px; color:var(--muted); margin-top:8px;">Source: DuckDuckGo, Wikipedia</p>`;
+    aiBlock.classList.remove('hidden');
 }
 
-// AFFICHAGE RÉSULTATS
-function displayWebResults(data, query) {
-    let html = `<h3 style="font-size:16px; color:#70757a; font-weight:400; margin-bottom:16px;">
-        Résultats pour "${query}" <span style="font-size:12px;">· Source: ${CONFIG.source}</span>
-    </h3>`;
+function displayWebResults(data) {
+    let html = '';
     
-    // Résultat principal Wiki/Definition
     if(data.AbstractText) {
+        const url = data.AbstractURL ? new URL(data.AbstractURL) : null;
         html += `
-        <div style="border:1px solid #dadce0; padding:16px; border-radius:12px; margin-bottom:20px;">
-            <span style="font-size:12px; color:#70757a;">${data.AbstractURL ? new URL(data.AbstractURL).hostname : CONFIG.source}</span>
-            <a href="${data.AbstractURL}" target="_blank" style="font-size:20px; color:#1a0dab; text-decoration:none; display:block; margin:4px 0;">${data.Heading}</a>
-            <p style="color:#4d5156; margin:0; line-height:1.5;">${data.AbstractText}</p>
+        <div style="padding:0 24px 16px 24px;">
+            <span style="font-size:12px; color:var(--muted);">${url ? url.hostname : 'Wikipedia'}</span>
+            <a href="${data.AbstractURL}" target="_blank" style="font-size:20px; color:var(--link); text-decoration:none; display:block; margin:4px 0;">${data.Heading}</a>
+            <p style="color:var(--text); margin:0; line-height:1.5;">${data.AbstractText}</p>
         </div>
         `;
     }
     
-    // Autres résultats
     if(data.RelatedTopics && data.RelatedTopics.length > 0) {
-        data.RelatedTopics.forEach(item => {
+        data.RelatedTopics.slice(0, 10).forEach(item => {
             if(item.FirstURL && item.Text) {
                 const url = new URL(item.FirstURL);
                 html += `
-                <div style="margin-bottom:24px;">
-                    <span style="font-size:12px; color:#70757a;">${url.hostname}</span>
-                    <a href="${item.FirstURL}" target="_blank" style="font-size:18px; color:#1a0dab; text-decoration:none; display:block; line-height:1.3;">${item.Text.split(' - ')[0]}</a>
-                    <p style="color:#4d5156; margin:4px 0; font-size:14px; line-height:1.5;">${item.Text}</p>
+                <div style="padding:0 24px 20px 24px;">
+                    <span style="font-size:12px; color:var(--muted);">${url.hostname}</span>
+                    <a href="${item.FirstURL}" target="_blank" style="font-size:18px; color:var(--link); text-decoration:none; display:block; line-height:1.3;">${item.Text.split(' - ')[0]}</a>
+                    <p style="color:var(--text); margin:4px 0; font-size:14px; line-height:1.5;">${item.Text}</p>
                 </div>
                 `;
             }
         });
     }
     
-    // Questions liées
     html += `
-    <div style="margin-top:32px; padding-top:16px; border-top:1px solid #dadce0;">
+    <div style="padding:16px 24px; border-top:1px solid var(--border);">
         <h4 style="font-size:16px; margin-bottom:12px;">Questions connexes</h4>
-        <div style="cursor:pointer;" onclick="search('Qu\'est-ce que la littérature')"><p>→ Qu'est-ce que la littérature ?</p></div>
-        <div style="cursor:pointer;" onclick="search('Genres littéraires')"><p>→ Quels sont les genres littéraires ?</p></div>
-        <div style="cursor:pointer;" onclick="search('Auteurs sénégalais')"><p>→ Auteurs sénégalais célèbres</p></div>
+        <div style="cursor:pointer; padding:4px 0;" onclick="quickSearch('Qu\'est-ce que la littérature')"><p>→ Qu'est-ce que la littérature ?</p></div>
+        <div style="cursor:pointer; padding:4px 0;" onclick="quickSearch('Genres littéraires')"><p>→ Quels sont les genres littéraires ?</p></div>
+        <div style="cursor:pointer; padding:4px 0;" onclick="quickSearch('Auteurs sénégalais')"><p>→ Auteurs sénégalais célèbres</p></div>
     </div>
     `;
     
-    resultsContainer.innerHTML = html;
+    document.getElementById('resultsList').innerHTML = html;
 }
 
-// LOADER
-function showLoading(isLoading) {
-    if(loader) loader.style.display = isLoading ? 'block' : 'none';
-    searchBtn.innerText = isLoading ? "Recherche..." : "Rechercher";
-    searchBtn.disabled = isLoading;
+function quickSearch(q) {
+    document.getElementById('searchInput2').value = q;
+    search();
 }
+
+function setFilter(e, filter) {
+    currentFilter = filter;
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    e.target.classList.add('active');
+    if(currentQuery) search();
+}
+
+function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+function goHome() {
+    showPage('home');
+    document.getElementById('aiBlock').classList.add('hidden');
+}
+function showSuggestions(){ document.getElementById('suggestions').classList.remove('hidden'); }
+function showLoading(isLoading) {
+    document.querySelectorAll('.icon-btn.primary').forEach(btn => {
+        btn.disabled = isLoading;
+        btn.innerHTML = isLoading 
+            ? `<svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="white" stroke-width="4" fill="none" stroke-dasharray="31.4" stroke-dashoffset="0"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="1s" repeatCount="indefinite"/></circle></svg>`
+            : `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>`;
+    });
+}
+function startVoice(){ alert("Recherche vocale arrive bientôt") }
+function toggleImageMenu(e){ 
+    e.stopPropagation(); 
+    document.getElementById('imageMenu').classList.toggle('hidden'); 
+}
+function startImageSearch(type){ alert("Recherche par image: " + type) }
+function clearHistory(){ localStorage.clear(); alert("Historique effacé") }
+function setSecurityMode(v){ document.getElementById('strongBanner').classList.toggle('hidden', v !== 'strong') }
