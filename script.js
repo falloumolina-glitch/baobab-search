@@ -50,12 +50,12 @@ function setFilter(e, filter) {
   searchDDG(currentQuery, filter);
 }
 
-// VERSION 100% GRATUITE - PAS DE CLE
+// VERSION 100% SANS CLE - DUCKDUCKGO
 async function searchDDG(query, filter = 'all') {
   const t = translations[currentLang] || translations['fr-FR'];
   $('#resultsList').innerHTML = `<p style="padding:20px">Recherche en cours...</p>`;
 
-  let url = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
+  let url = `https://api.duckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
 
   try {
     const res = await fetch(url);
@@ -77,14 +77,13 @@ async function searchDDG(query, filter = 'all') {
         }
       });
     } else {
-      // PLAN B SI DDG N'A RIEN : ON OUVRE BING
-      html += `<p style="padding:20px">DuckGo n'a pas trouvé. <a href="https://www.bing.com/search?q=${encodeURIComponent(query)}" target="_blank" style="color:var(--link)">Voir les résultats sur Bing</a></p>`;
+      html += `<p style="padding:20px">Pas de résultat direct. <a href="https://www.bing.com/search?q=${encodeURIComponent(query)}" target="_blank" style="color:var(--link)">Voir sur Bing</a></p>`;
     }
     $('#resultsList').innerHTML = html;
 
   } catch(e) {
     console.error("Erreur:", e);
-    $('#resultsList').innerHTML = `<p style="padding:20px;color:red"><b>ERREUR:</b> ${e.message}</p>`;
+    $('#resultsList').innerHTML = `<p style="padding:20px;color:red"><b>ERREUR RESEAU:</b> Impossible de contacter le serveur. Teste en Wifi.</p>`;
   }
 }
 
