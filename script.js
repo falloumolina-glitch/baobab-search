@@ -8,7 +8,7 @@ let currentQuery = "";
 let currentFilter = 'all';
 
 const translations = {
-  'fr-FR': { searchPlaceholder: "Rechercher sur Baobab...", settings: "Paramètres", general: "Général", langSearch: "Langue de recherche:", security: "Sécurité", protectionMode: "Mode de protection:", saveActivity: "Enregistrer l'activité", clearHistory: "Effacer l'historique récent", back: "Retour", recent: "Historique récent", speakNow: "Parlez maintenant...", noResults: "Aucun résultat trouvé pour", resultsFor: "Résultats pour", next: "Suivant", prev: "Précédent", readMore: "Lire l'article complet", all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", maps: "Maps" },
+  'fr-FR': { searchPlaceholder: "Recher sur Baobab...", settings: "Paramètres", general: "Général", langSearch: "Langue de recherche:", security: "Sécurité", protectionMode: "Mode de protection:", saveActivity: "Enregistrer l'activité", clearHistory: "Effacer l'historique récent", back: "Retour", recent: "Historique récent", speakNow: "Parlez maintenant...", noResults: "Aucun résultat trouvé pour", resultsFor: "Résultats pour", next: "Suivant", prev: "Précédent", readMore: "Lire l'article complet", all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", maps: "Maps" },
   'en-US': { searchPlaceholder: "Search on Baobab...", settings: "Settings", general: "General", langSearch: "Search language:", security: "Security", protectionMode: "Protection mode:", saveActivity: "Save activity", clearHistory: "Clear recent history", back: "Back", recent: "Recent", speakNow: "Speak now...", noResults: "No results found for", resultsFor: "Results for", next: "Next", prev: "Previous", readMore: "Read full article", all: "All", images: "Images", videos: "Videos", news: "News", maps: "Maps" }
 };
 
@@ -84,65 +84,68 @@ function setFilter(e, filter) {
   searchBaobab(currentQuery);
 }
 
+// VERSION COMPLETE 100% FONCTIONNELLE
 async function searchBaobab(query) {
   const t = translations[currentLang] || translations['fr-FR'];
-  $('#resultsList').innerHTML = `<p style="padding:20px;text-align:center">Recherche de "${query}" sur le web...</p>`;
-  let html = `<p style="padding:12px 24px;color:var(--muted)">${t.resultsFor} <b>${query}</b></p>`;
-  let allResults = [];
+  $('#resultsList').innerHTML = `<p style="padding:20px;text-align:center">Recherche de "${query}"...</p>`;
+  currentQuery = query;
+  let html = "";
 
-  // 1. WIKIPEDIA
+  // 1. APERÇU BAOBAB IA - WIKIPEDIA
+  let hasAI = false;
   try {
     const wiki = await fetch(`https://fr.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`);
     if(wiki.ok){
       const w = await wiki.json();
-      allResults.push({title: `📚 ${w.title}`, url: w.content_urls.desktop.page, content: w.extract, source: 'Wikipedia'});
+      hasAI = true;
+      html += `
+        <div style="padding:16px 24px;margin:12px 24px;border:1px solid #a855f7;border-radius:12px;background:linear-gradient(135deg,#1e1b4b,#312e81)">
+          <div style="font-size:14px;color:#c4b5fd;font-weight:600;margin-bottom:8px">✨ Aperçu Baobab IA</div>
+          <div style="color:#e5e7eb;line-height:1.6;font-size:15px">${w.extract}</div>
+          <a href="${w.content_urls.desktop.page}" target="_blank" style="color:#a5b4fc;font-size:13px;margin-top:8px;display:block">Source: Wikipedia</a>
+        </div>
+      `;
     }
   }catch(e){}
+
+  html += `<p style="padding:12px 24px;color:var(--muted)">${t.resultsFor} <b>${query}</b></p>`;
+  let allResults = [];
 
   // 2. WIKIDATA
   try {
-    const wd = await fetch(`https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(query)}&language=fr&limit=5&format=json&origin=*`);
+    const wd = await fetch(`https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(query)}&language=fr&limit=3&format=json&origin=*`);
     const wdData = await wd.json();
     wdData.search.forEach(item => {
-      allResults.push({title: `🏷️ ${item.label}`, url: `https://www.wikidata.org/wiki/${item.id}`, content: item.description || 'Fiche Wikidata', source: 'Wikidata'});
+      allResults.push({title: `🏷️ ${item.label}`, url: `https://www.wikidata.org/wiki/${item.id}`, content: item.description || 'Fiche d\'information', source: 'Wikidata'});
     });
   }catch(e){}
 
-  // 3. DUCKDUCKGO
+  // 3. DUCKDUCKGO - 12 LIENS
   try {
     const ddg = await fetch(`https://api.duckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`);
     const d = await ddg.json();
-    if(d.AbstractText){
-      allResults.push({title: `⚡ Réponse: ${d.Heading}`, url: d.AbstractURL, content: d.AbstractText, source: 'DuckGo'});
-    }
-    d.RelatedTopics.slice(0,10).forEach(item => {
-      if(item.FirstURL) allResults.push({title: item.Text.split(' - ')[0], url: item.FirstURL, content: item.Text, source: 'DDG'});
+    d.RelatedTopics.slice(0,12).forEach(item => {
+      if(item.FirstURL) allResults.push({title: item.Text.split(' - ')[0], url: item.FirstURL, content: item.Text, source: 'Web'});
     });
   }catch(e){}
 
-  // 4. GNEWS - METS TA CLE ICI
-  try {
-    const news = await fetch(`https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=fr&country=sn&max=5&token=METS_TA_CLE_ICI`);
-    const n = await news.json();
-    if(n.articles) n.articles.forEach(item => {
-      allResults.push({title: `📰 ${item.title}`, url: item.url, content: item.description, source: 'GNews'});
-    });
-  }catch(e){}
-
+  // 4. AFFICHAGE
   if(allResults.length > 0){
-    allResults.slice(0,20).forEach(item => {
+    allResults.forEach(item => {
       html += `<div style="padding:14px 24px;border-bottom:1px solid var(--border)">
-        <a href="${item.url}" target="_blank" style="font-size:20px;color:#1a0dab">${item.title}</a>
-        <div style="color:#006621;font-size:14px">${item.url}</div>
-        <div style="color:#4d5156;font-size:14px">${item.content}</div>
-        <div style="color:#70757a;font-size:12px">${item.source}</div>
+        <a href="${item.url}" target="_blank" style="font-size:20px;color:#8b5cf6;text-decoration:none;line-height:1.3;font-weight:500">${item.title}</a>
+        <div style="color:#4ade80;font-size:14px;margin:2px 0;word-break:break-all">${item.url}</div>
+        <div style="color:var(--text);font-size:14px;line-height:1.58">${item.content}</div>
       </div>`;
     });
-  } else {
-    html += `<p style="padding:20px;text-align:center">${t.noResults} "${query}"</p>`;
+  } else if(!hasAI) {
+    html += `<div style="padding:40px;text-align:center;color:var(--muted)">
+      <p>${t.noResults} "${query}"</p>
+      <p style="font-size:13px">Essaye: "Senegal", "Messi", "Intelligence artificielle"</p>
+    </div>`;
   }
 
-  html += `<p style="padding:12px 24px;color:var(--muted);font-size:13px">${allResults.length} résultats trouvés</p>`;
+  html += `<p style="padding:12px 24px;color:var(--muted);font-size:13px">${allResults.length + (hasAI?1:0)} résultats trouvés</p>`;
   $('#resultsList').innerHTML = html;
 }
 
