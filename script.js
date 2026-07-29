@@ -5,11 +5,10 @@ let currentTheme = localStorage.getItem('baobabTheme') || 'light';
 let safeSearch = localStorage.getItem('baobabSafe') || 'on';
 let suggestionsOn = localStorage.getItem('baobabSuggestions') || 'on';
 let currentQuery = "";
-let currentFilter = 'all';
 
 const translations = {
-  'fr-FR': { searchPlaceholder: "Recher sur Baobab...", settings: "Paramètres", general: "Général", langSearch: "Langue de recherche:", security: "Sécurité", protectionMode: "Mode de protection:", saveActivity: "Enregistrer l'activité", clearHistory: "Effacer l'historique récent", back: "Retour", recent: "Historique récent", speakNow: "Parlez maintenant...", noResults: "Aucun résultat trouvé pour", resultsFor: "Résultats pour", next: "Suivant", prev: "Précédent", readMore: "Lire l'article complet", all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", maps: "Maps" },
-  'en-US': { searchPlaceholder: "Search on Baobab...", settings: "Settings", general: "General", langSearch: "Search language:", security: "Security", protectionMode: "Protection mode:", saveActivity: "Save activity", clearHistory: "Clear recent history", back: "Back", recent: "Recent", speakNow: "Speak now...", noResults: "No results found for", resultsFor: "Results for", next: "Next", prev: "Previous", readMore: "Read full article", all: "All", images: "Images", videos: "Videos", news: "News", maps: "Maps" }
+  'fr-FR': { searchPlaceholder: "Recher sur Baobab...", settings: "Paramètres", general: "Général", langSearch: "Langue de recherche:", security: "Sécurité", protectionMode: "Mode de protection:", saveActivity: "Enregistrer l'activité", clearHistory: "Effacer l'historique récent", back: "Retour", recent: "Historique récent", speakNow: "Parlez maintenant...", noResults: "Aucun résultat trouvé pour", resultsFor: "Résultats pour", all: "Tous" },
+  'en-US': { searchPlaceholder: "Search on Baobab...", settings: "Settings", general: "General", langSearch: "Search language:", security: "Security", protectionMode: "Protection mode:", saveActivity: "Save activity", clearHistory: "Clear recent history", back: "Back", recent: "Recent", speakNow: "Speak now...", noResults: "No results found for", resultsFor: "Results for", all: "All" }
 };
 
 function applyTranslations() {
@@ -75,16 +74,7 @@ function startImageSearch(type) {
   input.click();
 }
 
-function setFilter(e, filter) {
-  e.preventDefault();
-  currentFilter = filter;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  e.target.classList.add('active');
-  if(!currentQuery) return;
-  searchBaobab(currentQuery);
-}
-
-// VERSION COMPLETE 4 SOURCES
+// VERSION COMPLETE STABLE
 async function searchBaobab(query) {
   const t = translations[currentLang] || translations['fr-FR'];
   $('#resultsList').innerHTML = `<p style="padding:20px;text-align:center">Recherche de "${query}" sur Baobab...</p>`;
@@ -109,25 +99,16 @@ async function searchBaobab(query) {
 
   html += `<p style="padding:12px 24px;color:var(--muted)">${t.resultsFor} <b>${query}</b></p>`;
 
-  // 2. ACTU DU JOUR - GNEWS
-  try {
-    const news = await fetch(`https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=fr&country=sn&max=5&token=demo`);
-    const n = await news.json();
-    if(n.articles) n.articles.forEach(item => {
-      allResults.push({title: `📰 ${item.title}`, url: item.url, content: item.description, source: 'Actu'});
-    });
-  }catch(e){}
-
-  // 3. WEB - BING VIA DDG
+  // 2. WEB - BING VIA DDG 18 RESULTATS
   try {
     const ddg = await fetch(`https://api.duckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`);
     const d = await ddg.json();
-    d.RelatedTopics.slice(0,12).forEach(item => {
+    d.RelatedTopics.slice(0,18).forEach(item => {
       if(item.FirstURL) allResults.push({title: item.Text.split(' - ')[0], url: item.FirstURL, content: item.Text, source: 'Web'});
     });
   }catch(e){}
 
-  // 4. WIKIDATA
+  // 3. WIKIDATA
   try {
     const wd = await fetch(`https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(query)}&language=fr&limit=3&format=json&origin=*`);
     const wdData = await wd.json();
@@ -149,7 +130,6 @@ async function searchBaobab(query) {
   } else {
     html += `<div style="padding:40px;text-align:center;color:var(--muted)">
       <p>${t.noResults} "${query}"</p>
-      <p style="font-size:13px">Essaye: "Senegal", "Messi", "Intelligence artificielle"</p>
     </div>`;
   }
 
@@ -165,8 +145,6 @@ async function search() {
   if($('#searchInput2')) $('#searchInput2').value = q;
   saveHistory(q);
   showPage('results');
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector('.filter-btn').classList.add('active');
   searchBaobab(q);
 }
 
