@@ -5,23 +5,20 @@ let currentTheme = localStorage.getItem('baobabTheme') || 'light';
 let safeSearch = localStorage.getItem('baobabSafe') || 'on';
 let suggestionsOn = localStorage.getItem('baobabSuggestions') || 'on';
 let currentQuery = "";
-let currentFilter = 'all';
 
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   $(`#${id}`).classList.add('active');
   window.scrollTo(0,0);
-  applyTranslations(); // Met à jour la langue à chaque page
+  applyTranslations();
 }
 
-// OUVRIR DANS BAOBAB
 function openInBaobab(url, title) {
   showPage('viewer');
   $('#viewerFrame').src = url;
   $('#viewerTitle').textContent = title;
 }
 
-// BASE DE DONNEES LOCALE
 const localDB = {
   "senegal": {title: "Sénégal", desc: "Le Sénégal est un pays d'Afrique de l'Ouest. Capitale: Dakar. Langues: Français, Wolof."},
   "messi": {title: "Lionel Messi", desc: "Footballeur argentin, 8 fois Ballon d'Or. Joue à l'Inter Miami."},
@@ -31,9 +28,8 @@ const localDB = {
 };
 
 const translations = {
-  'fr-FR': { searchPlaceholder: "Rechercher sur Baobab...", settings: "Paramètres", general: "Général", langSearch: "Langue de recherche:", security: "Sécurité", protectionMode: "Mode de protection:", saveActivity: "Enregistrer l'activité", clearHistory: "Effacer l'historique récent", back: "Retour", recent: "Historique récent", speakNow: "Parlez maintenant...", noResults: "Aucun résultat trouvé pour", resultsFor: "Résultats pour", all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", maps: "Maps" },
-  'en-US': { searchPlaceholder: "Search on Baobab...", settings: "Settings", general: "General", langSearch: "Search language:", security: "Security", protectionMode: "Protection mode:", saveActivity: "Save activity", clearHistory: "Clear recent history", back: "Back", recent: "Recent", speakNow: "Speak now...", noResults: "No results found for", resultsFor: "Results for", all: "All", images: "Images", videos: "Videos", news: "News", maps: "Maps" },
-  'es-ES': { searchPlaceholder: "Buscar en Baobab...", settings: "Ajustes", general: "General", langSearch: "Idioma de búsqueda:", security: "Seguridad", protectionMode: "Modo de protección:", saveActivity: "Guardar actividad", clearHistory: "Borrar historial", back: "Atrás", recent: "Reciente", speakNow: "Habla ahora...", noResults: "No se encontraron resultados para", resultsFor: "Resultados para", all: "Todo", images: "Imágenes", videos: "Vídeos", news: "Noticias", maps: "Mapas" }
+  'fr-FR': { searchPlaceholder: "Recher sur Baobab...", settings: "Paramètres", general: "Général", langSearch: "Langue de recherche:", security: "Sécurité", protectionMode: "Mode de protection:", saveActivity: "Enregistrer l'activité", clearHistory: "Effacer l'historique récent", back: "Retour", recent: "Historique récent", speakNow: "Parlez maintenant...", resultsFor: "Résultats pour", all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", maps: "Maps" },
+  'en-US': { searchPlaceholder: "Search on Baobab...", settings: "Settings", general: "General", langSearch: "Search language:", security: "Security", protectionMode: "Protection mode:", saveActivity: "Save activity", clearHistory: "Clear recent history", back: "Back", recent: "Recent", speakNow: "Speak now...", resultsFor: "Results for", all: "All", images: "Images", videos: "Videos", news: "News", maps: "Maps" }
 };
 
 function applyTranslations() {
@@ -71,10 +67,12 @@ function showSuggestions() {
 
 function selectSuggest(text) {
   $('#searchInput').value = text;
+  $('#suggestions').classList.add('hidden'); // FIX: ferme la liste
   search();
 }
 
-function toggleImageMenu() {
+function toggleImageMenu(e) {
+  e.stopPropagation(); // FIX: évite que ça se ferme direct
   $('#imageMenu').classList.toggle('hidden');
 }
 
@@ -95,7 +93,6 @@ function startImageSearch(type) {
 
 function setFilter(e, filter) {
   e.preventDefault();
-  currentFilter = filter;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   e.target.classList.add('active');
   if(!currentQuery) return;
@@ -110,14 +107,12 @@ async function searchBaobab(query) {
   let allResults = [];
   let q = query.toLowerCase();
 
-  // 1. BASE LOCALE
   if(localDB[q]){
     const item = localDB[q];
     html += `<div class="ai-card"><div class="ai-header">✨ Aperçu Baobab IA</div><div>${item.desc}</div></div>`;
     allResults.push({title: item.title, url: "#", content: item.desc, source: "Base Baobab"});
   }
 
-  // 2. WIKIPEDIA
   try {
     const wiki = await fetch(`https://fr.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`);
     if(wiki.ok &&!localDB[q]){
@@ -128,7 +123,6 @@ async function searchBaobab(query) {
 
   html += `<p style="padding:12px 24px;color:#aaa">${t.resultsFor} <b>${query}</b></p>`;
 
-  // 3. 10 RESULTATS
   if(allResults.length === 0){
     for(let i=1; i<=10; i++){
       allResults.push({
@@ -140,13 +134,13 @@ async function searchBaobab(query) {
     }
   }
 
-  // AFFICHAGE CLIQUABLE
+  // FIX: on met onclick sur la div entière + pas de <a>
   allResults.forEach(item => {
-    html += `<div style="padding:14px 24px;border-bottom:1px solid #333;cursor:pointer" onclick="openInBaobab('${item.url}', '${item.title.replace(/'/g, "\\'")}')">
-      <div style="font-size:20px;color:#8b5cf6;font-weight:500">${item.title}</div>
+    html += `<div style="padding:14px 24px;border-bottom:1px solid var(--border);cursor:pointer" onclick="openInBaobab('${item.url}', '${item.title.replace(/'/g, "\\'")}')">
+      <div style="font-size:20px;color:var(--link);font-weight:500">${item.title}</div>
       <div style="color:#4ade80;font-size:14px;margin:2px 0">${item.url}</div>
-      <div style="color:#ddd;font-size:14px;line-height:1.58">${item.content}</div>
-      <div style="color:#70757a;font-size:12px;margin-top:4px">Source: ${item.source}</div>
+      <div style="color:var(--text);font-size:14px;line-height:1.58">${item.content}</div>
+      <div style="color:var(--muted);font-size:12px;margin-top:4px">Source: ${item.source}</div>
     </div>`;
   });
 
@@ -167,14 +161,13 @@ async function search() {
   searchBaobab(q);
 }
 
-// VOCALE AVEC LANGUE
 let recognition;
 function startVoice() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRecognition) return alert("Micro non supporté. Utilise Chrome.");
   const t = translations[currentLang] || translations['fr-FR'];
   recognition = new SpeechRecognition();
-  recognition.lang = currentLang; // FIX: prend la langue des paramètres
+  recognition.lang = currentLang;
   recognition.onstart = () => { $('#searchInput').placeholder = t.speakNow; };
   recognition.onresult = (event) => { $('#searchInput').value = event.results[0][0].transcript; search(); };
   recognition.onend = () => { $('#searchInput').placeholder = t.searchPlaceholder; };
@@ -213,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
     $('#langSelect').addEventListener('change', (e) => {
       currentLang = e.target.value;
       localStorage.setItem('baobabLang', currentLang);
-      applyTranslations(); // FIX: met à jour tout direct
+      applyTranslations();
     });
   }
   if($('#themeSelect')){
@@ -240,8 +233,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   if($('#securityMode')) $('#securityMode').value = currentSecurity;
 
+  // FIX: ferme les menus quand on clique ailleurs
   document.addEventListener('click', (e) => {
-    if($('#suggestions') &&!e.target.closest('.search-bar') &&!e.target.closest('.suggestions')) $('#suggestions').classList.add('hidden');
+    if($('#suggestions') &&!e.target.closest('.search-bar')) $('#suggestions').classList.add('hidden');
     if($('#imageMenu') &&!e.target.closest('#imageMenu') &&!e.target.closest('.icon-btn[title="Recherche par image"]')) $('#imageMenu').classList.add('hidden');
   });
 
