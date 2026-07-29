@@ -6,6 +6,13 @@ function showPage(id) {
   $(`#${id}`).classList.add('active');
 }
 
+// AJOUT 1 : FONCTION POUR OUVRIR DANS BAOBAB
+function openInBaobab(url, title) {
+  showPage('viewer');
+  $('#viewerFrame').src = url;
+  $('#viewerTitle').textContent = title;
+}
+
 // BASE DE DONNEES LOCALE POUR QUE CA MARCHE TOUJOURS
 const localDB = {
   "senegal": {title: "Sénégal", desc: "Le Sénégal est un pays d'Afrique de l'Ouest. Capitale: Dakar. Langues: Français, Wolof."},
@@ -51,22 +58,22 @@ async function searchBaobab(query) {
 
   html += `<p style="padding:12px 24px;color:#aaa">Résultats pour <b>${query}</b></p>`;
 
-  // 3. 10 RESULTATS GENERIQUES SI RIEN
+  // 3. 10 RESULTATS GENERIQUES - CHANGÉ: PLUS GOOGLE
   if(allResults.length === 0){
     for(let i=1; i<=10; i++){
       allResults.push({
         title: `Résultat ${i} : ${query}`,
-        url: `https://www.google.com/search?q=${encodeURIComponent(query)}`,
-        content: `Cliquez pour voir les résultats concernant "${query}" sur le web.`,
-        source: "Web"
+        url: `https://fr.wikipedia.org/wiki/${encodeURIComponent(query)}`, // CHANGÉ ICI
+        content: `Cliquez pour lire l'article "${query}" sur Baobab.`, // CHANGÉ ICI
+        source: "Wikipedia" // CHANGÉ ICI
       });
     }
   }
 
-  // AFFICHAGE
+  // AFFICHAGE - CHANGÉ: LIEN OUVRE DANS BAOBAB
   allResults.forEach(item => {
     html += `<div style="padding:14px 24px;border-bottom:1px solid #333">
-      <a href="${item.url}" target="_blank" style="font-size:20px;color:#8b5cf6;text-decoration:none;font-weight:500">${item.title}</a>
+      <a href="#" onclick="openInBaobab('${item.url}', '${item.title.replace(/'/g, "\\'")}')" style="font-size:20px;color:#8b5cf6;text-decoration:none;font-weight:500">${item.title}</a>
       <div style="color:#4ade80;font-size:14px;margin:2px 0">${item.url}</div>
       <div style="color:#ddd;font-size:14px;line-height:1.58">${item.content}</div>
       <div style="color:#70757a;font-size:12px;margin-top:4px">Source: ${item.source}</div>
@@ -85,4 +92,4 @@ async function search() {
   if($('#searchInput2')) $('#searchInput2').value = q;
   showPage('results');
   searchBaobab(q);
-  }
+            }
