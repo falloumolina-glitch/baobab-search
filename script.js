@@ -6,7 +6,6 @@ let safeSearch = localStorage.getItem('baobabSafe') || 'on';
 let suggestionsOn = localStorage.getItem('baobabSuggestions') || 'on';
 let currentQuery = "";
 let currentFilter = 'all';
-let currentPage = 1;
 
 const translations = {
   'fr-FR': { searchPlaceholder: "Recher sur Baobab...", settings: "Paramètres", general: "Général", langSearch: "Langue de recherche:", security: "Sécurité", protectionMode: "Mode de protection:", saveActivity: "Enregistrer l'activité", clearHistory: "Effacer l'historique récent", back: "Retour", recent: "Historique récent", speakNow: "Parlez maintenant...", noResults: "Aucun résultat trouvé pour", resultsFor: "Résultats pour", next: "Suivant", prev: "Précédent", readMore: "Lire l'article complet", all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", maps: "Maps" },
@@ -79,58 +78,70 @@ function startImageSearch(type) {
 function setFilter(e, filter) {
   e.preventDefault();
   currentFilter = filter;
-  currentPage = 1;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   e.target.classList.add('active');
   if(!currentQuery) return;
-  searchBaobab(currentQuery, currentPage);
+  searchBaobab(currentQuery);
 }
 
-// VERSION FINALE QUI AFFICHE 10 RESULTATS COMME GOOGLE
-async function searchBaobab(query, page = 1) {
+// VERSION 100% FONCTIONNELLE SANS PROXY
+async function searchBaobab(query) {
   const t = translations[currentLang] || translations['fr-FR'];
   $('#resultsList').innerHTML = `<p style="padding:20px;text-align:center">Recherche de "${query}"...</p>`;
   currentQuery = query;
-  currentPage = page;
+  let html = `<p style="padding:12px 24px;color:var(--muted)">${t.resultsFor} <b>${query}</b></p>`;
+  let hasResults = false;
 
-  // PROXY POUR DEBLOQUER SUR GITHUB
-  const targetUrl = `https://searx.be/search?q=${encodeURIComponent(query)}&format=json&pageno=${page}&language=fr`;
-  let url = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
-
+  // 1. WIKIPEDIA - MARCHE TOUJOURS MEME EN 4G
   try {
-    const res = await fetch(url);
-    const wrapper = await res.json();
-    const data = JSON.parse(wrapper.contents);
-
-    let html = ``;
-    let results = data.results || [];
-
-    if(results.length > 0) {
-      html += `<p style="padding:12px 24px;color:var(--muted)">${t.resultsFor} <b>${query}</b> • Page ${page}</p>`;
-
-      results.slice(0,10).forEach(item => {
-        html += `<div style="padding:12px 24px;border-bottom:1px solid var(--border)">
-          <a href="${item.url}" target="_blank" rel="noopener" style="font-size:20px;color:#1a0dab;text-decoration:none;line-height:1.3">${item.title}</a>
-          <div style="color:#006621;font-size:14px;margin:3px 0">${item.url}</div>
-          <div style="color:var(--text);font-size:14px;line-height:1.58">${item.content}</div>
-        </div>`;
-      });
-
-      // PAGINATION
-      html += `<div style="display:flex;justify-content:center;gap:20px;padding:30px 20px">`;
-      if(page > 1) html += `<button onclick="searchBaobab('${query}',${page-1})" style="padding:8px 16px;border:1px solid var(--border);border-radius:4px;background:var(--card);cursor:pointer">${t.prev}</button>`;
-      html += `<button onclick="searchBaobab('${query}',${page+1})" style="padding:8px 16px;border:1px solid var(--border);border-radius:4px;background:var(--card);cursor:pointer">${t.next}</button>`;
-      html += `</div>`;
-
-    } else {
-      html += `<p style="padding:40px;text-align:center">${t.noResults} <b>"${query}"</b></p>`;
+    const wikiRes = await fetch(`https://fr.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`);
+    if(wikiRes.ok){
+      const w = await wikiRes.json();
+      hasResults = true;
+      html += `<div style="padding:12px 24px;border:1px solid #1a73e8;border-radius:8px;margin:12px 24px;background:#e8f0fe">
+        <a href="${w.content_urls.desktop.page}" target="_blank" style="font-size:20px;color:#1a0dab;font-weight:500">${w.title}</a>
+        <div style="color:#006621;font-size:14px">${w.content_urls.desktop.page}</div>
+        <div style="color:#3c4043;font-size:14px;line-height:1.58">${w.extract}</div>
+      </div>`;
     }
-    $('#resultsList').innerHTML = html;
+  }catch(e){ console.log("Wiki error") }
 
-  } catch(e) {
-    console.error("Erreur:", e);
-    $('#resultsList').innerHTML = `<p style="padding:20px;color:red;text-align:center"><b>ERREUR:</b> ${e.message}. Recharge la page.</p>`;
+  // 2. DUCKDUCKGO INSTANT ANSWER
+  try {
+    const ddgRes = await fetch(`https://api.duckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`);
+    const d = await ddgRes.json();
+
+    // Résultat direct
+    if(d.Answer){
+      hasResults = true;
+      html += `<div style="padding:12px 24px;border-bottom:1px solid var(--border)"><b>Réponse rapide:</b> ${d.Answer}</div>`;
+    }
+
+    // Liens
+    if(d.RelatedTopics){
+      d.RelatedTopics.slice(0,8).forEach(item => {
+        if(item.FirstURL && item.Text){
+          hasResults = true;
+          html += `<div style="padding:12px 24px;border-bottom:1px solid var(--border)">
+            <a href="${item.FirstURL}" target="_blank" style="font-size:20px;color:#1a0dab;text-decoration:none">${item.Text.split(' - ')[0]}</a>
+            <div style="color:#006621;font-size:14px">${item.FirstURL}</div>
+            <div style="color:#4d5156;font-size:14px;line-height:1.58">${item.Text}</div>
+          </div>`;
+        }
+      });
+    }
+  }catch(e){ console.log("DDG error") }
+
+  // 3. SI RIEN TROUVE: ON MET LIEN BING + GOOGLE
+  if(!hasResults){
+    html += `<div style="padding:20px;text-align:center">
+      <p>${t.noResults} "${query}"</p>
+      <a href="https://www.bing.com/search?q=${encodeURIComponent(query)}" target="_blank" style="display:inline-block;margin:10px;padding:10px 20px;background:#1a73e8;color:white;border-radius:4px;text-decoration:none">Voir sur Bing</a>
+      <a href="https://www.google.com/search?q=${encodeURIComponent(query)}" target="_blank" style="display:inline-block;margin:10px;padding:10px 20px;background:#34a853;color:white;border-radius:4px;text-decoration:none">Voir sur Google</a>
+    </div>`;
   }
+
+  $('#resultsList').innerHTML = html;
 }
 
 async function search() {
@@ -143,7 +154,7 @@ async function search() {
   showPage('results');
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   document.querySelector('.filter-btn').classList.add('active');
-  searchBaobab(q, 1);
+  searchBaobab(q);
 }
 
 let recognition;
@@ -162,7 +173,7 @@ function startVoice() {
 function setSecurityMode(val) {
   currentSecurity = val;
   localStorage.setItem('baobabSecurity', val);
-  $('#strongBanner').classList.toggle('hidden', val!== 'strong');
+  if($('#strongBanner')) $('#strongBanner').classList.toggle('hidden', val!== 'strong');
 }
 
 function saveHistory(q) {
@@ -174,7 +185,7 @@ function saveHistory(q) {
 
 function loadHistory() {
   let h = JSON.parse(localStorage.getItem('hist') || '[]');
-  $('#historyList').innerHTML = h.map(i => `<div class="item" onclick="selectSuggest('${i.replace(/'/g, "\\'")}')">${i}</div>`).join('');
+  if($('#historyList')) $('#historyList').innerHTML = h.map(i => `<div class="item" onclick="selectSuggest('${i.replace(/'/g, "\\'")}')">${i}</div>`).join('');
 }
 
 function clearHistory() {
@@ -219,8 +230,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if($('#securityMode')) $('#securityMode').value = currentSecurity;
 
   document.addEventListener('click', (e) => {
-    if(!e.target.closest('.search-bar') &&!e.target.closest('.suggestions')) $('#suggestions').classList.add('hidden');
-    if(!e.target.closest('#imageMenu') &&!e.target.closest('.icon-btn[title="Recherche par image"]')) $('#imageMenu').classList.add('hidden');
+    if($('#suggestions') &&!e.target.closest('.search-bar') &&!e.target.closest('.suggestions')) $('#suggestions').classList.add('hidden');
+    if($('#imageMenu') &&!e.target.closest('#imageMenu') &&!e.target.closest('.icon-btn[title="Recherche par image"]')) $('#imageMenu').classList.add('hidden');
   });
 
   goHome();
