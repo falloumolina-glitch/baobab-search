@@ -4,10 +4,7 @@ let currentSecurity = localStorage.getItem('baobabSecurity') || 'standard';
 let currentTheme = localStorage.getItem('baobabTheme') || 'light';
 let safeSearch = localStorage.getItem('baobabSafe') || 'on';
 let suggestionsOn = localStorage.getItem('baobabSuggestions') || 'on';
-let currentQuery = "e0e0bc717b3670623bb222ef04013d314944985fbad36a5eac3e396ea132cc19"; let currentOffset = 0; let currentFilter = 'all';
-
-// COLLE TA CLE SERPAPI ICI AUSSI
-const SERPAPI_KEY = "";
+let currentQuery = ""; let currentFilter = 'all';
 
 const translations = {
   'fr-FR': { searchPlaceholder: "Recher sur Baobab...", settings: "Paramètres", general: "Général", langSearch: "Langue de recherche:", security: "Sécurité", protectionMode: "Mode de protection:", saveActivity: "Enregistrer l'activité", clearHistory: "Effacer l'historique récent", back: "Retour", recent: "Historique récent", speakNow: "Parlez maintenant...", noResults: "Aucun résultat trouvé pour", resultsFor: "Résultats pour", next: "Suivant", prev: "Précédent", readMore: "Lire l'article complet", all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", maps: "Maps" },
@@ -46,65 +43,47 @@ function startImageSearch(type) {
 }
 
 function setFilter(e, filter) {
-  e.preventDefault(); currentFilter = filter; currentOffset = 0;
+  e.preventDefault(); currentFilter = filter;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   e.target.classList.add('active');
   if(!currentQuery) return;
-  searchSERP(currentQuery, filter);
+  searchDDG(currentQuery, filter);
 }
 
-async function searchSERP(query, filter = 'all') {
+// VERSION 100% GRATUITE - PAS DE CLE
+async function searchDDG(query, filter = 'all') {
   const t = translations[currentLang] || translations['fr-FR'];
-  $('#resultsList').innerHTML = `<p style="padding:20px">Recherche en cours sur Google...</p>`;
+  $('#resultsList').innerHTML = `<p style="padding:20px">Recherche en cours...</p>`;
 
-  let params = new URLSearchParams({
-    q: query,
-    api_key: SERPAPI_KEY,
-    hl: currentLang.split('-')[0],
-    gl: 'sn'
-  });
-  if(safeSearch === 'on') params.append('safe', 'active');
-  if(filter === 'news') params.append('tbm', 'nws');
-  if(filter === 'images') params.append('tbm', 'isch');
-  if(filter === 'videos') params.append('tbm', 'vid');
-
-  // ON PASSE PAR NOTRE PROXY PHP
-  const url = `proxy.php?${params.toString()}`;
+  let url = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
 
   try {
     const res = await fetch(url);
     if(!res.ok) throw new Error(`Erreur Serveur ${res.status}`);
     const data = await res.json();
-    if(data.error) throw new Error(data.error);
 
     let html = ``;
-    let results = data.organic_results || data.news_results || data.video_results || data.images_results || [];
+    let results = data.RelatedTopics || [];
 
     if(results.length > 0) {
-      html += `<p style="padding:12px 24px;color:var(--muted)">${t.resultsFor} <b>${query}</b> • ${data.search_information?.total_results} résultats</p>`;
-
-      if(filter === 'images' && data.images_results) {
-        html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;padding:20px">`;
-        data.images_results.forEach(item => {
-          if(item.thumbnail) html += `<a href="${item.link}" target="_blank"><img src="${item.thumbnail}" loading="lazy" style="width:100%;height:150px;object-fit:cover;border-radius:8px"></a>`;
-        });
-        html += `</div>`;
-      } else {
-        results.forEach(item => {
+      html += `<p style="padding:12px 24px;color:var(--muted)">${t.resultsFor} <b>${query}</b></p>`;
+      results.forEach(item => {
+        if(item.FirstURL && item.Text){
           html += `<div style="padding:12px 24px;border-bottom:1px solid var(--border)">
-            <a href="${item.link}" target="_blank" rel="noopener" style="font-size:18px;color:var(--link);text-decoration:none">${item.title}</a>
-            <div style="color:#006621;font-size:14px">${item.displayed_link || item.link}</div>
-            <div style="color:var(--text);font-size:14px;line-height:1.5">${item.snippet}</div>
+            <a href="${item.FirstURL}" target="_blank" rel="noopener" style="font-size:18px;color:var(--link);text-decoration:none">${item.Text.split(' - ')[0]}</a>
+            <div style="color:#006621;font-size:14px">${item.FirstURL}</div>
+            <div style="color:var(--text);font-size:14px;line-height:1.5">${item.Text}</div>
           </div>`;
-        });
-      }
+        }
+      });
     } else {
-      html += `<p style="padding:20px">${t.noResults} "${query}"</p>`;
+      // PLAN B SI DDG N'A RIEN : ON OUVRE BING
+      html += `<p style="padding:20px">DuckGo n'a pas trouvé. <a href="https://www.bing.com/search?q=${encodeURIComponent(query)}" target="_blank" style="color:var(--link)">Voir les résultats sur Bing</a></p>`;
     }
     $('#resultsList').innerHTML = html;
 
   } catch(e) {
-    console.error("Erreur SERPAPI:", e);
+    console.error("Erreur:", e);
     $('#resultsList').innerHTML = `<p style="padding:20px;color:red"><b>ERREUR:</b> ${e.message}</p>`;
   }
 }
@@ -112,13 +91,13 @@ async function searchSERP(query, filter = 'all') {
 async function search() {
   let q = $('#results').classList.contains('active')? $('#searchInput2').value : $('#searchInput').value;
   q = q.trim(); if(!q) return;
-  currentQuery = q; currentOffset = 0; currentFilter = 'all';
+  currentQuery = q; currentFilter = 'all';
   if($('#searchInput')) $('#searchInput').value = q;
   if($('#searchInput2')) $('#searchInput2').value = q;
   saveHistory(q); showPage('results');
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   document.querySelector('.filter-btn').classList.add('active');
-  searchSERP(q, 'all');
+  searchDDG(q, 'all');
 }
 
 let recognition;
