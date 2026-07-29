@@ -13,7 +13,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https://*.wikipedia.org https://commons.wikimedia.org; frame-src 'self' https://www.youtube.com https://news.google.com https://www.google.com;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https://*.wikipedia.org https://commons.wikimedia.org; frame-src 'self' https://www.youtube.com https://news.google.com https://www.google.com https://fr.wikipedia.org;">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   
   <style>
@@ -147,6 +147,15 @@
       <p style="font-size:12px;color:var(--muted);margin-top:12px">Version: Baobab Search v1.0</p>
     </div>
     <button class="back" onclick="goHome()" data-i18n="back">Retour</button>
+  </main>
+
+  <!-- AJOUT: PAGE LECTEUR INTERNE POUR RESTER SUR BAOBAB -->
+  <main id="viewer" class="page">
+    <header class="results-header">
+      <div class="logo" onclick="showPage('results')">← Retour</div>
+      <h3 id="viewerTitle" style="font-size:16px;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Chargement...</h3>
+    </header>
+    <iframe id="viewerFrame" style="width:100%;height:calc(100vh - 60px);border:none;background:var(--bg)"></iframe>
   </main>
 
   <div id="aboutPopup" class="popup hidden"><div class="popup-content"><button class="close" onclick="closePopup('aboutPopup')">&times;</button><h2>À propos de Baobab Search</h2><p>Bienvenue sur Baobab Search, votre nouveau moteur de recherche rapide, simple et respectueux de votre vie privée.</p><p>Notre mission est de vous donner accès à l'information du monde entier sans suivre vos clics, sans stocker votre historique et sans créer de profil publicitaire. Baobab Search s'appuie sur des sources fiables et des technologies modernes pour vous offrir des résultats pertinents en un temps record.</p><h4>Nos valeurs</h4><p><b>Confidentialité d'abord :</b> Nous ne collectons pas vos données personnelles.<br><b>Rapidité :</b> Des résultats instantanés.<br><b>Indépendance :</b> Un moteur conçu en Afrique, pour le monde.</p><h4>Contact</h4><p>Une question, une suggestion ? Écrivez-nous : faluzodiop@gmail.com</p><p>© 2026 Baobab Search. Tous droits réservés.</p></div></div>
