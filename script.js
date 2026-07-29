@@ -84,13 +84,14 @@ function setFilter(e, filter) {
   searchBaobab(currentQuery);
 }
 
-// VERSION COMPLETE AVEC BING COMME SOURCE
+// VERSION QUI AFFICHE TOUS LES RESULTATS
 async function searchBaobab(query) {
   const t = translations[currentLang] || translations['fr-FR'];
   $('#resultsList').innerHTML = `<p style="padding:20px;text-align:center">Recherche de "${query}" sur Baobab...</p>`;
   currentQuery = query;
   let html = "";
   let allResults = [];
+  let errors = [];
 
   // 1. APERÇU BAOBAB IA - WIKIPEDIA
   try {
@@ -105,38 +106,47 @@ async function searchBaobab(query) {
         </div>
       `;
     }
-  }catch(e){}
+  }catch(e){ errors.push("Wiki") }
 
   html += `<p style="padding:12px 24px;color:var(--muted)">${t.resultsFor} <b>${query}</b></p>`;
 
-  // 2. SOURCE BING = DUCKDUCKGO
+  // 2. MOTEUR 1 : BING = DUCKDUCKGO - 20 RESULTATS
   try {
     const ddg = await fetch(`https://api.duckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`);
     const d = await ddg.json();
 
-    // Résultat principal Bing
     if(d.AbstractText && d.AbstractURL){
       allResults.push({title: `⚡ ${d.Heading}`, url: d.AbstractURL, content: d.AbstractText, source: 'Bing'});
     }
-
-    // 15 autres résultats Bing
-    d.RelatedTopics.slice(0,15).forEach(item => {
+    d.RelatedTopics.slice(0,20).forEach(item => { // 20 au lieu de 15
       if(item.FirstURL) allResults.push({title: item.Text.split(' - ')[0], url: item.FirstURL, content: item.Text, source: 'Bing'});
     });
-  }catch(e){
-    console.log("Erreur Bing", e)
-  }
+  }catch(e){ errors.push("Bing") }
 
-  // 3. WIKIDATA
+  // 3. MOTEUR 2 : WIKIPEDIA SEARCH - 10 RESULTATS
   try {
-    const wd = await fetch(`https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(query)}&language=fr&limit=3&format=json&origin=*`);
+    const wikiSearch = await fetch(`https://fr.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&srlimit=10&format=json&origin=*`);
+    const ws = await wikiSearch.json();
+    ws.query.search.forEach(item => {
+      allResults.push({
+        title: `📖 ${item.title}`,
+        url: `https://fr.wikipedia.org/wiki/${encodeURIComponent(item.title)}`,
+        content: item.snippet.replace(/<[^>]*>/g, ''),
+        source: 'Wikipedia'
+      });
+    });
+  }catch(e){ errors.push("WikiSearch") }
+
+  // 4. MOTEUR 3 : WIKIDATA - 5 RESULTATS
+  try {
+    const wd = await fetch(`https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(query)}&language=fr&limit=5&format=json&origin=*`); // 5 au lieu de 3
     const wdData = await wd.json();
     wdData.search.forEach(item => {
       allResults.push({title: `🏷️ ${item.label}`, url: `https://www.wikidata.org/wiki/${item.id}`, content: item.description || 'Fiche d\'information', source: 'Wikidata'});
     });
-  }catch(e){}
+  }catch(e){ errors.push("Wikidata") }
 
-  // 4. AFFICHAGE 100% SUR BAOBAB
+  // 5. AFFICHAGE DE TOUS LES RESULTATS
   if(allResults.length > 0){
     allResults.forEach(item => {
       html += `<div style="padding:14px 24px;border-bottom:1px solid var(--border)">
@@ -149,11 +159,11 @@ async function searchBaobab(query) {
   } else {
     html += `<div style="padding:40px;text-align:center;color:var(--muted)">
       <p>${t.noResults} "${query}"</p>
-      <p style="font-size:13px">Essaye: "Senegal", "Messi", "Intelligence artificielle"</p>
+      <p style="font-size:13px">Erreur moteurs: ${errors.join(', ')}</p>
     </div>`;
   }
 
-  html += `<p style="padding:12px 24px;color:var(--muted);font-size:13px">${allResults.length} résultats trouvés sur Baobab</p>`;
+  html += `<p style="padding:12px 24px;color:var(--muted);font-size:13px"><b>${allResults.length}</b> résultats trouvés sur Baobab</p>`;
   $('#resultsList').innerHTML = html;
 }
 
