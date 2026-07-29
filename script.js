@@ -4,16 +4,17 @@ let currentLang = 'fr-FR';
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   $(`#${id}`).classList.add('active');
+  window.scrollTo(0,0); // FIX 1: remonte en haut quand on change de page
 }
 
-// AJOUT 1 : FONCTION POUR OUVRIR DANS BAOBAB
+// FONCTION POUR OUVRIR DANS BAOBAB
 function openInBaobab(url, title) {
   showPage('viewer');
   $('#viewerFrame').src = url;
   $('#viewerTitle').textContent = title;
 }
 
-// BASE DE DONNEES LOCALE POUR QUE CA MARCHE TOUJOURS
+// BASE DE DONNEES LOCALE
 const localDB = {
   "senegal": {title: "Sénégal", desc: "Le Sénégal est un pays d'Afrique de l'Ouest. Capitale: Dakar. Langues: Français, Wolof."},
   "messi": {title: "Lionel Messi", desc: "Footballeur argentin, 8 fois Ballon d'Or. Joue à l'Inter Miami."},
@@ -28,7 +29,7 @@ async function searchBaobab(query) {
   let allResults = [];
   let q = query.toLowerCase();
 
-  // 1. CHERCHE DANS LA BASE LOCALE D'ABORD
+  // 1. BASE LOCALE
   if(localDB[q]){
     const item = localDB[q];
     html += `
@@ -40,12 +41,12 @@ async function searchBaobab(query) {
     allResults.push({title: item.title, url: "#", content: item.desc, source: "Base Baobab"});
   }
 
-  // 2. WIKIPEDIA - ESSAIE MAIS NE BLOQUE PAS SI CA RATE
+  // 2. WIKIPEDIA
   try {
-    const wiki = await fetch(`https://fr.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`, {mode: 'cors'});
+    const wiki = await fetch(`https://fr.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`);
     if(wiki.ok){
       const w = await wiki.json();
-      if(!localDB[q]){ // si pas dans base locale
+      if(!localDB[q]){
         html += `
           <div style="padding:16px 24px;margin:12px 24px;border:1px solid #a855f7;border-radius:12px;background:#1e1b4b">
             <div style="font-size:14px;color:#c4b5fd;font-weight:600;margin-bottom:8px">✨ Aperçu Baobab IA</div>
@@ -58,22 +59,22 @@ async function searchBaobab(query) {
 
   html += `<p style="padding:12px 24px;color:#aaa">Résultats pour <b>${query}</b></p>`;
 
-  // 3. 10 RESULTATS GENERIQUES - CHANGÉ: PLUS GOOGLE
+  // 3. 10 RESULTATS GENERIQUES
   if(allResults.length === 0){
     for(let i=1; i<=10; i++){
       allResults.push({
         title: `Résultat ${i} : ${query}`,
-        url: `https://fr.wikipedia.org/wiki/${encodeURIComponent(query)}`, // CHANGÉ ICI
-        content: `Cliquez pour lire l'article "${query}" sur Baobab.`, // CHANGÉ ICI
-        source: "Wikipedia" // CHANGÉ ICI
+        url: `https://fr.wikipedia.org/wiki/${encodeURIComponent(query)}`,
+        content: `Cliquez pour lire l'article "${query}" sur Baobab.`,
+        source: "Wikipedia"
       });
     }
   }
 
-  // AFFICHAGE - CHANGÉ: LIEN OUVRE DANS BAOBAB
+  // AFFICHAGE - FIX 2: onclick au lieu de href="#" pour éviter blocage
   allResults.forEach(item => {
-    html += `<div style="padding:14px 24px;border-bottom:1px solid #333">
-      <a href="#" onclick="openInBaobab('${item.url}', '${item.title.replace(/'/g, "\\'")}')" style="font-size:20px;color:#8b5cf6;text-decoration:none;font-weight:500">${item.title}</a>
+    html += `<div style="padding:14px 24px;border-bottom:1px solid #333;cursor:pointer" onclick="openInBaobab('${item.url}', '${item.title.replace(/'/g, "\\'")}')">
+      <div style="font-size:20px;color:#8b5cf6;text-decoration:none;font-weight:500">${item.title}</div>
       <div style="color:#4ade80;font-size:14px;margin:2px 0">${item.url}</div>
       <div style="color:#ddd;font-size:14px;line-height:1.58">${item.content}</div>
       <div style="color:#70757a;font-size:12px;margin-top:4px">Source: ${item.source}</div>
@@ -92,4 +93,4 @@ async function search() {
   if($('#searchInput2')) $('#searchInput2').value = q;
   showPage('results');
   searchBaobab(q);
-            }
+             }
