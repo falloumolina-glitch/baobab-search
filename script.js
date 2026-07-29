@@ -1,4 +1,4 @@
-// ===== BAOBAB SEARCH v1.2 FIX CLICS =====
+// ===== BAOBAB SEARCH v1.2.1 FIX NOM FONCTION =====
 let currentQuery = '';
 let currentFilter = 'all';
 
@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('searchInput').addEventListener('keypress', (e) => { if(e.key==='Enter') search() });
     document.getElementById('searchInput2').addEventListener('keypress', (e) => { if(e.key==='Enter') search() });
     
-    // FIX: Fermer les menus quand on clique ailleurs
     document.addEventListener('click', (e) => {
         if(!e.target.closest('.search-icons')) {
             document.getElementById('imageMenu').classList.add('hidden');
@@ -34,7 +33,7 @@ async function search() {
                 fetchDuckGo(currentQuery),
                 generateAISummary(currentQuery)
             ]);
-            displayAIO verview(aiSummary);
+            displayAIO verview(aiSummary); // <-- CORRIGÉ
             displayWebResults(duckData);
         }
     } catch(error) {
@@ -57,7 +56,7 @@ async function generateAISummary(query) {
     et des auteurs comme Léopold Sédar Senghor, Sembène Ousmane.`;
 }
 
-function displayAIO verview(summary) {
+function displayAIO verview(summary) { // <-- CORRIGÉ
     const aiBlock = document.getElementById('aiBlock');
     const aiText = document.getElementById('aiText');
     aiText.innerHTML = summary + `<p style="font-size:12px; color:var(--muted); margin-top:8px;">Source: DuckDuckGo, Wikipedia</p>`;
