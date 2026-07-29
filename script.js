@@ -8,7 +8,7 @@ let currentQuery = "";
 let currentFilter = 'all';
 
 const translations = {
-  'fr-FR': { searchPlaceholder: "Recher sur Baobab...", settings: "Paramètres", general: "Général", langSearch: "Langue de recherche:", security: "Sécurité", protectionMode: "Mode de protection:", saveActivity: "Enregistrer l'activité", clearHistory: "Effacer l'historique récent", back: "Retour", recent: "Historique récent", speakNow: "Parlez maintenant...", noResults: "Aucun résultat trouvé pour", resultsFor: "Résultats pour", next: "Suivant", prev: "Précédent", readMore: "Lire l'article complet", all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", maps: "Maps" },
+  'fr-FR': { searchPlaceholder: "Rechercher sur Baobab...", settings: "Paramètres", general: "Général", langSearch: "Langue de recherche:", security: "Sécurité", protectionMode: "Mode de protection:", saveActivity: "Enregistrer l'activité", clearHistory: "Effacer l'historique récent", back: "Retour", recent: "Historique récent", speakNow: "Parlez maintenant...", noResults: "Aucun résultat trouvé pour", resultsFor: "Résultats pour", next: "Suivant", prev: "Précédent", readMore: "Lire l'article complet", all: "Tous", images: "Images", videos: "Vidéos", news: "Actualités", maps: "Maps" },
   'en-US': { searchPlaceholder: "Search on Baobab...", settings: "Settings", general: "General", langSearch: "Search language:", security: "Security", protectionMode: "Protection mode:", saveActivity: "Save activity", clearHistory: "Clear recent history", back: "Back", recent: "Recent", speakNow: "Speak now...", noResults: "No results found for", resultsFor: "Results for", next: "Next", prev: "Previous", readMore: "Read full article", all: "All", images: "Images", videos: "Videos", news: "News", maps: "Maps" }
 };
 
@@ -84,63 +84,65 @@ function setFilter(e, filter) {
   searchBaobab(currentQuery);
 }
 
-// VERSION 100% FONCTIONNELLE SANS PROXY
 async function searchBaobab(query) {
   const t = translations[currentLang] || translations['fr-FR'];
-  $('#resultsList').innerHTML = `<p style="padding:20px;text-align:center">Recherche de "${query}"...</p>`;
-  currentQuery = query;
+  $('#resultsList').innerHTML = `<p style="padding:20px;text-align:center">Recherche de "${query}" sur le web...</p>`;
   let html = `<p style="padding:12px 24px;color:var(--muted)">${t.resultsFor} <b>${query}</b></p>`;
-  let hasResults = false;
+  let allResults = [];
 
-  // 1. WIKIPEDIA - MARCHE TOUJOURS MEME EN 4G
+  // 1. WIKIPEDIA
   try {
-    const wikiRes = await fetch(`https://fr.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`);
-    if(wikiRes.ok){
-      const w = await wikiRes.json();
-      hasResults = true;
-      html += `<div style="padding:12px 24px;border:1px solid #1a73e8;border-radius:8px;margin:12px 24px;background:#e8f0fe">
-        <a href="${w.content_urls.desktop.page}" target="_blank" style="font-size:20px;color:#1a0dab;font-weight:500">${w.title}</a>
-        <div style="color:#006621;font-size:14px">${w.content_urls.desktop.page}</div>
-        <div style="color:#3c4043;font-size:14px;line-height:1.58">${w.extract}</div>
+    const wiki = await fetch(`https://fr.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`);
+    if(wiki.ok){
+      const w = await wiki.json();
+      allResults.push({title: `📚 ${w.title}`, url: w.content_urls.desktop.page, content: w.extract, source: 'Wikipedia'});
+    }
+  }catch(e){}
+
+  // 2. WIKIDATA
+  try {
+    const wd = await fetch(`https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(query)}&language=fr&limit=5&format=json&origin=*`);
+    const wdData = await wd.json();
+    wdData.search.forEach(item => {
+      allResults.push({title: `🏷️ ${item.label}`, url: `https://www.wikidata.org/wiki/${item.id}`, content: item.description || 'Fiche Wikidata', source: 'Wikidata'});
+    });
+  }catch(e){}
+
+  // 3. DUCKDUCKGO
+  try {
+    const ddg = await fetch(`https://api.duckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`);
+    const d = await ddg.json();
+    if(d.AbstractText){
+      allResults.push({title: `⚡ Réponse: ${d.Heading}`, url: d.AbstractURL, content: d.AbstractText, source: 'DuckGo'});
+    }
+    d.RelatedTopics.slice(0,10).forEach(item => {
+      if(item.FirstURL) allResults.push({title: item.Text.split(' - ')[0], url: item.FirstURL, content: item.Text, source: 'DDG'});
+    });
+  }catch(e){}
+
+  // 4. GNEWS - METS TA CLE ICI
+  try {
+    const news = await fetch(`https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=fr&country=sn&max=5&token=METS_TA_CLE_ICI`);
+    const n = await news.json();
+    if(n.articles) n.articles.forEach(item => {
+      allResults.push({title: `📰 ${item.title}`, url: item.url, content: item.description, source: 'GNews'});
+    });
+  }catch(e){}
+
+  if(allResults.length > 0){
+    allResults.slice(0,20).forEach(item => {
+      html += `<div style="padding:14px 24px;border-bottom:1px solid var(--border)">
+        <a href="${item.url}" target="_blank" style="font-size:20px;color:#1a0dab">${item.title}</a>
+        <div style="color:#006621;font-size:14px">${item.url}</div>
+        <div style="color:#4d5156;font-size:14px">${item.content}</div>
+        <div style="color:#70757a;font-size:12px">${item.source}</div>
       </div>`;
-    }
-  }catch(e){ console.log("Wiki error") }
-
-  // 2. DUCKDUCKGO INSTANT ANSWER
-  try {
-    const ddgRes = await fetch(`https://api.duckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`);
-    const d = await ddgRes.json();
-
-    // Résultat direct
-    if(d.Answer){
-      hasResults = true;
-      html += `<div style="padding:12px 24px;border-bottom:1px solid var(--border)"><b>Réponse rapide:</b> ${d.Answer}</div>`;
-    }
-
-    // Liens
-    if(d.RelatedTopics){
-      d.RelatedTopics.slice(0,8).forEach(item => {
-        if(item.FirstURL && item.Text){
-          hasResults = true;
-          html += `<div style="padding:12px 24px;border-bottom:1px solid var(--border)">
-            <a href="${item.FirstURL}" target="_blank" style="font-size:20px;color:#1a0dab;text-decoration:none">${item.Text.split(' - ')[0]}</a>
-            <div style="color:#006621;font-size:14px">${item.FirstURL}</div>
-            <div style="color:#4d5156;font-size:14px;line-height:1.58">${item.Text}</div>
-          </div>`;
-        }
-      });
-    }
-  }catch(e){ console.log("DDG error") }
-
-  // 3. SI RIEN TROUVE: ON MET LIEN BING + GOOGLE
-  if(!hasResults){
-    html += `<div style="padding:20px;text-align:center">
-      <p>${t.noResults} "${query}"</p>
-      <a href="https://www.bing.com/search?q=${encodeURIComponent(query)}" target="_blank" style="display:inline-block;margin:10px;padding:10px 20px;background:#1a73e8;color:white;border-radius:4px;text-decoration:none">Voir sur Bing</a>
-      <a href="https://www.google.com/search?q=${encodeURIComponent(query)}" target="_blank" style="display:inline-block;margin:10px;padding:10px 20px;background:#34a853;color:white;border-radius:4px;text-decoration:none">Voir sur Google</a>
-    </div>`;
+    });
+  } else {
+    html += `<p style="padding:20px;text-align:center">${t.noResults} "${query}"</p>`;
   }
 
+  html += `<p style="padding:12px 24px;color:var(--muted);font-size:13px">${allResults.length} résultats trouvés</p>`;
   $('#resultsList').innerHTML = html;
 }
 
